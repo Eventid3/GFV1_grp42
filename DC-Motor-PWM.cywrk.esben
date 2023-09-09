@@ -13,7 +13,7 @@
 <v>Output</v>
 </TreeKeys>
 <TreeStates>
-<CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="DC-Motor-PWM\DC-Motor-PWM_Opg3\Generated_Source\PSoC5\isr_uart_rx">
+<CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="DC-Motor-PWM\DC-Motor-PWM_Opg3\Generated_Source">
 <ExpandedNodeIds>
 <v>DC-Motor-PWM</v>
 <v>DC-Motor-PWM\DC-Motor-PWM_Opg1\TopDesign</v>
@@ -66,7 +66,6 @@
 <v>DC-Motor-PWM\DC-Motor-PWM_Opg3\Header Files\cyapicallbacks.h</v>
 <v>DC-Motor-PWM\DC-Motor-PWM_Opg3\Source Files</v>
 <v>DC-Motor-PWM\DC-Motor-PWM_Opg3\Source Files\main.c</v>
-<v>DC-Motor-PWM\DC-Motor-PWM_Opg3\Generated_Source</v>
 <v>DC-Motor-PWM\DC-Motor-PWM_Opg3\Generated_Source\PSoC5</v>
 </ExpandedNodeIds>
 <VisibleNodeIds>
@@ -90,23 +89,6 @@
 <v>DC-Motor-PWM\DC-Motor-PWM_Opg3\Source Files</v>
 <v>DC-Motor-PWM\DC-Motor-PWM_Opg3\Source Files\main.c</v>
 <v>DC-Motor-PWM\DC-Motor-PWM_Opg3\Generated_Source</v>
-<v>DC-Motor-PWM\DC-Motor-PWM_Opg3\Generated_Source\PSoC5</v>
-<v>DC-Motor-PWM\DC-Motor-PWM_Opg3\Generated_Source\PSoC5\cy_boot</v>
-<v>DC-Motor-PWM\DC-Motor-PWM_Opg3\Generated_Source\PSoC5\Em_EEPROM_Dynamic</v>
-<v>DC-Motor-PWM\DC-Motor-PWM_Opg3\Generated_Source\PSoC5\isr_timer</v>
-<v>DC-Motor-PWM\DC-Motor-PWM_Opg3\Generated_Source\PSoC5\isr_uart_rx</v>
-<v>DC-Motor-PWM\DC-Motor-PWM_Opg3\Generated_Source\PSoC5\Pin_A1</v>
-<v>DC-Motor-PWM\DC-Motor-PWM_Opg3\Generated_Source\PSoC5\Pin_A2</v>
-<v>DC-Motor-PWM\DC-Motor-PWM_Opg3\Generated_Source\PSoC5\Pin_B1</v>
-<v>DC-Motor-PWM\DC-Motor-PWM_Opg3\Generated_Source\PSoC5\Pin_B2</v>
-<v>DC-Motor-PWM\DC-Motor-PWM_Opg3\Generated_Source\PSoC5\Timer_1</v>
-<v>DC-Motor-PWM\DC-Motor-PWM_Opg3\Generated_Source\PSoC5\timer_clock</v>
-<v>DC-Motor-PWM\DC-Motor-PWM_Opg3\Generated_Source\PSoC5\UART_1</v>
-<v>DC-Motor-PWM\DC-Motor-PWM_Opg3\Generated_Source\PSoC5\UART_1_IntClock</v>
-<v>DC-Motor-PWM\DC-Motor-PWM_Opg3\Generated_Source\PSoC5\cycodeshareexport.ld</v>
-<v>DC-Motor-PWM\DC-Motor-PWM_Opg3\Generated_Source\PSoC5\cycodeshareimport.ld</v>
-<v>DC-Motor-PWM\DC-Motor-PWM_Opg3\Generated_Source\PSoC5\cycodeshareimport.scat</v>
-<v>DC-Motor-PWM\DC-Motor-PWM_Opg3\Generated_Source\PSoC5\cydevice.h</v>
 </VisibleNodeIds>
 </CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
 <CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="">

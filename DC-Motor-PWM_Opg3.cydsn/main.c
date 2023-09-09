@@ -154,6 +154,7 @@ void decreaseSpeed()
     uint16_t period = Timer_1_ReadPeriod() * 1.5f;
     period = period >= 255 ? 255 : period; 
     /*
+    // For debugging
     char buffer[256];
     snprintf(buffer, sizeof(buffer), "Bytes read: %d\r\n", period);
     UART_1_PutString(buffer);
