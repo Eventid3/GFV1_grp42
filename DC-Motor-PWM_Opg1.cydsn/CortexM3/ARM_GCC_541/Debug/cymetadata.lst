@@ -1,0 +1,1623 @@
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccf8Jthy.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"cymetadata.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.global	cy_metadata
+  20              		.global	cy_meta_flashprotect
+  21              		.global	cy_meta_wonvl
+  22              		.global	cy_meta_custnvl
+  23              		.global	cy_meta_configecc
+  24              		.section	.cyconfigecc,"a",%progbits
+  25              		.align	2
+  26              		.type	cy_meta_configecc, %object
+  27              		.size	cy_meta_configecc, 1072
+  28              	cy_meta_configecc:
+  29 0000 04       		.byte	4
+  30 0001 52       		.byte	82
+  31 0002 00       		.byte	0
+  32 0003 40       		.byte	64
+  33 0004 02       		.byte	2
+  34 0005 64       		.byte	100
+  35 0006 00       		.byte	0
+  36 0007 40       		.byte	64
+  37 0008 02       		.byte	2
+  38 0009 65       		.byte	101
+  39 000a 00       		.byte	0
+  40 000b 40       		.byte	64
+  41 000c 01       		.byte	1
+  42 000d 07       		.byte	7
+  43 000e 01       		.byte	1
+  44 000f 40       		.byte	64
+  45 0010 0E       		.byte	14
+  46 0011 08       		.byte	8
+  47 0012 01       		.byte	1
+  48 0013 40       		.byte	64
+  49 0014 36       		.byte	54
+  50 0015 09       		.byte	9
+  51 0016 01       		.byte	1
+  52 0017 40       		.byte	64
+  53 0018 01       		.byte	1
+  54 0019 0B       		.byte	11
+  55 001a 01       		.byte	1
+  56 001b 40       		.byte	64
+  57 001c 62       		.byte	98
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccf8Jthy.s 			page 2
+
+
+  58 001d 18       		.byte	24
+  59 001e 01       		.byte	1
+  60 001f 40       		.byte	64
+  61 0020 41       		.byte	65
+  62 0021 19       		.byte	25
+  63 0022 01       		.byte	1
+  64 0023 40       		.byte	64
+  65 0024 4B       		.byte	75
+  66 0025 1A       		.byte	26
+  67 0026 01       		.byte	1
+  68 0027 40       		.byte	64
+  69 0028 4B       		.byte	75
+  70 0029 1B       		.byte	27
+  71 002a 01       		.byte	1
+  72 002b 40       		.byte	64
+  73 002c 02       		.byte	2
+  74 002d 40       		.byte	64
+  75 002e 01       		.byte	1
+  76 002f 40       		.byte	64
+  77 0030 01       		.byte	1
+  78 0031 41       		.byte	65
+  79 0032 01       		.byte	1
+  80 0033 40       		.byte	64
+  81 0034 01       		.byte	1
+  82 0035 42       		.byte	66
+  83 0036 01       		.byte	1
+  84 0037 40       		.byte	64
+  85 0038 03       		.byte	3
+  86 0039 43       		.byte	67
+  87 003a 01       		.byte	1
+  88 003b 40       		.byte	64
+  89 003c 02       		.byte	2
+  90 003d 45       		.byte	69
+  91 003e 01       		.byte	1
+  92 003f 40       		.byte	64
+  93 0040 03       		.byte	3
+  94 0041 46       		.byte	70
+  95 0042 01       		.byte	1
+  96 0043 40       		.byte	64
+  97 0044 07       		.byte	7
+  98 0045 4D       		.byte	77
+  99 0046 01       		.byte	1
+ 100 0047 40       		.byte	64
+ 101 0048 04       		.byte	4
+ 102 0049 50       		.byte	80
+ 103 004a 01       		.byte	1
+ 104 004b 40       		.byte	64
+ 105 004c 01       		.byte	1
+ 106 004d 51       		.byte	81
+ 107 004e 01       		.byte	1
+ 108 004f 40       		.byte	64
+ 109 0050 10       		.byte	16
+ 110 0051 02       		.byte	2
+ 111 0052 11       		.byte	17
+ 112 0053 02       		.byte	2
+ 113 0054 61       		.byte	97
+ 114 0055 80       		.byte	-128
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccf8Jthy.s 			page 3
+
+
+ 115 0056 64       		.byte	100
+ 116 0057 40       		.byte	64
+ 117 0058 88       		.byte	-120
+ 118 0059 38       		.byte	56
+ 119 005a 89       		.byte	-119
+ 120 005b 0D       		.byte	13
+ 121 005c 88       		.byte	-120
+ 122 005d 0F       		.byte	15
+ 123 005e 8A       		.byte	-118
+ 124 005f 72       		.byte	114
+ 125 0060 E6       		.byte	-26
+ 126 0061 02       		.byte	2
+ 127 0062 1E       		.byte	30
+ 128 0063 01       		.byte	1
+ 129 0064 2A       		.byte	42
+ 130 0065 03       		.byte	3
+ 131 0066 2B       		.byte	43
+ 132 0067 01       		.byte	1
+ 133 0068 2C       		.byte	44
+ 134 0069 02       		.byte	2
+ 135 006a 31       		.byte	49
+ 136 006b 01       		.byte	1
+ 137 006c 34       		.byte	52
+ 138 006d 01       		.byte	1
+ 139 006e 36       		.byte	54
+ 140 006f 02       		.byte	2
+ 141 0070 54       		.byte	84
+ 142 0071 18       		.byte	24
+ 143 0072 56       		.byte	86
+ 144 0073 04       		.byte	4
+ 145 0074 58       		.byte	88
+ 146 0075 04       		.byte	4
+ 147 0076 59       		.byte	89
+ 148 0077 04       		.byte	4
+ 149 0078 5B       		.byte	91
+ 150 0079 04       		.byte	4
+ 151 007a 5C       		.byte	92
+ 152 007b 11       		.byte	17
+ 153 007c 5F       		.byte	95
+ 154 007d 01       		.byte	1
+ 155 007e 00       		.byte	0
+ 156 007f 06       		.byte	6
+ 157 0080 01       		.byte	1
+ 158 0081 80       		.byte	-128
+ 159 0082 03       		.byte	3
+ 160 0083 08       		.byte	8
+ 161 0084 08       		.byte	8
+ 162 0085 40       		.byte	64
+ 163 0086 09       		.byte	9
+ 164 0087 08       		.byte	8
+ 165 0088 0A       		.byte	10
+ 166 0089 86       		.byte	-122
+ 167 008a 0C       		.byte	12
+ 168 008b 40       		.byte	64
+ 169 008c 10       		.byte	16
+ 170 008d 08       		.byte	8
+ 171 008e 12       		.byte	18
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccf8Jthy.s 			page 4
+
+
+ 172 008f 20       		.byte	32
+ 173 0090 13       		.byte	19
+ 174 0091 01       		.byte	1
+ 175 0092 14       		.byte	20
+ 176 0093 04       		.byte	4
+ 177 0094 17       		.byte	23
+ 178 0095 80       		.byte	-128
+ 179 0096 18       		.byte	24
+ 180 0097 01       		.byte	1
+ 181 0098 19       		.byte	25
+ 182 0099 20       		.byte	32
+ 183 009a 1B       		.byte	27
+ 184 009b 09       		.byte	9
+ 185 009c 1D       		.byte	29
+ 186 009d 60       		.byte	96
+ 187 009e 20       		.byte	32
+ 188 009f 44       		.byte	68
+ 189 00a0 22       		.byte	34
+ 190 00a1 08       		.byte	8
+ 191 00a2 27       		.byte	39
+ 192 00a3 80       		.byte	-128
+ 193 00a4 29       		.byte	41
+ 194 00a5 94       		.byte	-108
+ 195 00a6 2B       		.byte	43
+ 196 00a7 80       		.byte	-128
+ 197 00a8 2C       		.byte	44
+ 198 00a9 04       		.byte	4
+ 199 00aa 2F       		.byte	47
+ 200 00ab 04       		.byte	4
+ 201 00ac 30       		.byte	48
+ 202 00ad 80       		.byte	-128
+ 203 00ae 31       		.byte	49
+ 204 00af 08       		.byte	8
+ 205 00b0 32       		.byte	50
+ 206 00b1 02       		.byte	2
+ 207 00b2 33       		.byte	51
+ 208 00b3 10       		.byte	16
+ 209 00b4 38       		.byte	56
+ 210 00b5 44       		.byte	68
+ 211 00b6 40       		.byte	64
+ 212 00b7 41       		.byte	65
+ 213 00b8 41       		.byte	65
+ 214 00b9 08       		.byte	8
+ 215 00ba 42       		.byte	66
+ 216 00bb 04       		.byte	4
+ 217 00bc 43       		.byte	67
+ 218 00bd 10       		.byte	16
+ 219 00be 4A       		.byte	74
+ 220 00bf 02       		.byte	2
+ 221 00c0 50       		.byte	80
+ 222 00c1 08       		.byte	8
+ 223 00c2 53       		.byte	83
+ 224 00c3 80       		.byte	-128
+ 225 00c4 58       		.byte	88
+ 226 00c5 08       		.byte	8
+ 227 00c6 59       		.byte	89
+ 228 00c7 41       		.byte	65
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccf8Jthy.s 			page 5
+
+
+ 229 00c8 5F       		.byte	95
+ 230 00c9 02       		.byte	2
+ 231 00ca 65       		.byte	101
+ 232 00cb 20       		.byte	32
+ 233 00cc 66       		.byte	102
+ 234 00cd 40       		.byte	64
+ 235 00ce 67       		.byte	103
+ 236 00cf 40       		.byte	64
+ 237 00d0 72       		.byte	114
+ 238 00d1 40       		.byte	64
+ 239 00d2 87       		.byte	-121
+ 240 00d3 40       		.byte	64
+ 241 00d4 A5       		.byte	-91
+ 242 00d5 20       		.byte	32
+ 243 00d6 C0       		.byte	-64
+ 244 00d7 0F       		.byte	15
+ 245 00d8 C2       		.byte	-62
+ 246 00d9 8F       		.byte	-113
+ 247 00da C4       		.byte	-60
+ 248 00db CE       		.byte	-50
+ 249 00dc CA       		.byte	-54
+ 250 00dd 2F       		.byte	47
+ 251 00de CC       		.byte	-52
+ 252 00df 0F       		.byte	15
+ 253 00e0 CE       		.byte	-50
+ 254 00e1 0A       		.byte	10
+ 255 00e2 D0       		.byte	-48
+ 256 00e3 0F       		.byte	15
+ 257 00e4 D2       		.byte	-46
+ 258 00e5 08       		.byte	8
+ 259 00e6 D6       		.byte	-42
+ 260 00e7 8B       		.byte	-117
+ 261 00e8 D8       		.byte	-40
+ 262 00e9 B0       		.byte	-80
+ 263 00ea 8D       		.byte	-115
+ 264 00eb 20       		.byte	32
+ 265 00ec 03       		.byte	3
+ 266 00ed 48       		.byte	72
+ 267 00ee 04       		.byte	4
+ 268 00ef 11       		.byte	17
+ 269 00f0 05       		.byte	5
+ 270 00f1 13       		.byte	19
+ 271 00f2 06       		.byte	6
+ 272 00f3 06       		.byte	6
+ 273 00f4 07       		.byte	7
+ 274 00f5 2C       		.byte	44
+ 275 00f6 08       		.byte	8
+ 276 00f7 20       		.byte	32
+ 277 00f8 09       		.byte	9
+ 278 00f9 4A       		.byte	74
+ 279 00fa 0A       		.byte	10
+ 280 00fb 03       		.byte	3
+ 281 00fc 0B       		.byte	11
+ 282 00fd 34       		.byte	52
+ 283 00fe 14       		.byte	20
+ 284 00ff 0C       		.byte	12
+ 285 0100 15       		.byte	21
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccf8Jthy.s 			page 6
+
+
+ 286 0101 13       		.byte	19
+ 287 0102 16       		.byte	22
+ 288 0103 13       		.byte	19
+ 289 0104 17       		.byte	23
+ 290 0105 64       		.byte	100
+ 291 0106 1E       		.byte	30
+ 292 0107 0C       		.byte	12
+ 293 0108 22       		.byte	34
+ 294 0109 08       		.byte	8
+ 295 010a 23       		.byte	35
+ 296 010b 40       		.byte	64
+ 297 010c 24       		.byte	36
+ 298 010d 11       		.byte	17
+ 299 010e 25       		.byte	37
+ 300 010f 03       		.byte	3
+ 301 0110 26       		.byte	38
+ 302 0111 0E       		.byte	14
+ 303 0112 27       		.byte	39
+ 304 0113 14       		.byte	20
+ 305 0114 2B       		.byte	43
+ 306 0115 35       		.byte	53
+ 307 0116 32       		.byte	50
+ 308 0117 0F       		.byte	15
+ 309 0118 33       		.byte	51
+ 310 0119 0F       		.byte	15
+ 311 011a 35       		.byte	53
+ 312 011b 68       		.byte	104
+ 313 011c 36       		.byte	54
+ 314 011d 30       		.byte	48
+ 315 011e 37       		.byte	55
+ 316 011f 10       		.byte	16
+ 317 0120 38       		.byte	56
+ 318 0121 80       		.byte	-128
+ 319 0122 3A       		.byte	58
+ 320 0123 08       		.byte	8
+ 321 0124 3B       		.byte	59
+ 322 0125 28       		.byte	40
+ 323 0126 3F       		.byte	63
+ 324 0127 40       		.byte	64
+ 325 0128 40       		.byte	64
+ 326 0129 01       		.byte	1
+ 327 012a 45       		.byte	69
+ 328 012b 40       		.byte	64
+ 329 012c 49       		.byte	73
+ 330 012d FF       		.byte	-1
+ 331 012e 4A       		.byte	74
+ 332 012f 07       		.byte	7
+ 333 0130 4B       		.byte	75
+ 334 0131 FF       		.byte	-1
+ 335 0132 4C       		.byte	76
+ 336 0133 40       		.byte	64
+ 337 0134 4D       		.byte	77
+ 338 0135 20       		.byte	32
+ 339 0136 4E       		.byte	78
+ 340 0137 F0       		.byte	-16
+ 341 0138 4F       		.byte	79
+ 342 0139 05       		.byte	5
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccf8Jthy.s 			page 7
+
+
+ 343 013a 50       		.byte	80
+ 344 013b 08       		.byte	8
+ 345 013c 54       		.byte	84
+ 346 013d 01       		.byte	1
+ 347 013e 58       		.byte	88
+ 348 013f 04       		.byte	4
+ 349 0140 59       		.byte	89
+ 350 0141 04       		.byte	4
+ 351 0142 5A       		.byte	90
+ 352 0143 04       		.byte	4
+ 353 0144 5B       		.byte	91
+ 354 0145 04       		.byte	4
+ 355 0146 5F       		.byte	95
+ 356 0147 01       		.byte	1
+ 357 0148 60       		.byte	96
+ 358 0149 40       		.byte	64
+ 359 014a 61       		.byte	97
+ 360 014b A8       		.byte	-88
+ 361 014c 62       		.byte	98
+ 362 014d 40       		.byte	64
+ 363 014e 63       		.byte	99
+ 364 014f 20       		.byte	32
+ 365 0150 83       		.byte	-125
+ 366 0151 60       		.byte	96
+ 367 0152 87       		.byte	-121
+ 368 0153 60       		.byte	96
+ 369 0154 89       		.byte	-119
+ 370 0155 1E       		.byte	30
+ 371 0156 8D       		.byte	-115
+ 372 0157 10       		.byte	16
+ 373 0158 91       		.byte	-111
+ 374 0159 62       		.byte	98
+ 375 015a 92       		.byte	-110
+ 376 015b 01       		.byte	1
+ 377 015c 93       		.byte	-109
+ 378 015d 0C       		.byte	12
+ 379 015e 95       		.byte	-107
+ 380 015f 60       		.byte	96
+ 381 0160 99       		.byte	-103
+ 382 0161 1E       		.byte	30
+ 383 0162 9D       		.byte	-99
+ 384 0163 48       		.byte	72
+ 385 0164 9F       		.byte	-97
+ 386 0165 02       		.byte	2
+ 387 0166 A3       		.byte	-93
+ 388 0167 60       		.byte	96
+ 389 0168 A5       		.byte	-91
+ 390 0169 24       		.byte	36
+ 391 016a A7       		.byte	-89
+ 392 016b 02       		.byte	2
+ 393 016c A9       		.byte	-87
+ 394 016d 60       		.byte	96
+ 395 016e AD       		.byte	-83
+ 396 016f 01       		.byte	1
+ 397 0170 B1       		.byte	-79
+ 398 0171 10       		.byte	16
+ 399 0172 B3       		.byte	-77
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccf8Jthy.s 			page 8
+
+
+ 400 0173 0E       		.byte	14
+ 401 0174 B5       		.byte	-75
+ 402 0175 01       		.byte	1
+ 403 0176 B6       		.byte	-74
+ 404 0177 01       		.byte	1
+ 405 0178 B7       		.byte	-73
+ 406 0179 60       		.byte	96
+ 407 017a BF       		.byte	-65
+ 408 017b 10       		.byte	16
+ 409 017c C0       		.byte	-64
+ 410 017d 10       		.byte	16
+ 411 017e C1       		.byte	-63
+ 412 017f 06       		.byte	6
+ 413 0180 C5       		.byte	-59
+ 414 0181 D2       		.byte	-46
+ 415 0182 C7       		.byte	-57
+ 416 0183 01       		.byte	1
+ 417 0184 C8       		.byte	-56
+ 418 0185 13       		.byte	19
+ 419 0186 C9       		.byte	-55
+ 420 0187 FF       		.byte	-1
+ 421 0188 CA       		.byte	-54
+ 422 0189 FF       		.byte	-1
+ 423 018a CB       		.byte	-53
+ 424 018b FF       		.byte	-1
+ 425 018c CD       		.byte	-51
+ 426 018d A0       		.byte	-96
+ 427 018e CF       		.byte	-49
+ 428 018f 04       		.byte	4
+ 429 0190 D0       		.byte	-48
+ 430 0191 18       		.byte	24
+ 431 0192 D8       		.byte	-40
+ 432 0193 04       		.byte	4
+ 433 0194 D9       		.byte	-39
+ 434 0195 04       		.byte	4
+ 435 0196 DA       		.byte	-38
+ 436 0197 04       		.byte	4
+ 437 0198 DC       		.byte	-36
+ 438 0199 01       		.byte	1
+ 439 019a DD       		.byte	-35
+ 440 019b 01       		.byte	1
+ 441 019c DF       		.byte	-33
+ 442 019d 01       		.byte	1
+ 443 019e E0       		.byte	-32
+ 444 019f 40       		.byte	64
+ 445 01a0 E2       		.byte	-30
+ 446 01a1 C0       		.byte	-64
+ 447 01a2 E4       		.byte	-28
+ 448 01a3 40       		.byte	64
+ 449 01a4 E5       		.byte	-27
+ 450 01a5 40       		.byte	64
+ 451 01a6 E6       		.byte	-26
+ 452 01a7 C0       		.byte	-64
+ 453 01a8 E8       		.byte	-24
+ 454 01a9 C0       		.byte	-64
+ 455 01aa EA       		.byte	-22
+ 456 01ab C0       		.byte	-64
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccf8Jthy.s 			page 9
+
+
+ 457 01ac EC       		.byte	-20
+ 458 01ad C0       		.byte	-64
+ 459 01ae EE       		.byte	-18
+ 460 01af C0       		.byte	-64
+ 461 01b0 06       		.byte	6
+ 462 01b1 04       		.byte	4
+ 463 01b2 07       		.byte	7
+ 464 01b3 10       		.byte	16
+ 465 01b4 0A       		.byte	10
+ 466 01b5 40       		.byte	64
+ 467 01b6 0E       		.byte	14
+ 468 01b7 11       		.byte	17
+ 469 01b8 15       		.byte	21
+ 470 01b9 01       		.byte	1
+ 471 01ba 17       		.byte	23
+ 472 01bb 04       		.byte	4
+ 473 01bc 1A       		.byte	26
+ 474 01bd 02       		.byte	2
+ 475 01be 1B       		.byte	27
+ 476 01bf 80       		.byte	-128
+ 477 01c0 1E       		.byte	30
+ 478 01c1 11       		.byte	17
+ 479 01c2 20       		.byte	32
+ 480 01c3 20       		.byte	32
+ 481 01c4 21       		.byte	33
+ 482 01c5 01       		.byte	1
+ 483 01c6 22       		.byte	34
+ 484 01c7 02       		.byte	2
+ 485 01c8 23       		.byte	35
+ 486 01c9 26       		.byte	38
+ 487 01ca 25       		.byte	37
+ 488 01cb 04       		.byte	4
+ 489 01cc 26       		.byte	38
+ 490 01cd 40       		.byte	64
+ 491 01ce 27       		.byte	39
+ 492 01cf 14       		.byte	20
+ 493 01d0 28       		.byte	40
+ 494 01d1 2A       		.byte	42
+ 495 01d2 2A       		.byte	42
+ 496 01d3 41       		.byte	65
+ 497 01d4 2D       		.byte	45
+ 498 01d5 01       		.byte	1
+ 499 01d6 2F       		.byte	47
+ 500 01d7 28       		.byte	40
+ 501 01d8 30       		.byte	48
+ 502 01d9 20       		.byte	32
+ 503 01da 31       		.byte	49
+ 504 01db 0A       		.byte	10
+ 505 01dc 32       		.byte	50
+ 506 01dd 40       		.byte	64
+ 507 01de 35       		.byte	53
+ 508 01df 20       		.byte	32
+ 509 01e0 36       		.byte	54
+ 510 01e1 20       		.byte	32
+ 511 01e2 37       		.byte	55
+ 512 01e3 04       		.byte	4
+ 513 01e4 38       		.byte	56
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccf8Jthy.s 			page 10
+
+
+ 514 01e5 04       		.byte	4
+ 515 01e6 39       		.byte	57
+ 516 01e7 62       		.byte	98
+ 517 01e8 3D       		.byte	61
+ 518 01e9 08       		.byte	8
+ 519 01ea 3E       		.byte	62
+ 520 01eb 11       		.byte	17
+ 521 01ec 40       		.byte	64
+ 522 01ed 08       		.byte	8
+ 523 01ee 42       		.byte	66
+ 524 01ef 04       		.byte	4
+ 525 01f0 43       		.byte	67
+ 526 01f1 80       		.byte	-128
+ 527 01f2 47       		.byte	71
+ 528 01f3 40       		.byte	64
+ 529 01f4 49       		.byte	73
+ 530 01f5 21       		.byte	33
+ 531 01f6 4A       		.byte	74
+ 532 01f7 20       		.byte	32
+ 533 01f8 4D       		.byte	77
+ 534 01f9 01       		.byte	1
+ 535 01fa 53       		.byte	83
+ 536 01fb 04       		.byte	4
+ 537 01fc 56       		.byte	86
+ 538 01fd 04       		.byte	4
+ 539 01fe 57       		.byte	87
+ 540 01ff 08       		.byte	8
+ 541 0200 5C       		.byte	92
+ 542 0201 02       		.byte	2
+ 543 0202 5D       		.byte	93
+ 544 0203 10       		.byte	16
+ 545 0204 5E       		.byte	94
+ 546 0205 80       		.byte	-128
+ 547 0206 5F       		.byte	95
+ 548 0207 04       		.byte	4
+ 549 0208 90       		.byte	-112
+ 550 0209 04       		.byte	4
+ 551 020a 92       		.byte	-110
+ 552 020b 40       		.byte	64
+ 553 020c 96       		.byte	-106
+ 554 020d 86       		.byte	-122
+ 555 020e 97       		.byte	-105
+ 556 020f 09       		.byte	9
+ 557 0210 9D       		.byte	-99
+ 558 0211 95       		.byte	-107
+ 559 0212 9F       		.byte	-97
+ 560 0213 02       		.byte	2
+ 561 0214 A4       		.byte	-92
+ 562 0215 81       		.byte	-127
+ 563 0216 A5       		.byte	-91
+ 564 0217 08       		.byte	8
+ 565 0218 A6       		.byte	-90
+ 566 0219 22       		.byte	34
+ 567 021a B0       		.byte	-80
+ 568 021b 08       		.byte	8
+ 569 021c B2       		.byte	-78
+ 570 021d 48       		.byte	72
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccf8Jthy.s 			page 11
+
+
+ 571 021e B3       		.byte	-77
+ 572 021f 01       		.byte	1
+ 573 0220 C0       		.byte	-64
+ 574 0221 60       		.byte	96
+ 575 0222 C2       		.byte	-62
+ 576 0223 A8       		.byte	-88
+ 577 0224 C4       		.byte	-60
+ 578 0225 30       		.byte	48
+ 579 0226 CA       		.byte	-54
+ 580 0227 EF       		.byte	-17
+ 581 0228 CC       		.byte	-52
+ 582 0229 4F       		.byte	79
+ 583 022a CE       		.byte	-50
+ 584 022b EF       		.byte	-17
+ 585 022c D0       		.byte	-48
+ 586 022d 18       		.byte	24
+ 587 022e D2       		.byte	-46
+ 588 022f 04       		.byte	4
+ 589 0230 D6       		.byte	-42
+ 590 0231 F0       		.byte	-16
+ 591 0232 00       		.byte	0
+ 592 0233 81       		.byte	-127
+ 593 0234 04       		.byte	4
+ 594 0235 9F       		.byte	-97
+ 595 0236 06       		.byte	6
+ 596 0237 20       		.byte	32
+ 597 0238 08       		.byte	8
+ 598 0239 03       		.byte	3
+ 599 023a 09       		.byte	9
+ 600 023b 06       		.byte	6
+ 601 023c 0C       		.byte	12
+ 602 023d 9C       		.byte	-100
+ 603 023e 0E       		.byte	14
+ 604 023f 43       		.byte	67
+ 605 0240 10       		.byte	16
+ 606 0241 02       		.byte	2
+ 607 0242 14       		.byte	20
+ 608 0243 FF       		.byte	-1
+ 609 0244 18       		.byte	24
+ 610 0245 F3       		.byte	-13
+ 611 0246 19       		.byte	25
+ 612 0247 06       		.byte	6
+ 613 0248 1A       		.byte	26
+ 614 0249 0C       		.byte	12
+ 615 024a 1D       		.byte	29
+ 616 024b 04       		.byte	4
+ 617 024c 1E       		.byte	30
+ 618 024d 80       		.byte	-128
+ 619 024e 1F       		.byte	31
+ 620 024f 02       		.byte	2
+ 621 0250 20       		.byte	32
+ 622 0251 08       		.byte	8
+ 623 0252 24       		.byte	36
+ 624 0253 04       		.byte	4
+ 625 0254 25       		.byte	37
+ 626 0255 02       		.byte	2
+ 627 0256 27       		.byte	39
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccf8Jthy.s 			page 12
+
+
+ 628 0257 05       		.byte	5
+ 629 0258 28       		.byte	40
+ 630 0259 0C       		.byte	12
+ 631 025a 2E       		.byte	46
+ 632 025b 63       		.byte	99
+ 633 025c 30       		.byte	48
+ 634 025d 10       		.byte	16
+ 635 025e 31       		.byte	49
+ 636 025f 01       		.byte	1
+ 637 0260 34       		.byte	52
+ 638 0261 0F       		.byte	15
+ 639 0262 36       		.byte	54
+ 640 0263 EC       		.byte	-20
+ 641 0264 37       		.byte	55
+ 642 0265 06       		.byte	6
+ 643 0266 3A       		.byte	58
+ 644 0267 A0       		.byte	-96
+ 645 0268 3B       		.byte	59
+ 646 0269 08       		.byte	8
+ 647 026a 3E       		.byte	62
+ 648 026b 01       		.byte	1
+ 649 026c 56       		.byte	86
+ 650 026d 02       		.byte	2
+ 651 026e 57       		.byte	87
+ 652 026f 13       		.byte	19
+ 653 0270 58       		.byte	88
+ 654 0271 04       		.byte	4
+ 655 0272 59       		.byte	89
+ 656 0273 04       		.byte	4
+ 657 0274 5B       		.byte	91
+ 658 0275 04       		.byte	4
+ 659 0276 5F       		.byte	95
+ 660 0277 01       		.byte	1
+ 661 0278 84       		.byte	-124
+ 662 0279 1C       		.byte	28
+ 663 027a 85       		.byte	-123
+ 664 027b 03       		.byte	3
+ 665 027c 86       		.byte	-122
+ 666 027d 02       		.byte	2
+ 667 027e 88       		.byte	-120
+ 668 027f 10       		.byte	16
+ 669 0280 89       		.byte	-119
+ 670 0281 02       		.byte	2
+ 671 0282 8A       		.byte	-118
+ 672 0283 0C       		.byte	12
+ 673 0284 8C       		.byte	-116
+ 674 0285 20       		.byte	32
+ 675 0286 8E       		.byte	-114
+ 676 0287 03       		.byte	3
+ 677 0288 95       		.byte	-107
+ 678 0289 03       		.byte	3
+ 679 028a 98       		.byte	-104
+ 680 028b 14       		.byte	20
+ 681 028c 9C       		.byte	-100
+ 682 028d 09       		.byte	9
+ 683 028e 9E       		.byte	-98
+ 684 028f 10       		.byte	16
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccf8Jthy.s 			page 13
+
+
+ 685 0290 A0       		.byte	-96
+ 686 0291 10       		.byte	16
+ 687 0292 A4       		.byte	-92
+ 688 0293 0C       		.byte	12
+ 689 0294 A6       		.byte	-90
+ 690 0295 11       		.byte	17
+ 691 0296 AB       		.byte	-85
+ 692 0297 01       		.byte	1
+ 693 0298 B0       		.byte	-80
+ 694 0299 20       		.byte	32
+ 695 029a B1       		.byte	-79
+ 696 029b 03       		.byte	3
+ 697 029c B6       		.byte	-74
+ 698 029d 1F       		.byte	31
+ 699 029e B9       		.byte	-71
+ 700 029f 02       		.byte	2
+ 701 02a0 BE       		.byte	-66
+ 702 02a1 01       		.byte	1
+ 703 02a2 BF       		.byte	-65
+ 704 02a3 01       		.byte	1
+ 705 02a4 C0       		.byte	-64
+ 706 02a5 26       		.byte	38
+ 707 02a6 C1       		.byte	-63
+ 708 02a7 03       		.byte	3
+ 709 02a8 C5       		.byte	-59
+ 710 02a9 0B       		.byte	11
+ 711 02aa C6       		.byte	-58
+ 712 02ab CE       		.byte	-50
+ 713 02ac C8       		.byte	-56
+ 714 02ad 0D       		.byte	13
+ 715 02ae C9       		.byte	-55
+ 716 02af FF       		.byte	-1
+ 717 02b0 CA       		.byte	-54
+ 718 02b1 FF       		.byte	-1
+ 719 02b2 CB       		.byte	-53
+ 720 02b3 FF       		.byte	-1
+ 721 02b4 CE       		.byte	-50
+ 722 02b5 F0       		.byte	-16
+ 723 02b6 CF       		.byte	-49
+ 724 02b7 44       		.byte	68
+ 725 02b8 D0       		.byte	-48
+ 726 02b9 0C       		.byte	12
+ 727 02ba D8       		.byte	-40
+ 728 02bb 04       		.byte	4
+ 729 02bc D9       		.byte	-39
+ 730 02bd 04       		.byte	4
+ 731 02be DA       		.byte	-38
+ 732 02bf 04       		.byte	4
+ 733 02c0 DF       		.byte	-33
+ 734 02c1 01       		.byte	1
+ 735 02c2 E6       		.byte	-26
+ 736 02c3 C0       		.byte	-64
+ 737 02c4 EA       		.byte	-22
+ 738 02c5 40       		.byte	64
+ 739 02c6 EB       		.byte	-21
+ 740 02c7 02       		.byte	2
+ 741 02c8 00       		.byte	0
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccf8Jthy.s 			page 14
+
+
+ 742 02c9 26       		.byte	38
+ 743 02ca 01       		.byte	1
+ 744 02cb 80       		.byte	-128
+ 745 02cc 02       		.byte	2
+ 746 02cd 01       		.byte	1
+ 747 02ce 05       		.byte	5
+ 748 02cf 40       		.byte	64
+ 749 02d0 06       		.byte	6
+ 750 02d1 28       		.byte	40
+ 751 02d2 09       		.byte	9
+ 752 02d3 08       		.byte	8
+ 753 02d4 0A       		.byte	10
+ 754 02d5 86       		.byte	-122
+ 755 02d6 0E       		.byte	14
+ 756 02d7 01       		.byte	1
+ 757 02d8 0F       		.byte	15
+ 758 02d9 08       		.byte	8
+ 759 02da 10       		.byte	16
+ 760 02db 80       		.byte	-128
+ 761 02dc 12       		.byte	18
+ 762 02dd 02       		.byte	2
+ 763 02de 13       		.byte	19
+ 764 02df 24       		.byte	36
+ 765 02e0 15       		.byte	21
+ 766 02e1 01       		.byte	1
+ 767 02e2 17       		.byte	23
+ 768 02e3 04       		.byte	4
+ 769 02e4 19       		.byte	25
+ 770 02e5 81       		.byte	-127
+ 771 02e6 1A       		.byte	26
+ 772 02e7 04       		.byte	4
+ 773 02e8 1D       		.byte	29
+ 774 02e9 40       		.byte	64
+ 775 02ea 1F       		.byte	31
+ 776 02eb 01       		.byte	1
+ 777 02ec 21       		.byte	33
+ 778 02ed 08       		.byte	8
+ 779 02ee 22       		.byte	34
+ 780 02ef 41       		.byte	65
+ 781 02f0 27       		.byte	39
+ 782 02f1 40       		.byte	64
+ 783 02f2 28       		.byte	40
+ 784 02f3 20       		.byte	32
+ 785 02f4 2D       		.byte	45
+ 786 02f5 20       		.byte	32
+ 787 02f6 2F       		.byte	47
+ 788 02f7 08       		.byte	8
+ 789 02f8 30       		.byte	48
+ 790 02f9 20       		.byte	32
+ 791 02fa 32       		.byte	50
+ 792 02fb 40       		.byte	64
+ 793 02fc 37       		.byte	55
+ 794 02fd 04       		.byte	4
+ 795 02fe 39       		.byte	57
+ 796 02ff 20       		.byte	32
+ 797 0300 3D       		.byte	61
+ 798 0301 08       		.byte	8
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccf8Jthy.s 			page 15
+
+
+ 799 0302 3E       		.byte	62
+ 800 0303 38       		.byte	56
+ 801 0304 46       		.byte	70
+ 802 0305 08       		.byte	8
+ 803 0306 47       		.byte	71
+ 804 0307 04       		.byte	4
+ 805 0308 4D       		.byte	77
+ 806 0309 20       		.byte	32
+ 807 030a 4F       		.byte	79
+ 808 030b 08       		.byte	8
+ 809 030c 56       		.byte	86
+ 810 030d 40       		.byte	64
+ 811 030e 57       		.byte	87
+ 812 030f 20       		.byte	32
+ 813 0310 59       		.byte	89
+ 814 0311 01       		.byte	1
+ 815 0312 68       		.byte	104
+ 816 0313 20       		.byte	32
+ 817 0314 69       		.byte	105
+ 818 0315 60       		.byte	96
+ 819 0316 70       		.byte	112
+ 820 0317 80       		.byte	-128
+ 821 0318 71       		.byte	113
+ 822 0319 14       		.byte	20
+ 823 031a 73       		.byte	115
+ 824 031b 24       		.byte	36
+ 825 031c 83       		.byte	-125
+ 826 031d 01       		.byte	1
+ 827 031e 88       		.byte	-120
+ 828 031f 21       		.byte	33
+ 829 0320 90       		.byte	-112
+ 830 0321 04       		.byte	4
+ 831 0322 91       		.byte	-111
+ 832 0323 01       		.byte	1
+ 833 0324 92       		.byte	-110
+ 834 0325 11       		.byte	17
+ 835 0326 95       		.byte	-107
+ 836 0327 60       		.byte	96
+ 837 0328 96       		.byte	-106
+ 838 0329 84       		.byte	-124
+ 839 032a 9B       		.byte	-101
+ 840 032b 04       		.byte	4
+ 841 032c 9C       		.byte	-100
+ 842 032d 20       		.byte	32
+ 843 032e 9D       		.byte	-99
+ 844 032f 94       		.byte	-108
+ 845 0330 9E       		.byte	-98
+ 846 0331 41       		.byte	65
+ 847 0332 9F       		.byte	-97
+ 848 0333 40       		.byte	64
+ 849 0334 A0       		.byte	-96
+ 850 0335 10       		.byte	16
+ 851 0336 A1       		.byte	-95
+ 852 0337 04       		.byte	4
+ 853 0338 A2       		.byte	-94
+ 854 0339 02       		.byte	2
+ 855 033a A3       		.byte	-93
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccf8Jthy.s 			page 16
+
+
+ 856 033b 08       		.byte	8
+ 857 033c A4       		.byte	-92
+ 858 033d A1       		.byte	-95
+ 859 033e A5       		.byte	-91
+ 860 033f 08       		.byte	8
+ 861 0340 A7       		.byte	-89
+ 862 0341 20       		.byte	32
+ 863 0342 AD       		.byte	-83
+ 864 0343 10       		.byte	16
+ 865 0344 AF       		.byte	-81
+ 866 0345 20       		.byte	32
+ 867 0346 B5       		.byte	-75
+ 868 0347 02       		.byte	2
+ 869 0348 B7       		.byte	-73
+ 870 0349 21       		.byte	33
+ 871 034a C0       		.byte	-64
+ 872 034b EF       		.byte	-17
+ 873 034c C2       		.byte	-62
+ 874 034d CF       		.byte	-49
+ 875 034e C4       		.byte	-60
+ 876 034f 3F       		.byte	63
+ 877 0350 CA       		.byte	-54
+ 878 0351 22       		.byte	34
+ 879 0352 CC       		.byte	-52
+ 880 0353 4C       		.byte	76
+ 881 0354 CE       		.byte	-50
+ 882 0355 64       		.byte	100
+ 883 0356 D0       		.byte	-48
+ 884 0357 60       		.byte	96
+ 885 0358 D2       		.byte	-46
+ 886 0359 20       		.byte	32
+ 887 035a D6       		.byte	-42
+ 888 035b 01       		.byte	1
+ 889 035c E4       		.byte	-28
+ 890 035d 04       		.byte	4
+ 891 035e 32       		.byte	50
+ 892 035f 20       		.byte	32
+ 893 0360 CC       		.byte	-52
+ 894 0361 10       		.byte	16
+ 895 0362 A6       		.byte	-90
+ 896 0363 20       		.byte	32
+ 897 0364 A6       		.byte	-90
+ 898 0365 20       		.byte	32
+ 899 0366 86       		.byte	-122
+ 900 0367 20       		.byte	32
+ 901 0368 A6       		.byte	-90
+ 902 0369 20       		.byte	32
+ 903 036a E6       		.byte	-26
+ 904 036b 40       		.byte	64
+ 905 036c 5D       		.byte	93
+ 906 036d 80       		.byte	-128
+ 907 036e D6       		.byte	-42
+ 908 036f 04       		.byte	4
+ 909 0370 8D       		.byte	-115
+ 910 0371 80       		.byte	-128
+ 911 0372 9D       		.byte	-99
+ 912 0373 80       		.byte	-128
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccf8Jthy.s 			page 17
+
+
+ 913 0374 E4       		.byte	-28
+ 914 0375 02       		.byte	2
+ 915 0376 10       		.byte	16
+ 916 0377 40       		.byte	64
+ 917 0378 70       		.byte	112
+ 918 0379 01       		.byte	1
+ 919 037a 80       		.byte	-128
+ 920 037b 01       		.byte	1
+ 921 037c 88       		.byte	-120
+ 922 037d 40       		.byte	64
+ 923 037e C4       		.byte	-60
+ 924 037f 08       		.byte	8
+ 925 0380 DC       		.byte	-36
+ 926 0381 01       		.byte	1
+ 927 0382 E2       		.byte	-30
+ 928 0383 01       		.byte	1
+ 929 0384 00       		.byte	0
+ 930 0385 03       		.byte	3
+ 931 0386 0C       		.byte	12
+ 932 0387 03       		.byte	3
+ 933 0388 10       		.byte	16
+ 934 0389 03       		.byte	3
+ 935 038a 1C       		.byte	28
+ 936 038b 03       		.byte	3
+ 937 038c 00       		.byte	0
+ 938 038d 03       		.byte	3
+ 939 038e 00       		.byte	0
+ 940 038f 00       		.byte	0
+ 941 0390 00       		.byte	0
+ 942 0391 00       		.byte	0
+ 943 0392 04       		.byte	4
+ 944 0393 00       		.byte	0
+ 945 0394 00       		.byte	0
+ 946 0395 06       		.byte	6
+ 947 0396 01       		.byte	1
+ 948 0397 09       		.byte	9
+ 949 0398 00       		.byte	0
+ 950 0399 00       		.byte	0
+ 951 039a 08       		.byte	8
+ 952 039b 00       		.byte	0
+ 953 039c 00       		.byte	0
+ 954 039d 00       		.byte	0
+ 955 039e 01       		.byte	1
+ 956 039f 10       		.byte	16
+ 957 03a0 00       		.byte	0
+ 958 03a1 00       		.byte	0
+ 959 03a2 04       		.byte	4
+ 960 03a3 09       		.byte	9
+ 961 03a4 01       		.byte	1
+ 962 03a5 0F       		.byte	15
+ 963 03a6 00       		.byte	0
+ 964 03a7 00       		.byte	0
+ 965 03a8 01       		.byte	1
+ 966 03a9 09       		.byte	9
+ 967 03aa 00       		.byte	0
+ 968 03ab 06       		.byte	6
+ 969 03ac 00       		.byte	0
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccf8Jthy.s 			page 18
+
+
+ 970 03ad 04       		.byte	4
+ 971 03ae 10       		.byte	16
+ 972 03af 00       		.byte	0
+ 973 03b0 00       		.byte	0
+ 974 03b1 00       		.byte	0
+ 975 03b2 02       		.byte	2
+ 976 03b3 10       		.byte	16
+ 977 03b4 00       		.byte	0
+ 978 03b5 06       		.byte	6
+ 979 03b6 10       		.byte	16
+ 980 03b7 00       		.byte	0
+ 981 03b8 00       		.byte	0
+ 982 03b9 02       		.byte	2
+ 983 03ba 08       		.byte	8
+ 984 03bb 00       		.byte	0
+ 985 03bc 00       		.byte	0
+ 986 03bd 07       		.byte	7
+ 987 03be 00       		.byte	0
+ 988 03bf 08       		.byte	8
+ 989 03c0 10       		.byte	16
+ 990 03c1 07       		.byte	7
+ 991 03c2 01       		.byte	1
+ 992 03c3 10       		.byte	16
+ 993 03c4 08       		.byte	8
+ 994 03c5 0E       		.byte	14
+ 995 03c6 06       		.byte	6
+ 996 03c7 00       		.byte	0
+ 997 03c8 08       		.byte	8
+ 998 03c9 00       		.byte	0
+ 999 03ca 00       		.byte	0
+ 1000 03cb 20       		.byte	32
+ 1001 03cc 00       		.byte	0
+ 1002 03cd 00       		.byte	0
+ 1003 03ce 51       		.byte	81
+ 1004 03cf 04       		.byte	4
+ 1005 03d0 25       		.byte	37
+ 1006 03d1 03       		.byte	3
+ 1007 03d2 04       		.byte	4
+ 1008 03d3 00       		.byte	0
+ 1009 03d4 01       		.byte	1
+ 1010 03d5 00       		.byte	0
+ 1011 03d6 0C       		.byte	12
+ 1012 03d7 0E       		.byte	14
+ 1013 03d8 14       		.byte	20
+ 1014 03d9 FF       		.byte	-1
+ 1015 03da FF       		.byte	-1
+ 1016 03db FF       		.byte	-1
+ 1017 03dc 62       		.byte	98
+ 1018 03dd A0       		.byte	-96
+ 1019 03de F0       		.byte	-16
+ 1020 03df 41       		.byte	65
+ 1021 03e0 0C       		.byte	12
+ 1022 03e1 00       		.byte	0
+ 1023 03e2 80       		.byte	-128
+ 1024 03e3 00       		.byte	0
+ 1025 03e4 05       		.byte	5
+ 1026 03e5 00       		.byte	0
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccf8Jthy.s 			page 19
+
+
+ 1027 03e6 00       		.byte	0
+ 1028 03e7 00       		.byte	0
+ 1029 03e8 04       		.byte	4
+ 1030 03e9 04       		.byte	4
+ 1031 03ea 04       		.byte	4
+ 1032 03eb 04       		.byte	4
+ 1033 03ec 00       		.byte	0
+ 1034 03ed 10       		.byte	16
+ 1035 03ee 00       		.byte	0
+ 1036 03ef 01       		.byte	1
+ 1037 03f0 00       		.byte	0
+ 1038 03f1 00       		.byte	0
+ 1039 03f2 00       		.byte	0
+ 1040 03f3 00       		.byte	0
+ 1041 03f4 00       		.byte	0
+ 1042 03f5 00       		.byte	0
+ 1043 03f6 40       		.byte	64
+ 1044 03f7 02       		.byte	2
+ 1045 03f8 00       		.byte	0
+ 1046 03f9 10       		.byte	16
+ 1047 03fa 30       		.byte	48
+ 1048 03fb 10       		.byte	16
+ 1049 03fc 00       		.byte	0
+ 1050 03fd 10       		.byte	16
+ 1051 03fe 10       		.byte	16
+ 1052 03ff 12       		.byte	18
+ 1053 0400 00       		.byte	0
+ 1054 0401 00       		.byte	0
+ 1055 0402 00       		.byte	0
+ 1056 0403 00       		.byte	0
+ 1057 0404 00       		.byte	0
+ 1058 0405 00       		.byte	0
+ 1059 0406 00       		.byte	0
+ 1060 0407 00       		.byte	0
+ 1061 0408 00       		.byte	0
+ 1062 0409 00       		.byte	0
+ 1063 040a 00       		.byte	0
+ 1064 040b 00       		.byte	0
+ 1065 040c 00       		.byte	0
+ 1066 040d 00       		.byte	0
+ 1067 040e 00       		.byte	0
+ 1068 040f 00       		.byte	0
+ 1069 0410 80       		.byte	-128
+ 1070 0411 00       		.byte	0
+ 1071 0412 40       		.byte	64
+ 1072 0413 80       		.byte	-128
+ 1073 0414 80       		.byte	-128
+ 1074 0415 00       		.byte	0
+ 1075 0416 80       		.byte	-128
+ 1076 0417 00       		.byte	0
+ 1077 0418 00       		.byte	0
+ 1078 0419 00       		.byte	0
+ 1079 041a 00       		.byte	0
+ 1080 041b 00       		.byte	0
+ 1081 041c 00       		.byte	0
+ 1082 041d 0B       		.byte	11
+ 1083 041e 0B       		.byte	11
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccf8Jthy.s 			page 20
+
+
+ 1084 041f 00       		.byte	0
+ 1085 0420 00       		.byte	0
+ 1086 0421 00       		.byte	0
+ 1087 0422 00       		.byte	0
+ 1088 0423 00       		.byte	0
+ 1089 0424 40       		.byte	64
+ 1090 0425 00       		.byte	0
+ 1091 0426 00       		.byte	0
+ 1092 0427 E2       		.byte	-30
+ 1093 0428 E2       		.byte	-30
+ 1094 0429 00       		.byte	0
+ 1095 042a 02       		.byte	2
+ 1096 042b 00       		.byte	0
+ 1097 042c 00       		.byte	0
+ 1098 042d 00       		.byte	0
+ 1099 042e 00       		.byte	0
+ 1100 042f 00       		.byte	0
+ 1101              		.section	.cywolatch,"a",%progbits
+ 1102              		.align	2
+ 1103              		.type	cy_meta_wonvl, %object
+ 1104              		.size	cy_meta_wonvl, 4
+ 1105              	cy_meta_wonvl:
+ 1106 0000 BC       		.byte	-68
+ 1107 0001 90       		.byte	-112
+ 1108 0002 AC       		.byte	-84
+ 1109 0003 AF       		.byte	-81
+ 1110              		.section	.cycustnvl,"a",%progbits
+ 1111              		.align	2
+ 1112              		.type	cy_meta_custnvl, %object
+ 1113              		.size	cy_meta_custnvl, 4
+ 1114              	cy_meta_custnvl:
+ 1115 0000 00       		.byte	0
+ 1116 0001 00       		.byte	0
+ 1117 0002 40       		.byte	64
+ 1118 0003 05       		.byte	5
+ 1119              		.section	.cymeta,"a",%progbits
+ 1120              		.align	2
+ 1121              		.type	cy_metadata, %object
+ 1122              		.size	cy_metadata, 12
+ 1123              	cy_metadata:
+ 1124 0000 00       		.byte	0
+ 1125 0001 01       		.byte	1
+ 1126 0002 2E       		.byte	46
+ 1127 0003 16       		.byte	22
+ 1128 0004 10       		.byte	16
+ 1129 0005 69       		.byte	105
+ 1130 0006 00       		.byte	0
+ 1131 0007 01       		.byte	1
+ 1132 0008 00       		.byte	0
+ 1133 0009 00       		.byte	0
+ 1134 000a 00       		.byte	0
+ 1135 000b 00       		.byte	0
+ 1136              		.section	.cyflashprotect,"a",%progbits
+ 1137              		.align	2
+ 1138              		.type	cy_meta_flashprotect, %object
+ 1139              		.size	cy_meta_flashprotect, 256
+ 1140              	cy_meta_flashprotect:
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccf8Jthy.s 			page 21
+
+
+ 1141 0000 00000000 		.space	256
+ 1141      00000000 
+ 1141      00000000 
+ 1141      00000000 
+ 1141      00000000 
+ 1142              		.text
+ 1143              	.Letext0:
+ 1144              		.file 1 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
+ 1145              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
+ 1146              		.file 3 "Generated_Source\\PSoC5\\cymetadata.c"
+ 1147              		.section	.debug_info,"",%progbits
+ 1148              	.Ldebug_info0:
+ 1149 0000 31010000 		.4byte	0x131
+ 1150 0004 0400     		.2byte	0x4
+ 1151 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 1152 000a 04       		.byte	0x4
+ 1153 000b 01       		.uleb128 0x1
+ 1154 000c A7000000 		.4byte	.LASF17
+ 1155 0010 0C       		.byte	0xc
+ 1156 0011 01020000 		.4byte	.LASF18
+ 1157 0015 16000000 		.4byte	.LASF19
+ 1158 0019 00000000 		.4byte	.Ldebug_line0
+ 1159 001d 02       		.uleb128 0x2
+ 1160 001e 01       		.byte	0x1
+ 1161 001f 06       		.byte	0x6
+ 1162 0020 F5010000 		.4byte	.LASF0
+ 1163 0024 03       		.uleb128 0x3
+ 1164 0025 00000000 		.4byte	.LASF9
+ 1165 0029 01       		.byte	0x1
+ 1166 002a 1D       		.byte	0x1d
+ 1167 002b 2F000000 		.4byte	0x2f
+ 1168 002f 02       		.uleb128 0x2
+ 1169 0030 01       		.byte	0x1
+ 1170 0031 08       		.byte	0x8
+ 1171 0032 99000000 		.4byte	.LASF1
+ 1172 0036 02       		.uleb128 0x2
+ 1173 0037 02       		.byte	0x2
+ 1174 0038 05       		.byte	0x5
+ 1175 0039 E2010000 		.4byte	.LASF2
+ 1176 003d 02       		.uleb128 0x2
+ 1177 003e 02       		.byte	0x2
+ 1178 003f 07       		.byte	0x7
+ 1179 0040 47010000 		.4byte	.LASF3
+ 1180 0044 02       		.uleb128 0x2
+ 1181 0045 04       		.byte	0x4
+ 1182 0046 05       		.byte	0x5
+ 1183 0047 EC010000 		.4byte	.LASF4
+ 1184 004b 02       		.uleb128 0x2
+ 1185 004c 04       		.byte	0x4
+ 1186 004d 07       		.byte	0x7
+ 1187 004e 35010000 		.4byte	.LASF5
+ 1188 0052 02       		.uleb128 0x2
+ 1189 0053 08       		.byte	0x8
+ 1190 0054 05       		.byte	0x5
+ 1191 0055 D4010000 		.4byte	.LASF6
+ 1192 0059 02       		.uleb128 0x2
+ 1193 005a 08       		.byte	0x8
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccf8Jthy.s 			page 22
+
+
+ 1194 005b 07       		.byte	0x7
+ 1195 005c 89010000 		.4byte	.LASF7
+ 1196 0060 04       		.uleb128 0x4
+ 1197 0061 04       		.byte	0x4
+ 1198 0062 05       		.byte	0x5
+ 1199 0063 696E7400 		.ascii	"int\000"
+ 1200 0067 02       		.uleb128 0x2
+ 1201 0068 04       		.byte	0x4
+ 1202 0069 07       		.byte	0x7
+ 1203 006a 7C010000 		.4byte	.LASF8
+ 1204 006e 03       		.uleb128 0x3
+ 1205 006f A0010000 		.4byte	.LASF10
+ 1206 0073 02       		.byte	0x2
+ 1207 0074 18       		.byte	0x18
+ 1208 0075 24000000 		.4byte	0x24
+ 1209 0079 05       		.uleb128 0x5
+ 1210 007a 91000000 		.4byte	0x91
+ 1211 007e 8A000000 		.4byte	0x8a
+ 1212 0082 06       		.uleb128 0x6
+ 1213 0083 8A000000 		.4byte	0x8a
+ 1214 0087 2F04     		.2byte	0x42f
+ 1215 0089 00       		.byte	0
+ 1216 008a 02       		.uleb128 0x2
+ 1217 008b 04       		.byte	0x4
+ 1218 008c 07       		.byte	0x7
+ 1219 008d CB010000 		.4byte	.LASF11
+ 1220 0091 07       		.uleb128 0x7
+ 1221 0092 6E000000 		.4byte	0x6e
+ 1222 0096 08       		.uleb128 0x8
+ 1223 0097 6A010000 		.4byte	.LASF12
+ 1224 009b 03       		.byte	0x3
+ 1225 009c 1F       		.byte	0x1f
+ 1226 009d A7000000 		.4byte	0xa7
+ 1227 00a1 05       		.uleb128 0x5
+ 1228 00a2 03       		.byte	0x3
+ 1229 00a3 00000000 		.4byte	cy_meta_configecc
+ 1230 00a7 07       		.uleb128 0x7
+ 1231 00a8 79000000 		.4byte	0x79
+ 1232 00ac 05       		.uleb128 0x5
+ 1233 00ad 91000000 		.4byte	0x91
+ 1234 00b1 BC000000 		.4byte	0xbc
+ 1235 00b5 09       		.uleb128 0x9
+ 1236 00b6 8A000000 		.4byte	0x8a
+ 1237 00ba 03       		.byte	0x3
+ 1238 00bb 00       		.byte	0
+ 1239 00bc 08       		.uleb128 0x8
+ 1240 00bd 5A010000 		.4byte	.LASF13
+ 1241 00c1 03       		.byte	0x3
+ 1242 00c2 B2       		.byte	0xb2
+ 1243 00c3 CD000000 		.4byte	0xcd
+ 1244 00c7 05       		.uleb128 0x5
+ 1245 00c8 03       		.byte	0x3
+ 1246 00c9 00000000 		.4byte	cy_meta_custnvl
+ 1247 00cd 07       		.uleb128 0x7
+ 1248 00ce AC000000 		.4byte	0xac
+ 1249 00d2 08       		.uleb128 0x8
+ 1250 00d3 BD010000 		.4byte	.LASF14
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccf8Jthy.s 			page 23
+
+
+ 1251 00d7 03       		.byte	0x3
+ 1252 00d8 C0       		.byte	0xc0
+ 1253 00d9 E3000000 		.4byte	0xe3
+ 1254 00dd 05       		.uleb128 0x5
+ 1255 00de 03       		.byte	0x3
+ 1256 00df 00000000 		.4byte	cy_meta_wonvl
+ 1257 00e3 07       		.uleb128 0x7
+ 1258 00e4 AC000000 		.4byte	0xac
+ 1259 00e8 05       		.uleb128 0x5
+ 1260 00e9 91000000 		.4byte	0x91
+ 1261 00ed F8000000 		.4byte	0xf8
+ 1262 00f1 09       		.uleb128 0x9
+ 1263 00f2 8A000000 		.4byte	0x8a
+ 1264 00f6 FF       		.byte	0xff
+ 1265 00f7 00       		.byte	0
+ 1266 00f8 08       		.uleb128 0x8
+ 1267 00f9 A8010000 		.4byte	.LASF15
+ 1268 00fd 03       		.byte	0x3
+ 1269 00fe CE       		.byte	0xce
+ 1270 00ff 09010000 		.4byte	0x109
+ 1271 0103 05       		.uleb128 0x5
+ 1272 0104 03       		.byte	0x3
+ 1273 0105 00000000 		.4byte	cy_meta_flashprotect
+ 1274 0109 07       		.uleb128 0x7
+ 1275 010a E8000000 		.4byte	0xe8
+ 1276 010e 05       		.uleb128 0x5
+ 1277 010f 91000000 		.4byte	0x91
+ 1278 0113 1E010000 		.4byte	0x11e
+ 1279 0117 09       		.uleb128 0x9
+ 1280 0118 8A000000 		.4byte	0x8a
+ 1281 011c 0B       		.byte	0xb
+ 1282 011d 00       		.byte	0
+ 1283 011e 08       		.uleb128 0x8
+ 1284 011f 0A000000 		.4byte	.LASF16
+ 1285 0123 03       		.byte	0x3
+ 1286 0124 FB       		.byte	0xfb
+ 1287 0125 2F010000 		.4byte	0x12f
+ 1288 0129 05       		.uleb128 0x5
+ 1289 012a 03       		.byte	0x3
+ 1290 012b 00000000 		.4byte	cy_metadata
+ 1291 012f 07       		.uleb128 0x7
+ 1292 0130 0E010000 		.4byte	0x10e
+ 1293 0134 00       		.byte	0
+ 1294              		.section	.debug_abbrev,"",%progbits
+ 1295              	.Ldebug_abbrev0:
+ 1296 0000 01       		.uleb128 0x1
+ 1297 0001 11       		.uleb128 0x11
+ 1298 0002 01       		.byte	0x1
+ 1299 0003 25       		.uleb128 0x25
+ 1300 0004 0E       		.uleb128 0xe
+ 1301 0005 13       		.uleb128 0x13
+ 1302 0006 0B       		.uleb128 0xb
+ 1303 0007 03       		.uleb128 0x3
+ 1304 0008 0E       		.uleb128 0xe
+ 1305 0009 1B       		.uleb128 0x1b
+ 1306 000a 0E       		.uleb128 0xe
+ 1307 000b 10       		.uleb128 0x10
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccf8Jthy.s 			page 24
+
+
+ 1308 000c 17       		.uleb128 0x17
+ 1309 000d 00       		.byte	0
+ 1310 000e 00       		.byte	0
+ 1311 000f 02       		.uleb128 0x2
+ 1312 0010 24       		.uleb128 0x24
+ 1313 0011 00       		.byte	0
+ 1314 0012 0B       		.uleb128 0xb
+ 1315 0013 0B       		.uleb128 0xb
+ 1316 0014 3E       		.uleb128 0x3e
+ 1317 0015 0B       		.uleb128 0xb
+ 1318 0016 03       		.uleb128 0x3
+ 1319 0017 0E       		.uleb128 0xe
+ 1320 0018 00       		.byte	0
+ 1321 0019 00       		.byte	0
+ 1322 001a 03       		.uleb128 0x3
+ 1323 001b 16       		.uleb128 0x16
+ 1324 001c 00       		.byte	0
+ 1325 001d 03       		.uleb128 0x3
+ 1326 001e 0E       		.uleb128 0xe
+ 1327 001f 3A       		.uleb128 0x3a
+ 1328 0020 0B       		.uleb128 0xb
+ 1329 0021 3B       		.uleb128 0x3b
+ 1330 0022 0B       		.uleb128 0xb
+ 1331 0023 49       		.uleb128 0x49
+ 1332 0024 13       		.uleb128 0x13
+ 1333 0025 00       		.byte	0
+ 1334 0026 00       		.byte	0
+ 1335 0027 04       		.uleb128 0x4
+ 1336 0028 24       		.uleb128 0x24
+ 1337 0029 00       		.byte	0
+ 1338 002a 0B       		.uleb128 0xb
+ 1339 002b 0B       		.uleb128 0xb
+ 1340 002c 3E       		.uleb128 0x3e
+ 1341 002d 0B       		.uleb128 0xb
+ 1342 002e 03       		.uleb128 0x3
+ 1343 002f 08       		.uleb128 0x8
+ 1344 0030 00       		.byte	0
+ 1345 0031 00       		.byte	0
+ 1346 0032 05       		.uleb128 0x5
+ 1347 0033 01       		.uleb128 0x1
+ 1348 0034 01       		.byte	0x1
+ 1349 0035 49       		.uleb128 0x49
+ 1350 0036 13       		.uleb128 0x13
+ 1351 0037 01       		.uleb128 0x1
+ 1352 0038 13       		.uleb128 0x13
+ 1353 0039 00       		.byte	0
+ 1354 003a 00       		.byte	0
+ 1355 003b 06       		.uleb128 0x6
+ 1356 003c 21       		.uleb128 0x21
+ 1357 003d 00       		.byte	0
+ 1358 003e 49       		.uleb128 0x49
+ 1359 003f 13       		.uleb128 0x13
+ 1360 0040 2F       		.uleb128 0x2f
+ 1361 0041 05       		.uleb128 0x5
+ 1362 0042 00       		.byte	0
+ 1363 0043 00       		.byte	0
+ 1364 0044 07       		.uleb128 0x7
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccf8Jthy.s 			page 25
+
+
+ 1365 0045 26       		.uleb128 0x26
+ 1366 0046 00       		.byte	0
+ 1367 0047 49       		.uleb128 0x49
+ 1368 0048 13       		.uleb128 0x13
+ 1369 0049 00       		.byte	0
+ 1370 004a 00       		.byte	0
+ 1371 004b 08       		.uleb128 0x8
+ 1372 004c 34       		.uleb128 0x34
+ 1373 004d 00       		.byte	0
+ 1374 004e 03       		.uleb128 0x3
+ 1375 004f 0E       		.uleb128 0xe
+ 1376 0050 3A       		.uleb128 0x3a
+ 1377 0051 0B       		.uleb128 0xb
+ 1378 0052 3B       		.uleb128 0x3b
+ 1379 0053 0B       		.uleb128 0xb
+ 1380 0054 49       		.uleb128 0x49
+ 1381 0055 13       		.uleb128 0x13
+ 1382 0056 3F       		.uleb128 0x3f
+ 1383 0057 19       		.uleb128 0x19
+ 1384 0058 02       		.uleb128 0x2
+ 1385 0059 18       		.uleb128 0x18
+ 1386 005a 00       		.byte	0
+ 1387 005b 00       		.byte	0
+ 1388 005c 09       		.uleb128 0x9
+ 1389 005d 21       		.uleb128 0x21
+ 1390 005e 00       		.byte	0
+ 1391 005f 49       		.uleb128 0x49
+ 1392 0060 13       		.uleb128 0x13
+ 1393 0061 2F       		.uleb128 0x2f
+ 1394 0062 0B       		.uleb128 0xb
+ 1395 0063 00       		.byte	0
+ 1396 0064 00       		.byte	0
+ 1397 0065 00       		.byte	0
+ 1398              		.section	.debug_aranges,"",%progbits
+ 1399 0000 14000000 		.4byte	0x14
+ 1400 0004 0200     		.2byte	0x2
+ 1401 0006 00000000 		.4byte	.Ldebug_info0
+ 1402 000a 04       		.byte	0x4
+ 1403 000b 00       		.byte	0
+ 1404 000c 0000     		.2byte	0
+ 1405 000e 0000     		.2byte	0
+ 1406 0010 00000000 		.4byte	0
+ 1407 0014 00000000 		.4byte	0
+ 1408              		.section	.debug_line,"",%progbits
+ 1409              	.Ldebug_line0:
+ 1410 0000 3D010000 		.section	.debug_str,"MS",%progbits,1
+ 1410      02003701 
+ 1410      00000201 
+ 1410      FB0E0D00 
+ 1410      01010101 
+ 1411              	.LASF9:
+ 1412 0000 5F5F7569 		.ascii	"__uint8_t\000"
+ 1412      6E74385F 
+ 1412      7400
+ 1413              	.LASF16:
+ 1414 000a 63795F6D 		.ascii	"cy_metadata\000"
+ 1414      65746164 
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccf8Jthy.s 			page 26
+
+
+ 1414      61746100 
+ 1415              	.LASF19:
+ 1416 0016 433A5C55 		.ascii	"C:\\Users\\esben\\Dropbox\\Documents\\Uni\\2_semest"
+ 1416      73657273 
+ 1416      5C657362 
+ 1416      656E5C44 
+ 1416      726F7062 
+ 1417 0043 65725C47 		.ascii	"er\\GFV_Graenseflader_til_den_fysiske_verden\\DC mo"
+ 1417      46565F47 
+ 1417      7261656E 
+ 1417      7365666C 
+ 1417      61646572 
+ 1418 0074 746F7273 		.ascii	"tors\\DC-Motor-PWM\\DC-Motor-PWM.cydsn\000"
+ 1418      5C44432D 
+ 1418      4D6F746F 
+ 1418      722D5057 
+ 1418      4D5C4443 
+ 1419              	.LASF1:
+ 1420 0099 756E7369 		.ascii	"unsigned char\000"
+ 1420      676E6564 
+ 1420      20636861 
+ 1420      7200
+ 1421              	.LASF17:
+ 1422 00a7 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 1422      43313120 
+ 1422      352E342E 
+ 1422      31203230 
+ 1422      31363036 
+ 1423 00da 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 1423      20726576 
+ 1423      6973696F 
+ 1423      6E203233 
+ 1423      37373135 
+ 1424 010d 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 1424      66756E63 
+ 1424      74696F6E 
+ 1424      2D736563 
+ 1424      74696F6E 
+ 1425              	.LASF5:
+ 1426 0135 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1426      20756E73 
+ 1426      69676E65 
+ 1426      6420696E 
+ 1426      7400
+ 1427              	.LASF3:
+ 1428 0147 73686F72 		.ascii	"short unsigned int\000"
+ 1428      7420756E 
+ 1428      7369676E 
+ 1428      65642069 
+ 1428      6E7400
+ 1429              	.LASF13:
+ 1430 015a 63795F6D 		.ascii	"cy_meta_custnvl\000"
+ 1430      6574615F 
+ 1430      63757374 
+ 1430      6E766C00 
+ 1431              	.LASF12:
+ 1432 016a 63795F6D 		.ascii	"cy_meta_configecc\000"
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccf8Jthy.s 			page 27
+
+
+ 1432      6574615F 
+ 1432      636F6E66 
+ 1432      69676563 
+ 1432      6300
+ 1433              	.LASF8:
+ 1434 017c 756E7369 		.ascii	"unsigned int\000"
+ 1434      676E6564 
+ 1434      20696E74 
+ 1434      00
+ 1435              	.LASF7:
+ 1436 0189 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1436      206C6F6E 
+ 1436      6720756E 
+ 1436      7369676E 
+ 1436      65642069 
+ 1437              	.LASF10:
+ 1438 01a0 75696E74 		.ascii	"uint8_t\000"
+ 1438      385F7400 
+ 1439              	.LASF15:
+ 1440 01a8 63795F6D 		.ascii	"cy_meta_flashprotect\000"
+ 1440      6574615F 
+ 1440      666C6173 
+ 1440      6870726F 
+ 1440      74656374 
+ 1441              	.LASF14:
+ 1442 01bd 63795F6D 		.ascii	"cy_meta_wonvl\000"
+ 1442      6574615F 
+ 1442      776F6E76 
+ 1442      6C00
+ 1443              	.LASF11:
+ 1444 01cb 73697A65 		.ascii	"sizetype\000"
+ 1444      74797065 
+ 1444      00
+ 1445              	.LASF6:
+ 1446 01d4 6C6F6E67 		.ascii	"long long int\000"
+ 1446      206C6F6E 
+ 1446      6720696E 
+ 1446      7400
+ 1447              	.LASF2:
+ 1448 01e2 73686F72 		.ascii	"short int\000"
+ 1448      7420696E 
+ 1448      7400
+ 1449              	.LASF4:
+ 1450 01ec 6C6F6E67 		.ascii	"long int\000"
+ 1450      20696E74 
+ 1450      00
+ 1451              	.LASF0:
+ 1452 01f5 7369676E 		.ascii	"signed char\000"
+ 1452      65642063 
+ 1452      68617200 
+ 1453              	.LASF18:
+ 1454 0201 47656E65 		.ascii	"Generated_Source\\PSoC5\\cymetadata.c\000"
+ 1454      72617465 
+ 1454      645F536F 
+ 1454      75726365 
+ 1454      5C50536F 
+ 1455              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccf8Jthy.s 			page 28
+
+

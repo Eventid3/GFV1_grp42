@@ -1,0 +1,1948 @@
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccTUmZ2i.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.main,"ax",%progbits
+  20              		.align	2
+  21              		.global	main
+  22              		.thumb
+  23              		.thumb_func
+  24              		.type	main, %function
+  25              	main:
+  26              	.LFB63:
+  27              		.file 1 "main.c"
+   1:main.c        **** /* ========================================
+   2:main.c        ****  *
+   3:main.c        ****  * Copyright YOUR COMPANY, THE YEAR
+   4:main.c        ****  * All Rights Reserved
+   5:main.c        ****  * UNPUBLISHED, LICENSED SOFTWARE.
+   6:main.c        ****  *
+   7:main.c        ****  * CONFIDENTIAL AND PROPRIETARY INFORMATION
+   8:main.c        ****  * WHICH IS THE PROPERTY OF your company.
+   9:main.c        ****  *
+  10:main.c        ****  * ========================================
+  11:main.c        **** */
+  12:main.c        **** #include "project.h"
+  13:main.c        **** #include <stdint.h>
+  14:main.c        **** 
+  15:main.c        **** CY_ISR_PROTO(ISR_UART_rx_handler);
+  16:main.c        **** void handleByteReceived(uint8_t byteReceived);
+  17:main.c        **** void decreaseSpeed(void);
+  18:main.c        **** void increaseSpeed(void);
+  19:main.c        **** void driveForwards(void);
+  20:main.c        **** void driveBackwards(void);
+  21:main.c        **** void stop(void);
+  22:main.c        **** 
+  23:main.c        **** int main(void)
+  24:main.c        **** {
+  28              		.loc 1 24 0
+  29              		.cfi_startproc
+  30              		@ Volatile: function does not return.
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33 0000 08B5     		push	{r3, lr}
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccTUmZ2i.s 			page 2
+
+
+  34              		.cfi_def_cfa_offset 8
+  35              		.cfi_offset 3, -8
+  36              		.cfi_offset 14, -4
+  25:main.c        ****     CyGlobalIntEnable; /* Enable global interrupts. */
+  37              		.loc 1 25 0
+  38              		.syntax unified
+  39              	@ 25 "main.c" 1
+  40 0002 62B6     		CPSIE   i
+  41              	@ 0 "" 2
+  26:main.c        **** 
+  27:main.c        ****     /* Place your initialization/startup code here (e.g. MyInst_Start()) */
+  28:main.c        ****     isr_uart_rx_StartEx(ISR_UART_rx_handler);
+  42              		.loc 1 28 0
+  43              		.thumb
+  44              		.syntax unified
+  45 0004 0C48     		ldr	r0, .L4
+  46 0006 FFF7FEFF 		bl	isr_uart_rx_StartEx
+  47              	.LVL0:
+  29:main.c        ****     UART_1_Start();
+  48              		.loc 1 29 0
+  49 000a FFF7FEFF 		bl	UART_1_Start
+  50              	.LVL1:
+  30:main.c        ****     PWM_1_Start();
+  51              		.loc 1 30 0
+  52 000e FFF7FEFF 		bl	PWM_1_Start
+  53              	.LVL2:
+  31:main.c        ****     
+  32:main.c        ****     
+  33:main.c        ****     UART_1_PutString("DC-Motor-PWM application started\r\n");
+  54              		.loc 1 33 0
+  55 0012 0A48     		ldr	r0, .L4+4
+  56 0014 FFF7FEFF 		bl	UART_1_PutString
+  57              	.LVL3:
+  34:main.c        ****     UART_1_PutString("0: Stop\r\n");
+  58              		.loc 1 34 0
+  59 0018 0948     		ldr	r0, .L4+8
+  60 001a FFF7FEFF 		bl	UART_1_PutString
+  61              	.LVL4:
+  35:main.c        ****     UART_1_PutString("1: Drive forwards\r\n");
+  62              		.loc 1 35 0
+  63 001e 0948     		ldr	r0, .L4+12
+  64 0020 FFF7FEFF 		bl	UART_1_PutString
+  65              	.LVL5:
+  36:main.c        ****     UART_1_PutString("2: Drive backwards\r\n");
+  66              		.loc 1 36 0
+  67 0024 0848     		ldr	r0, .L4+16
+  68 0026 FFF7FEFF 		bl	UART_1_PutString
+  69              	.LVL6:
+  37:main.c        ****     UART_1_PutString("q: Decrease speed\r\n");
+  70              		.loc 1 37 0
+  71 002a 0848     		ldr	r0, .L4+20
+  72 002c FFF7FEFF 		bl	UART_1_PutString
+  73              	.LVL7:
+  38:main.c        ****     UART_1_PutString("w: Increase speed\r\n");
+  74              		.loc 1 38 0
+  75 0030 0748     		ldr	r0, .L4+24
+  76 0032 FFF7FEFF 		bl	UART_1_PutString
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccTUmZ2i.s 			page 3
+
+
+  77              	.LVL8:
+  78              	.L2:
+  79 0036 FEE7     		b	.L2
+  80              	.L5:
+  81              		.align	2
+  82              	.L4:
+  83 0038 00000000 		.word	ISR_UART_rx_handler
+  84 003c 00000000 		.word	.LC0
+  85 0040 24000000 		.word	.LC1
+  86 0044 30000000 		.word	.LC2
+  87 0048 44000000 		.word	.LC3
+  88 004c 5C000000 		.word	.LC4
+  89 0050 70000000 		.word	.LC5
+  90              		.cfi_endproc
+  91              	.LFE63:
+  92              		.size	main, .-main
+  93              		.section	.text.decreaseSpeed,"ax",%progbits
+  94              		.align	2
+  95              		.global	decreaseSpeed
+  96              		.thumb
+  97              		.thumb_func
+  98              		.type	decreaseSpeed, %function
+  99              	decreaseSpeed:
+ 100              	.LFB66:
+  39:main.c        **** 
+  40:main.c        ****     for(;;)
+  41:main.c        ****     {
+  42:main.c        ****         /* Place your application code here. */
+  43:main.c        ****     }
+  44:main.c        **** }
+  45:main.c        **** 
+  46:main.c        **** CY_ISR(ISR_UART_rx_handler)
+  47:main.c        **** {
+  48:main.c        ****     uint8_t bytesToRead = UART_1_GetRxBufferSize();
+  49:main.c        ****     while (bytesToRead > 0)
+  50:main.c        ****     {
+  51:main.c        ****         uint8_t byteReceived = UART_1_ReadRxData();
+  52:main.c        ****         UART_1_WriteTxData(byteReceived); // echo back
+  53:main.c        ****         
+  54:main.c        ****         handleByteReceived(byteReceived);
+  55:main.c        ****         
+  56:main.c        ****         bytesToRead--;
+  57:main.c        ****     }
+  58:main.c        **** }
+  59:main.c        **** 
+  60:main.c        **** void handleByteReceived(uint8_t byteReceived)
+  61:main.c        **** {
+  62:main.c        ****     switch(byteReceived)
+  63:main.c        ****     {
+  64:main.c        ****         case 'q' :
+  65:main.c        ****         {
+  66:main.c        ****             decreaseSpeed();
+  67:main.c        ****         }
+  68:main.c        ****         break;
+  69:main.c        ****         case 'w' :
+  70:main.c        ****         {
+  71:main.c        ****             increaseSpeed();
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccTUmZ2i.s 			page 4
+
+
+  72:main.c        ****         }
+  73:main.c        ****         break;
+  74:main.c        ****         case '1' :
+  75:main.c        ****         {
+  76:main.c        ****             driveForwards();
+  77:main.c        ****         }
+  78:main.c        ****         break;
+  79:main.c        ****         case '2' :
+  80:main.c        ****         {
+  81:main.c        ****             driveBackwards();
+  82:main.c        ****         }
+  83:main.c        ****         break;
+  84:main.c        ****         case '0' :
+  85:main.c        ****         {
+  86:main.c        ****             stop();
+  87:main.c        ****             
+  88:main.c        ****         }
+  89:main.c        ****         break;
+  90:main.c        ****         default :
+  91:main.c        ****         {
+  92:main.c        ****             // nothing
+  93:main.c        ****         }
+  94:main.c        ****         break;
+  95:main.c        ****     }
+  96:main.c        **** }
+  97:main.c        **** 
+  98:main.c        **** void decreaseSpeed()
+  99:main.c        **** {
+ 101              		.loc 1 99 0
+ 102              		.cfi_startproc
+ 103              		@ args = 0, pretend = 0, frame = 0
+ 104              		@ frame_needed = 0, uses_anonymous_args = 0
+ 105 0000 08B5     		push	{r3, lr}
+ 106              		.cfi_def_cfa_offset 8
+ 107              		.cfi_offset 3, -8
+ 108              		.cfi_offset 14, -4
+ 100:main.c        ****     UART_1_PutString("\rDecreasing speed          ");
+ 109              		.loc 1 100 0
+ 110 0002 0648     		ldr	r0, .L8
+ 111 0004 FFF7FEFF 		bl	UART_1_PutString
+ 112              	.LVL9:
+ 101:main.c        ****     int8_t cmpValue = PWM_1_ReadCompare() - 10;
+ 113              		.loc 1 101 0
+ 114 0008 FFF7FEFF 		bl	PWM_1_ReadCompare
+ 115              	.LVL10:
+ 116 000c 0A38     		subs	r0, r0, #10
+ 117 000e 40B2     		sxtb	r0, r0
+ 118              	.LVL11:
+ 102:main.c        ****     cmpValue = cmpValue <= 0 ? 0 : cmpValue; // cap cmpValue at 0
+ 119              		.loc 1 102 0
+ 120 0010 20EAE070 		bic	r0, r0, r0, asr #31
+ 121              	.LVL12:
+ 103:main.c        ****     PWM_1_WriteCompare(cmpValue);
+ 122              		.loc 1 103 0
+ 123 0014 C0B2     		uxtb	r0, r0
+ 124 0016 FFF7FEFF 		bl	PWM_1_WriteCompare
+ 125              	.LVL13:
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccTUmZ2i.s 			page 5
+
+
+ 126 001a 08BD     		pop	{r3, pc}
+ 127              	.L9:
+ 128              		.align	2
+ 129              	.L8:
+ 130 001c 84000000 		.word	.LC6
+ 131              		.cfi_endproc
+ 132              	.LFE66:
+ 133              		.size	decreaseSpeed, .-decreaseSpeed
+ 134              		.section	.text.increaseSpeed,"ax",%progbits
+ 135              		.align	2
+ 136              		.global	increaseSpeed
+ 137              		.thumb
+ 138              		.thumb_func
+ 139              		.type	increaseSpeed, %function
+ 140              	increaseSpeed:
+ 141              	.LFB67:
+ 104:main.c        ****     
+ 105:main.c        **** }
+ 106:main.c        **** 
+ 107:main.c        **** void increaseSpeed()
+ 108:main.c        **** {
+ 142              		.loc 1 108 0
+ 143              		.cfi_startproc
+ 144              		@ args = 0, pretend = 0, frame = 0
+ 145              		@ frame_needed = 0, uses_anonymous_args = 0
+ 146 0000 08B5     		push	{r3, lr}
+ 147              		.cfi_def_cfa_offset 8
+ 148              		.cfi_offset 3, -8
+ 149              		.cfi_offset 14, -4
+ 109:main.c        ****     UART_1_PutString("\rIncreasing speed          ");
+ 150              		.loc 1 109 0
+ 151 0002 0648     		ldr	r0, .L12
+ 152 0004 FFF7FEFF 		bl	UART_1_PutString
+ 153              	.LVL14:
+ 110:main.c        ****     uint8_t cmpValue = PWM_1_ReadCompare() + 10;
+ 154              		.loc 1 110 0
+ 155 0008 FFF7FEFF 		bl	PWM_1_ReadCompare
+ 156              	.LVL15:
+ 157 000c 0A30     		adds	r0, r0, #10
+ 158 000e C0B2     		uxtb	r0, r0
+ 159              	.LVL16:
+ 111:main.c        ****     cmpValue = cmpValue >= 100 ? 100 : cmpValue; // cap cmpValue at 100
+ 112:main.c        ****     PWM_1_WriteCompare(cmpValue);
+ 160              		.loc 1 112 0
+ 161 0010 6428     		cmp	r0, #100
+ 162 0012 28BF     		it	cs
+ 163 0014 6420     		movcs	r0, #100
+ 164              	.LVL17:
+ 165 0016 FFF7FEFF 		bl	PWM_1_WriteCompare
+ 166              	.LVL18:
+ 167 001a 08BD     		pop	{r3, pc}
+ 168              	.L13:
+ 169              		.align	2
+ 170              	.L12:
+ 171 001c A0000000 		.word	.LC7
+ 172              		.cfi_endproc
+ 173              	.LFE67:
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccTUmZ2i.s 			page 6
+
+
+ 174              		.size	increaseSpeed, .-increaseSpeed
+ 175              		.section	.text.driveForwards,"ax",%progbits
+ 176              		.align	2
+ 177              		.global	driveForwards
+ 178              		.thumb
+ 179              		.thumb_func
+ 180              		.type	driveForwards, %function
+ 181              	driveForwards:
+ 182              	.LFB68:
+ 113:main.c        **** }
+ 114:main.c        **** 
+ 115:main.c        **** void driveForwards()
+ 116:main.c        **** {
+ 183              		.loc 1 116 0
+ 184              		.cfi_startproc
+ 185              		@ args = 0, pretend = 0, frame = 0
+ 186              		@ frame_needed = 0, uses_anonymous_args = 0
+ 187 0000 08B5     		push	{r3, lr}
+ 188              		.cfi_def_cfa_offset 8
+ 189              		.cfi_offset 3, -8
+ 190              		.cfi_offset 14, -4
+ 117:main.c        ****     UART_1_PutString("\rSet direction: forwards   ");
+ 191              		.loc 1 117 0
+ 192 0002 0848     		ldr	r0, .L16
+ 193 0004 FFF7FEFF 		bl	UART_1_PutString
+ 194              	.LVL19:
+ 118:main.c        ****     Pin_IN2_Write(0);
+ 195              		.loc 1 118 0
+ 196 0008 0020     		movs	r0, #0
+ 197 000a FFF7FEFF 		bl	Pin_IN2_Write
+ 198              	.LVL20:
+ 119:main.c        ****     Pin_IN1_Write(1);
+ 199              		.loc 1 119 0
+ 200 000e 0120     		movs	r0, #1
+ 201 0010 FFF7FEFF 		bl	Pin_IN1_Write
+ 202              	.LVL21:
+ 120:main.c        ****     UART_1_PutChar(Pin_IN1_Read());
+ 203              		.loc 1 120 0
+ 204 0014 FFF7FEFF 		bl	Pin_IN1_Read
+ 205              	.LVL22:
+ 206 0018 FFF7FEFF 		bl	UART_1_PutChar
+ 207              	.LVL23:
+ 121:main.c        ****     PWM_1_Start();
+ 208              		.loc 1 121 0
+ 209 001c FFF7FEFF 		bl	PWM_1_Start
+ 210              	.LVL24:
+ 211 0020 08BD     		pop	{r3, pc}
+ 212              	.L17:
+ 213 0022 00BF     		.align	2
+ 214              	.L16:
+ 215 0024 BC000000 		.word	.LC8
+ 216              		.cfi_endproc
+ 217              	.LFE68:
+ 218              		.size	driveForwards, .-driveForwards
+ 219              		.section	.text.driveBackwards,"ax",%progbits
+ 220              		.align	2
+ 221              		.global	driveBackwards
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccTUmZ2i.s 			page 7
+
+
+ 222              		.thumb
+ 223              		.thumb_func
+ 224              		.type	driveBackwards, %function
+ 225              	driveBackwards:
+ 226              	.LFB69:
+ 122:main.c        **** }
+ 123:main.c        **** 
+ 124:main.c        **** void driveBackwards()
+ 125:main.c        **** {
+ 227              		.loc 1 125 0
+ 228              		.cfi_startproc
+ 229              		@ args = 0, pretend = 0, frame = 0
+ 230              		@ frame_needed = 0, uses_anonymous_args = 0
+ 231 0000 08B5     		push	{r3, lr}
+ 232              		.cfi_def_cfa_offset 8
+ 233              		.cfi_offset 3, -8
+ 234              		.cfi_offset 14, -4
+ 126:main.c        ****     UART_1_PutString("\rSet direction: backwards  ");
+ 235              		.loc 1 126 0
+ 236 0002 0748     		ldr	r0, .L20
+ 237 0004 FFF7FEFF 		bl	UART_1_PutString
+ 238              	.LVL25:
+ 127:main.c        ****     Pin_IN1_Write(0);
+ 239              		.loc 1 127 0
+ 240 0008 0020     		movs	r0, #0
+ 241 000a FFF7FEFF 		bl	Pin_IN1_Write
+ 242              	.LVL26:
+ 128:main.c        ****     Pin_IN2_Write(1);
+ 243              		.loc 1 128 0
+ 244 000e 0120     		movs	r0, #1
+ 245 0010 FFF7FEFF 		bl	Pin_IN2_Write
+ 246              	.LVL27:
+ 129:main.c        ****     UART_1_PutChar(Pin_IN2_Read());
+ 247              		.loc 1 129 0
+ 248 0014 FFF7FEFF 		bl	Pin_IN2_Read
+ 249              	.LVL28:
+ 250 0018 FFF7FEFF 		bl	UART_1_PutChar
+ 251              	.LVL29:
+ 252 001c 08BD     		pop	{r3, pc}
+ 253              	.L21:
+ 254 001e 00BF     		.align	2
+ 255              	.L20:
+ 256 0020 D8000000 		.word	.LC9
+ 257              		.cfi_endproc
+ 258              	.LFE69:
+ 259              		.size	driveBackwards, .-driveBackwards
+ 260              		.section	.text.stop,"ax",%progbits
+ 261              		.align	2
+ 262              		.global	stop
+ 263              		.thumb
+ 264              		.thumb_func
+ 265              		.type	stop, %function
+ 266              	stop:
+ 267              	.LFB70:
+ 130:main.c        **** }
+ 131:main.c        **** 
+ 132:main.c        **** void stop()
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccTUmZ2i.s 			page 8
+
+
+ 133:main.c        **** {
+ 268              		.loc 1 133 0
+ 269              		.cfi_startproc
+ 270              		@ args = 0, pretend = 0, frame = 0
+ 271              		@ frame_needed = 0, uses_anonymous_args = 0
+ 272 0000 08B5     		push	{r3, lr}
+ 273              		.cfi_def_cfa_offset 8
+ 274              		.cfi_offset 3, -8
+ 275              		.cfi_offset 14, -4
+ 134:main.c        ****     UART_1_PutString("\rStop                      ");
+ 276              		.loc 1 134 0
+ 277 0002 0348     		ldr	r0, .L24
+ 278 0004 FFF7FEFF 		bl	UART_1_PutString
+ 279              	.LVL30:
+ 135:main.c        ****     PWM_1_Sleep();
+ 280              		.loc 1 135 0
+ 281 0008 FFF7FEFF 		bl	PWM_1_Sleep
+ 282              	.LVL31:
+ 283 000c 08BD     		pop	{r3, pc}
+ 284              	.L25:
+ 285 000e 00BF     		.align	2
+ 286              	.L24:
+ 287 0010 F4000000 		.word	.LC10
+ 288              		.cfi_endproc
+ 289              	.LFE70:
+ 290              		.size	stop, .-stop
+ 291              		.section	.text.handleByteReceived,"ax",%progbits
+ 292              		.align	2
+ 293              		.global	handleByteReceived
+ 294              		.thumb
+ 295              		.thumb_func
+ 296              		.type	handleByteReceived, %function
+ 297              	handleByteReceived:
+ 298              	.LFB65:
+  61:main.c        ****     switch(byteReceived)
+ 299              		.loc 1 61 0
+ 300              		.cfi_startproc
+ 301              		@ args = 0, pretend = 0, frame = 0
+ 302              		@ frame_needed = 0, uses_anonymous_args = 0
+ 303              	.LVL32:
+ 304 0000 08B5     		push	{r3, lr}
+ 305              		.cfi_def_cfa_offset 8
+ 306              		.cfi_offset 3, -8
+ 307              		.cfi_offset 14, -4
+  62:main.c        ****     {
+ 308              		.loc 1 62 0
+ 309 0002 3228     		cmp	r0, #50
+ 310 0004 13D0     		beq	.L28
+ 311 0006 04D8     		bhi	.L29
+ 312 0008 3028     		cmp	r0, #48
+ 313 000a 13D0     		beq	.L30
+ 314 000c 3128     		cmp	r0, #49
+ 315 000e 0BD0     		beq	.L31
+ 316 0010 08BD     		pop	{r3, pc}
+ 317              	.L29:
+ 318 0012 7128     		cmp	r0, #113
+ 319 0014 02D0     		beq	.L32
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccTUmZ2i.s 			page 9
+
+
+ 320 0016 7728     		cmp	r0, #119
+ 321 0018 03D0     		beq	.L33
+ 322 001a 08BD     		pop	{r3, pc}
+ 323              	.L32:
+  66:main.c        ****         }
+ 324              		.loc 1 66 0
+ 325 001c FFF7FEFF 		bl	decreaseSpeed
+ 326              	.LVL33:
+  68:main.c        ****         case 'w' :
+ 327              		.loc 1 68 0
+ 328 0020 08BD     		pop	{r3, pc}
+ 329              	.LVL34:
+ 330              	.L33:
+  71:main.c        ****         }
+ 331              		.loc 1 71 0
+ 332 0022 FFF7FEFF 		bl	increaseSpeed
+ 333              	.LVL35:
+  73:main.c        ****         case '1' :
+ 334              		.loc 1 73 0
+ 335 0026 08BD     		pop	{r3, pc}
+ 336              	.LVL36:
+ 337              	.L31:
+  76:main.c        ****         }
+ 338              		.loc 1 76 0
+ 339 0028 FFF7FEFF 		bl	driveForwards
+ 340              	.LVL37:
+  78:main.c        ****         case '2' :
+ 341              		.loc 1 78 0
+ 342 002c 08BD     		pop	{r3, pc}
+ 343              	.LVL38:
+ 344              	.L28:
+  81:main.c        ****         }
+ 345              		.loc 1 81 0
+ 346 002e FFF7FEFF 		bl	driveBackwards
+ 347              	.LVL39:
+  83:main.c        ****         case '0' :
+ 348              		.loc 1 83 0
+ 349 0032 08BD     		pop	{r3, pc}
+ 350              	.LVL40:
+ 351              	.L30:
+  86:main.c        ****             
+ 352              		.loc 1 86 0
+ 353 0034 FFF7FEFF 		bl	stop
+ 354              	.LVL41:
+ 355 0038 08BD     		pop	{r3, pc}
+ 356              		.cfi_endproc
+ 357              	.LFE65:
+ 358              		.size	handleByteReceived, .-handleByteReceived
+ 359 003a 00BF     		.section	.text.ISR_UART_rx_handler,"ax",%progbits
+ 360              		.align	2
+ 361              		.global	ISR_UART_rx_handler
+ 362              		.thumb
+ 363              		.thumb_func
+ 364              		.type	ISR_UART_rx_handler, %function
+ 365              	ISR_UART_rx_handler:
+ 366              	.LFB64:
+  47:main.c        ****     uint8_t bytesToRead = UART_1_GetRxBufferSize();
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccTUmZ2i.s 			page 10
+
+
+ 367              		.loc 1 47 0
+ 368              		.cfi_startproc
+ 369              		@ args = 0, pretend = 0, frame = 0
+ 370              		@ frame_needed = 0, uses_anonymous_args = 0
+ 371 0000 38B5     		push	{r3, r4, r5, lr}
+ 372              		.cfi_def_cfa_offset 16
+ 373              		.cfi_offset 3, -16
+ 374              		.cfi_offset 4, -12
+ 375              		.cfi_offset 5, -8
+ 376              		.cfi_offset 14, -4
+  48:main.c        ****     while (bytesToRead > 0)
+ 377              		.loc 1 48 0
+ 378 0002 FFF7FEFF 		bl	UART_1_GetRxBufferSize
+ 379              	.LVL42:
+ 380 0006 0446     		mov	r4, r0
+ 381              	.LVL43:
+  49:main.c        ****     {
+ 382              		.loc 1 49 0
+ 383 0008 09E0     		b	.L36
+ 384              	.L37:
+ 385              	.LBB2:
+  51:main.c        ****         UART_1_WriteTxData(byteReceived); // echo back
+ 386              		.loc 1 51 0
+ 387 000a FFF7FEFF 		bl	UART_1_ReadRxData
+ 388              	.LVL44:
+ 389 000e 0546     		mov	r5, r0
+ 390              	.LVL45:
+  52:main.c        ****         
+ 391              		.loc 1 52 0
+ 392 0010 FFF7FEFF 		bl	UART_1_WriteTxData
+ 393              	.LVL46:
+  54:main.c        ****         
+ 394              		.loc 1 54 0
+ 395 0014 2846     		mov	r0, r5
+ 396 0016 FFF7FEFF 		bl	handleByteReceived
+ 397              	.LVL47:
+  56:main.c        ****     }
+ 398              		.loc 1 56 0
+ 399 001a 013C     		subs	r4, r4, #1
+ 400              	.LVL48:
+ 401 001c E4B2     		uxtb	r4, r4
+ 402              	.LVL49:
+ 403              	.L36:
+ 404              	.LBE2:
+  49:main.c        ****     {
+ 405              		.loc 1 49 0
+ 406 001e 002C     		cmp	r4, #0
+ 407 0020 F3D1     		bne	.L37
+  58:main.c        **** 
+ 408              		.loc 1 58 0
+ 409 0022 38BD     		pop	{r3, r4, r5, pc}
+ 410              		.cfi_endproc
+ 411              	.LFE64:
+ 412              		.size	ISR_UART_rx_handler, .-ISR_UART_rx_handler
+ 413              		.section	.rodata.str1.4,"aMS",%progbits,1
+ 414              		.align	2
+ 415              	.LC0:
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccTUmZ2i.s 			page 11
+
+
+ 416 0000 44432D4D 		.ascii	"DC-Motor-PWM application started\015\012\000"
+ 416      6F746F72 
+ 416      2D50574D 
+ 416      20617070 
+ 416      6C696361 
+ 417 0023 00       		.space	1
+ 418              	.LC1:
+ 419 0024 303A2053 		.ascii	"0: Stop\015\012\000"
+ 419      746F700D 
+ 419      0A00
+ 420 002e 0000     		.space	2
+ 421              	.LC2:
+ 422 0030 313A2044 		.ascii	"1: Drive forwards\015\012\000"
+ 422      72697665 
+ 422      20666F72 
+ 422      77617264 
+ 422      730D0A00 
+ 423              	.LC3:
+ 424 0044 323A2044 		.ascii	"2: Drive backwards\015\012\000"
+ 424      72697665 
+ 424      20626163 
+ 424      6B776172 
+ 424      64730D0A 
+ 425 0059 000000   		.space	3
+ 426              	.LC4:
+ 427 005c 713A2044 		.ascii	"q: Decrease speed\015\012\000"
+ 427      65637265 
+ 427      61736520 
+ 427      73706565 
+ 427      640D0A00 
+ 428              	.LC5:
+ 429 0070 773A2049 		.ascii	"w: Increase speed\015\012\000"
+ 429      6E637265 
+ 429      61736520 
+ 429      73706565 
+ 429      640D0A00 
+ 430              	.LC6:
+ 431 0084 0D446563 		.ascii	"\015Decreasing speed          \000"
+ 431      72656173 
+ 431      696E6720 
+ 431      73706565 
+ 431      64202020 
+ 432              	.LC7:
+ 433 00a0 0D496E63 		.ascii	"\015Increasing speed          \000"
+ 433      72656173 
+ 433      696E6720 
+ 433      73706565 
+ 433      64202020 
+ 434              	.LC8:
+ 435 00bc 0D536574 		.ascii	"\015Set direction: forwards   \000"
+ 435      20646972 
+ 435      65637469 
+ 435      6F6E3A20 
+ 435      666F7277 
+ 436              	.LC9:
+ 437 00d8 0D536574 		.ascii	"\015Set direction: backwards  \000"
+ 437      20646972 
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccTUmZ2i.s 			page 12
+
+
+ 437      65637469 
+ 437      6F6E3A20 
+ 437      6261636B 
+ 438              	.LC10:
+ 439 00f4 0D53746F 		.ascii	"\015Stop                      \000"
+ 439      70202020 
+ 439      20202020 
+ 439      20202020 
+ 439      20202020 
+ 440              		.text
+ 441              	.Letext0:
+ 442              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
+ 443              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
+ 444              		.file 4 "Generated_Source\\PSoC5/isr_uart_rx.h"
+ 445              		.file 5 "Generated_Source\\PSoC5/UART_1.h"
+ 446              		.file 6 "Generated_Source\\PSoC5/PWM_1.h"
+ 447              		.file 7 "Generated_Source\\PSoC5/Pin_IN2.h"
+ 448              		.file 8 "Generated_Source\\PSoC5/Pin_IN1.h"
+ 449              		.file 9 "Generated_Source\\PSoC5/core_cm3.h"
+ 450              		.section	.debug_info,"",%progbits
+ 451              	.Ldebug_info0:
+ 452 0000 BB040000 		.4byte	0x4bb
+ 453 0004 0400     		.2byte	0x4
+ 454 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 455 000a 04       		.byte	0x4
+ 456 000b 01       		.uleb128 0x1
+ 457 000c 3F010000 		.4byte	.LASF45
+ 458 0010 0C       		.byte	0xc
+ 459 0011 10030000 		.4byte	.LASF46
+ 460 0015 A8000000 		.4byte	.LASF47
+ 461 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 462 001d 00000000 		.4byte	0
+ 463 0021 00000000 		.4byte	.Ldebug_line0
+ 464 0025 02       		.uleb128 0x2
+ 465 0026 14000000 		.4byte	.LASF0
+ 466 002a 02       		.byte	0x2
+ 467 002b 1B       		.byte	0x1b
+ 468 002c 30000000 		.4byte	0x30
+ 469 0030 03       		.uleb128 0x3
+ 470 0031 01       		.byte	0x1
+ 471 0032 06       		.byte	0x6
+ 472 0033 49030000 		.4byte	.LASF2
+ 473 0037 02       		.uleb128 0x2
+ 474 0038 1D000000 		.4byte	.LASF1
+ 475 003c 02       		.byte	0x2
+ 476 003d 1D       		.byte	0x1d
+ 477 003e 42000000 		.4byte	0x42
+ 478 0042 03       		.uleb128 0x3
+ 479 0043 01       		.byte	0x1
+ 480 0044 08       		.byte	0x8
+ 481 0045 31010000 		.4byte	.LASF3
+ 482 0049 03       		.uleb128 0x3
+ 483 004a 02       		.byte	0x2
+ 484 004b 05       		.byte	0x5
+ 485 004c 2A030000 		.4byte	.LASF4
+ 486 0050 03       		.uleb128 0x3
+ 487 0051 02       		.byte	0x2
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccTUmZ2i.s 			page 13
+
+
+ 488 0052 07       		.byte	0x7
+ 489 0053 56000000 		.4byte	.LASF5
+ 490 0057 02       		.uleb128 0x2
+ 491 0058 3E000000 		.4byte	.LASF6
+ 492 005c 02       		.byte	0x2
+ 493 005d 3F       		.byte	0x3f
+ 494 005e 62000000 		.4byte	0x62
+ 495 0062 03       		.uleb128 0x3
+ 496 0063 04       		.byte	0x4
+ 497 0064 05       		.byte	0x5
+ 498 0065 34030000 		.4byte	.LASF7
+ 499 0069 03       		.uleb128 0x3
+ 500 006a 04       		.byte	0x4
+ 501 006b 07       		.byte	0x7
+ 502 006c E1010000 		.4byte	.LASF8
+ 503 0070 03       		.uleb128 0x3
+ 504 0071 08       		.byte	0x8
+ 505 0072 05       		.byte	0x5
+ 506 0073 F9020000 		.4byte	.LASF9
+ 507 0077 03       		.uleb128 0x3
+ 508 0078 08       		.byte	0x8
+ 509 0079 07       		.byte	0x7
+ 510 007a 99020000 		.4byte	.LASF10
+ 511 007e 04       		.uleb128 0x4
+ 512 007f 04       		.byte	0x4
+ 513 0080 05       		.byte	0x5
+ 514 0081 696E7400 		.ascii	"int\000"
+ 515 0085 03       		.uleb128 0x3
+ 516 0086 04       		.byte	0x4
+ 517 0087 07       		.byte	0x7
+ 518 0088 7E020000 		.4byte	.LASF11
+ 519 008c 02       		.uleb128 0x2
+ 520 008d A1000000 		.4byte	.LASF12
+ 521 0091 03       		.byte	0x3
+ 522 0092 14       		.byte	0x14
+ 523 0093 25000000 		.4byte	0x25
+ 524 0097 02       		.uleb128 0x2
+ 525 0098 B0020000 		.4byte	.LASF13
+ 526 009c 03       		.byte	0x3
+ 527 009d 18       		.byte	0x18
+ 528 009e 37000000 		.4byte	0x37
+ 529 00a2 02       		.uleb128 0x2
+ 530 00a3 CF020000 		.4byte	.LASF14
+ 531 00a7 03       		.byte	0x3
+ 532 00a8 2C       		.byte	0x2c
+ 533 00a9 57000000 		.4byte	0x57
+ 534 00ad 03       		.uleb128 0x3
+ 535 00ae 04       		.byte	0x4
+ 536 00af 04       		.byte	0x4
+ 537 00b0 2B010000 		.4byte	.LASF15
+ 538 00b4 03       		.uleb128 0x3
+ 539 00b5 08       		.byte	0x8
+ 540 00b6 04       		.byte	0x4
+ 541 00b7 43020000 		.4byte	.LASF16
+ 542 00bb 03       		.uleb128 0x3
+ 543 00bc 01       		.byte	0x1
+ 544 00bd 08       		.byte	0x8
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccTUmZ2i.s 			page 14
+
+
+ 545 00be 17030000 		.4byte	.LASF17
+ 546 00c2 03       		.uleb128 0x3
+ 547 00c3 08       		.byte	0x8
+ 548 00c4 04       		.byte	0x4
+ 549 00c5 3D030000 		.4byte	.LASF18
+ 550 00c9 03       		.uleb128 0x3
+ 551 00ca 04       		.byte	0x4
+ 552 00cb 07       		.byte	0x7
+ 553 00cc 07030000 		.4byte	.LASF19
+ 554 00d0 05       		.uleb128 0x5
+ 555 00d1 4A020000 		.4byte	.LASF48
+ 556 00d5 01       		.byte	0x1
+ 557 00d6 17       		.byte	0x17
+ 558 00d7 7E000000 		.4byte	0x7e
+ 559 00db 00000000 		.4byte	.LFB63
+ 560 00df 54000000 		.4byte	.LFE63-.LFB63
+ 561 00e3 01       		.uleb128 0x1
+ 562 00e4 9C       		.byte	0x9c
+ 563 00e5 99010000 		.4byte	0x199
+ 564 00e9 06       		.uleb128 0x6
+ 565 00ea 0A000000 		.4byte	.LVL0
+ 566 00ee 19040000 		.4byte	0x419
+ 567 00f2 00010000 		.4byte	0x100
+ 568 00f6 07       		.uleb128 0x7
+ 569 00f7 01       		.uleb128 0x1
+ 570 00f8 50       		.byte	0x50
+ 571 00f9 05       		.uleb128 0x5
+ 572 00fa 03       		.byte	0x3
+ 573 00fb 00000000 		.4byte	ISR_UART_rx_handler
+ 574 00ff 00       		.byte	0
+ 575 0100 08       		.uleb128 0x8
+ 576 0101 0E000000 		.4byte	.LVL1
+ 577 0105 24040000 		.4byte	0x424
+ 578 0109 08       		.uleb128 0x8
+ 579 010a 12000000 		.4byte	.LVL2
+ 580 010e 2F040000 		.4byte	0x42f
+ 581 0112 06       		.uleb128 0x6
+ 582 0113 18000000 		.4byte	.LVL3
+ 583 0117 3A040000 		.4byte	0x43a
+ 584 011b 29010000 		.4byte	0x129
+ 585 011f 07       		.uleb128 0x7
+ 586 0120 01       		.uleb128 0x1
+ 587 0121 50       		.byte	0x50
+ 588 0122 05       		.uleb128 0x5
+ 589 0123 03       		.byte	0x3
+ 590 0124 00000000 		.4byte	.LC0
+ 591 0128 00       		.byte	0
+ 592 0129 06       		.uleb128 0x6
+ 593 012a 1E000000 		.4byte	.LVL4
+ 594 012e 3A040000 		.4byte	0x43a
+ 595 0132 40010000 		.4byte	0x140
+ 596 0136 07       		.uleb128 0x7
+ 597 0137 01       		.uleb128 0x1
+ 598 0138 50       		.byte	0x50
+ 599 0139 05       		.uleb128 0x5
+ 600 013a 03       		.byte	0x3
+ 601 013b 24000000 		.4byte	.LC1
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccTUmZ2i.s 			page 15
+
+
+ 602 013f 00       		.byte	0
+ 603 0140 06       		.uleb128 0x6
+ 604 0141 24000000 		.4byte	.LVL5
+ 605 0145 3A040000 		.4byte	0x43a
+ 606 0149 57010000 		.4byte	0x157
+ 607 014d 07       		.uleb128 0x7
+ 608 014e 01       		.uleb128 0x1
+ 609 014f 50       		.byte	0x50
+ 610 0150 05       		.uleb128 0x5
+ 611 0151 03       		.byte	0x3
+ 612 0152 30000000 		.4byte	.LC2
+ 613 0156 00       		.byte	0
+ 614 0157 06       		.uleb128 0x6
+ 615 0158 2A000000 		.4byte	.LVL6
+ 616 015c 3A040000 		.4byte	0x43a
+ 617 0160 6E010000 		.4byte	0x16e
+ 618 0164 07       		.uleb128 0x7
+ 619 0165 01       		.uleb128 0x1
+ 620 0166 50       		.byte	0x50
+ 621 0167 05       		.uleb128 0x5
+ 622 0168 03       		.byte	0x3
+ 623 0169 44000000 		.4byte	.LC3
+ 624 016d 00       		.byte	0
+ 625 016e 06       		.uleb128 0x6
+ 626 016f 30000000 		.4byte	.LVL7
+ 627 0173 3A040000 		.4byte	0x43a
+ 628 0177 85010000 		.4byte	0x185
+ 629 017b 07       		.uleb128 0x7
+ 630 017c 01       		.uleb128 0x1
+ 631 017d 50       		.byte	0x50
+ 632 017e 05       		.uleb128 0x5
+ 633 017f 03       		.byte	0x3
+ 634 0180 5C000000 		.4byte	.LC4
+ 635 0184 00       		.byte	0
+ 636 0185 09       		.uleb128 0x9
+ 637 0186 36000000 		.4byte	.LVL8
+ 638 018a 3A040000 		.4byte	0x43a
+ 639 018e 07       		.uleb128 0x7
+ 640 018f 01       		.uleb128 0x1
+ 641 0190 50       		.byte	0x50
+ 642 0191 05       		.uleb128 0x5
+ 643 0192 03       		.byte	0x3
+ 644 0193 70000000 		.4byte	.LC5
+ 645 0197 00       		.byte	0
+ 646 0198 00       		.byte	0
+ 647 0199 0A       		.uleb128 0xa
+ 648 019a 1C030000 		.4byte	.LASF20
+ 649 019e 01       		.byte	0x1
+ 650 019f 62       		.byte	0x62
+ 651 01a0 00000000 		.4byte	.LFB66
+ 652 01a4 20000000 		.4byte	.LFE66-.LFB66
+ 653 01a8 01       		.uleb128 0x1
+ 654 01a9 9C       		.byte	0x9c
+ 655 01aa E7010000 		.4byte	0x1e7
+ 656 01ae 0B       		.uleb128 0xb
+ 657 01af 35000000 		.4byte	.LASF22
+ 658 01b3 01       		.byte	0x1
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccTUmZ2i.s 			page 16
+
+
+ 659 01b4 65       		.byte	0x65
+ 660 01b5 8C000000 		.4byte	0x8c
+ 661 01b9 00000000 		.4byte	.LLST0
+ 662 01bd 06       		.uleb128 0x6
+ 663 01be 08000000 		.4byte	.LVL9
+ 664 01c2 3A040000 		.4byte	0x43a
+ 665 01c6 D4010000 		.4byte	0x1d4
+ 666 01ca 07       		.uleb128 0x7
+ 667 01cb 01       		.uleb128 0x1
+ 668 01cc 50       		.byte	0x50
+ 669 01cd 05       		.uleb128 0x5
+ 670 01ce 03       		.byte	0x3
+ 671 01cf 84000000 		.4byte	.LC6
+ 672 01d3 00       		.byte	0
+ 673 01d4 08       		.uleb128 0x8
+ 674 01d5 0C000000 		.4byte	.LVL10
+ 675 01d9 45040000 		.4byte	0x445
+ 676 01dd 08       		.uleb128 0x8
+ 677 01de 1A000000 		.4byte	.LVL13
+ 678 01e2 50040000 		.4byte	0x450
+ 679 01e6 00       		.byte	0
+ 680 01e7 0A       		.uleb128 0xa
+ 681 01e8 48000000 		.4byte	.LASF21
+ 682 01ec 01       		.byte	0x1
+ 683 01ed 6B       		.byte	0x6b
+ 684 01ee 00000000 		.4byte	.LFB67
+ 685 01f2 20000000 		.4byte	.LFE67-.LFB67
+ 686 01f6 01       		.uleb128 0x1
+ 687 01f7 9C       		.byte	0x9c
+ 688 01f8 35020000 		.4byte	0x235
+ 689 01fc 0B       		.uleb128 0xb
+ 690 01fd 35000000 		.4byte	.LASF22
+ 691 0201 01       		.byte	0x1
+ 692 0202 6E       		.byte	0x6e
+ 693 0203 97000000 		.4byte	0x97
+ 694 0207 13000000 		.4byte	.LLST1
+ 695 020b 06       		.uleb128 0x6
+ 696 020c 08000000 		.4byte	.LVL14
+ 697 0210 3A040000 		.4byte	0x43a
+ 698 0214 22020000 		.4byte	0x222
+ 699 0218 07       		.uleb128 0x7
+ 700 0219 01       		.uleb128 0x1
+ 701 021a 50       		.byte	0x50
+ 702 021b 05       		.uleb128 0x5
+ 703 021c 03       		.byte	0x3
+ 704 021d A0000000 		.4byte	.LC7
+ 705 0221 00       		.byte	0
+ 706 0222 08       		.uleb128 0x8
+ 707 0223 0C000000 		.4byte	.LVL15
+ 708 0227 45040000 		.4byte	0x445
+ 709 022b 08       		.uleb128 0x8
+ 710 022c 1A000000 		.4byte	.LVL18
+ 711 0230 50040000 		.4byte	0x450
+ 712 0234 00       		.byte	0
+ 713 0235 0A       		.uleb128 0xa
+ 714 0236 8B020000 		.4byte	.LASF23
+ 715 023a 01       		.byte	0x1
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccTUmZ2i.s 			page 17
+
+
+ 716 023b 73       		.byte	0x73
+ 717 023c 00000000 		.4byte	.LFB68
+ 718 0240 28000000 		.4byte	.LFE68-.LFB68
+ 719 0244 01       		.uleb128 0x1
+ 720 0245 9C       		.byte	0x9c
+ 721 0246 A3020000 		.4byte	0x2a3
+ 722 024a 06       		.uleb128 0x6
+ 723 024b 08000000 		.4byte	.LVL19
+ 724 024f 3A040000 		.4byte	0x43a
+ 725 0253 61020000 		.4byte	0x261
+ 726 0257 07       		.uleb128 0x7
+ 727 0258 01       		.uleb128 0x1
+ 728 0259 50       		.byte	0x50
+ 729 025a 05       		.uleb128 0x5
+ 730 025b 03       		.byte	0x3
+ 731 025c BC000000 		.4byte	.LC8
+ 732 0260 00       		.byte	0
+ 733 0261 06       		.uleb128 0x6
+ 734 0262 0E000000 		.4byte	.LVL20
+ 735 0266 5B040000 		.4byte	0x45b
+ 736 026a 74020000 		.4byte	0x274
+ 737 026e 07       		.uleb128 0x7
+ 738 026f 01       		.uleb128 0x1
+ 739 0270 50       		.byte	0x50
+ 740 0271 01       		.uleb128 0x1
+ 741 0272 30       		.byte	0x30
+ 742 0273 00       		.byte	0
+ 743 0274 06       		.uleb128 0x6
+ 744 0275 14000000 		.4byte	.LVL21
+ 745 0279 66040000 		.4byte	0x466
+ 746 027d 87020000 		.4byte	0x287
+ 747 0281 07       		.uleb128 0x7
+ 748 0282 01       		.uleb128 0x1
+ 749 0283 50       		.byte	0x50
+ 750 0284 01       		.uleb128 0x1
+ 751 0285 31       		.byte	0x31
+ 752 0286 00       		.byte	0
+ 753 0287 08       		.uleb128 0x8
+ 754 0288 18000000 		.4byte	.LVL22
+ 755 028c 71040000 		.4byte	0x471
+ 756 0290 08       		.uleb128 0x8
+ 757 0291 1C000000 		.4byte	.LVL23
+ 758 0295 7C040000 		.4byte	0x47c
+ 759 0299 08       		.uleb128 0x8
+ 760 029a 20000000 		.4byte	.LVL24
+ 761 029e 2F040000 		.4byte	0x42f
+ 762 02a2 00       		.byte	0
+ 763 02a3 0A       		.uleb128 0xa
+ 764 02a4 D7020000 		.4byte	.LASF24
+ 765 02a8 01       		.byte	0x1
+ 766 02a9 7C       		.byte	0x7c
+ 767 02aa 00000000 		.4byte	.LFB69
+ 768 02ae 24000000 		.4byte	.LFE69-.LFB69
+ 769 02b2 01       		.uleb128 0x1
+ 770 02b3 9C       		.byte	0x9c
+ 771 02b4 08030000 		.4byte	0x308
+ 772 02b8 06       		.uleb128 0x6
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccTUmZ2i.s 			page 18
+
+
+ 773 02b9 08000000 		.4byte	.LVL25
+ 774 02bd 3A040000 		.4byte	0x43a
+ 775 02c1 CF020000 		.4byte	0x2cf
+ 776 02c5 07       		.uleb128 0x7
+ 777 02c6 01       		.uleb128 0x1
+ 778 02c7 50       		.byte	0x50
+ 779 02c8 05       		.uleb128 0x5
+ 780 02c9 03       		.byte	0x3
+ 781 02ca D8000000 		.4byte	.LC9
+ 782 02ce 00       		.byte	0
+ 783 02cf 06       		.uleb128 0x6
+ 784 02d0 0E000000 		.4byte	.LVL26
+ 785 02d4 66040000 		.4byte	0x466
+ 786 02d8 E2020000 		.4byte	0x2e2
+ 787 02dc 07       		.uleb128 0x7
+ 788 02dd 01       		.uleb128 0x1
+ 789 02de 50       		.byte	0x50
+ 790 02df 01       		.uleb128 0x1
+ 791 02e0 30       		.byte	0x30
+ 792 02e1 00       		.byte	0
+ 793 02e2 06       		.uleb128 0x6
+ 794 02e3 14000000 		.4byte	.LVL27
+ 795 02e7 5B040000 		.4byte	0x45b
+ 796 02eb F5020000 		.4byte	0x2f5
+ 797 02ef 07       		.uleb128 0x7
+ 798 02f0 01       		.uleb128 0x1
+ 799 02f1 50       		.byte	0x50
+ 800 02f2 01       		.uleb128 0x1
+ 801 02f3 31       		.byte	0x31
+ 802 02f4 00       		.byte	0
+ 803 02f5 08       		.uleb128 0x8
+ 804 02f6 18000000 		.4byte	.LVL28
+ 805 02fa 87040000 		.4byte	0x487
+ 806 02fe 08       		.uleb128 0x8
+ 807 02ff 1C000000 		.4byte	.LVL29
+ 808 0303 7C040000 		.4byte	0x47c
+ 809 0307 00       		.byte	0
+ 810 0308 0A       		.uleb128 0xa
+ 811 0309 1E020000 		.4byte	.LASF25
+ 812 030d 01       		.byte	0x1
+ 813 030e 84       		.byte	0x84
+ 814 030f 00000000 		.4byte	.LFB70
+ 815 0313 14000000 		.4byte	.LFE70-.LFB70
+ 816 0317 01       		.uleb128 0x1
+ 817 0318 9C       		.byte	0x9c
+ 818 0319 3E030000 		.4byte	0x33e
+ 819 031d 06       		.uleb128 0x6
+ 820 031e 08000000 		.4byte	.LVL30
+ 821 0322 3A040000 		.4byte	0x43a
+ 822 0326 34030000 		.4byte	0x334
+ 823 032a 07       		.uleb128 0x7
+ 824 032b 01       		.uleb128 0x1
+ 825 032c 50       		.byte	0x50
+ 826 032d 05       		.uleb128 0x5
+ 827 032e 03       		.byte	0x3
+ 828 032f F4000000 		.4byte	.LC10
+ 829 0333 00       		.byte	0
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccTUmZ2i.s 			page 19
+
+
+ 830 0334 08       		.uleb128 0x8
+ 831 0335 0C000000 		.4byte	.LVL31
+ 832 0339 92040000 		.4byte	0x492
+ 833 033d 00       		.byte	0
+ 834 033e 0A       		.uleb128 0xa
+ 835 033f 4F020000 		.4byte	.LASF26
+ 836 0343 01       		.byte	0x1
+ 837 0344 3C       		.byte	0x3c
+ 838 0345 00000000 		.4byte	.LFB65
+ 839 0349 3A000000 		.4byte	.LFE65-.LFB65
+ 840 034d 01       		.uleb128 0x1
+ 841 034e 9C       		.byte	0x9c
+ 842 034f 90030000 		.4byte	0x390
+ 843 0353 0C       		.uleb128 0xc
+ 844 0354 66030000 		.4byte	.LASF29
+ 845 0358 01       		.byte	0x1
+ 846 0359 3C       		.byte	0x3c
+ 847 035a 97000000 		.4byte	0x97
+ 848 035e 3B000000 		.4byte	.LLST2
+ 849 0362 08       		.uleb128 0x8
+ 850 0363 20000000 		.4byte	.LVL33
+ 851 0367 99010000 		.4byte	0x199
+ 852 036b 08       		.uleb128 0x8
+ 853 036c 26000000 		.4byte	.LVL35
+ 854 0370 E7010000 		.4byte	0x1e7
+ 855 0374 08       		.uleb128 0x8
+ 856 0375 2C000000 		.4byte	.LVL37
+ 857 0379 35020000 		.4byte	0x235
+ 858 037d 08       		.uleb128 0x8
+ 859 037e 32000000 		.4byte	.LVL39
+ 860 0382 A3020000 		.4byte	0x2a3
+ 861 0386 08       		.uleb128 0x8
+ 862 0387 38000000 		.4byte	.LVL41
+ 863 038b 08030000 		.4byte	0x308
+ 864 038f 00       		.byte	0
+ 865 0390 0A       		.uleb128 0xa
+ 866 0391 CD010000 		.4byte	.LASF27
+ 867 0395 01       		.byte	0x1
+ 868 0396 2E       		.byte	0x2e
+ 869 0397 00000000 		.4byte	.LFB64
+ 870 039b 24000000 		.4byte	.LFE64-.LFB64
+ 871 039f 01       		.uleb128 0x1
+ 872 03a0 9C       		.byte	0x9c
+ 873 03a1 08040000 		.4byte	0x408
+ 874 03a5 0B       		.uleb128 0xb
+ 875 03a6 83000000 		.4byte	.LASF28
+ 876 03aa 01       		.byte	0x1
+ 877 03ab 30       		.byte	0x30
+ 878 03ac 97000000 		.4byte	0x97
+ 879 03b0 C0000000 		.4byte	.LLST3
+ 880 03b4 0D       		.uleb128 0xd
+ 881 03b5 0A000000 		.4byte	.LBB2
+ 882 03b9 14000000 		.4byte	.LBE2-.LBB2
+ 883 03bd FE030000 		.4byte	0x3fe
+ 884 03c1 0B       		.uleb128 0xb
+ 885 03c2 66030000 		.4byte	.LASF29
+ 886 03c6 01       		.byte	0x1
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccTUmZ2i.s 			page 20
+
+
+ 887 03c7 33       		.byte	0x33
+ 888 03c8 97000000 		.4byte	0x97
+ 889 03cc DE000000 		.4byte	.LLST4
+ 890 03d0 08       		.uleb128 0x8
+ 891 03d1 0E000000 		.4byte	.LVL44
+ 892 03d5 9D040000 		.4byte	0x49d
+ 893 03d9 06       		.uleb128 0x6
+ 894 03da 14000000 		.4byte	.LVL46
+ 895 03de A8040000 		.4byte	0x4a8
+ 896 03e2 ED030000 		.4byte	0x3ed
+ 897 03e6 07       		.uleb128 0x7
+ 898 03e7 01       		.uleb128 0x1
+ 899 03e8 50       		.byte	0x50
+ 900 03e9 02       		.uleb128 0x2
+ 901 03ea 75       		.byte	0x75
+ 902 03eb 00       		.sleb128 0
+ 903 03ec 00       		.byte	0
+ 904 03ed 09       		.uleb128 0x9
+ 905 03ee 1A000000 		.4byte	.LVL47
+ 906 03f2 3E030000 		.4byte	0x33e
+ 907 03f6 07       		.uleb128 0x7
+ 908 03f7 01       		.uleb128 0x1
+ 909 03f8 50       		.byte	0x50
+ 910 03f9 02       		.uleb128 0x2
+ 911 03fa 75       		.byte	0x75
+ 912 03fb 00       		.sleb128 0
+ 913 03fc 00       		.byte	0
+ 914 03fd 00       		.byte	0
+ 915 03fe 08       		.uleb128 0x8
+ 916 03ff 06000000 		.4byte	.LVL42
+ 917 0403 B3040000 		.4byte	0x4b3
+ 918 0407 00       		.byte	0
+ 919 0408 0E       		.uleb128 0xe
+ 920 0409 23020000 		.4byte	.LASF49
+ 921 040d 09       		.byte	0x9
+ 922 040e 9606     		.2byte	0x696
+ 923 0410 14040000 		.4byte	0x414
+ 924 0414 0F       		.uleb128 0xf
+ 925 0415 A2000000 		.4byte	0xa2
+ 926 0419 10       		.uleb128 0x10
+ 927 041a 00000000 		.4byte	.LASF30
+ 928 041e 00000000 		.4byte	.LASF30
+ 929 0422 04       		.byte	0x4
+ 930 0423 18       		.byte	0x18
+ 931 0424 10       		.uleb128 0x10
+ 932 0425 73030000 		.4byte	.LASF31
+ 933 0429 73030000 		.4byte	.LASF31
+ 934 042d 05       		.byte	0x5
+ 935 042e 54       		.byte	0x54
+ 936 042f 10       		.uleb128 0x10
+ 937 0430 05020000 		.4byte	.LASF32
+ 938 0434 05020000 		.4byte	.LASF32
+ 939 0438 06       		.byte	0x6
+ 940 0439 92       		.byte	0x92
+ 941 043a 10       		.uleb128 0x10
+ 942 043b 55030000 		.4byte	.LASF33
+ 943 043f 55030000 		.4byte	.LASF33
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccTUmZ2i.s 			page 21
+
+
+ 944 0443 05       		.byte	0x5
+ 945 0444 8B       		.byte	0x8b
+ 946 0445 10       		.uleb128 0x10
+ 947 0446 8F000000 		.4byte	.LASF34
+ 948 044a 8F000000 		.4byte	.LASF34
+ 949 044e 06       		.byte	0x6
+ 950 044f C5       		.byte	0xc5
+ 951 0450 10       		.uleb128 0x10
+ 952 0451 E6020000 		.4byte	.LASF35
+ 953 0455 E6020000 		.4byte	.LASF35
+ 954 0459 06       		.byte	0x6
+ 955 045a C3       		.byte	0xc3
+ 956 045b 10       		.uleb128 0x10
+ 957 045c 69000000 		.4byte	.LASF36
+ 958 0460 69000000 		.4byte	.LASF36
+ 959 0464 07       		.byte	0x7
+ 960 0465 26       		.byte	0x26
+ 961 0466 10       		.uleb128 0x10
+ 962 0467 27000000 		.4byte	.LASF37
+ 963 046b 27000000 		.4byte	.LASF37
+ 964 046f 08       		.byte	0x8
+ 965 0470 26       		.byte	0x26
+ 966 0471 10       		.uleb128 0x10
+ 967 0472 62020000 		.4byte	.LASF38
+ 968 0476 62020000 		.4byte	.LASF38
+ 969 047a 08       		.byte	0x8
+ 970 047b 29       		.byte	0x29
+ 971 047c 10       		.uleb128 0x10
+ 972 047d 6F020000 		.4byte	.LASF39
+ 973 0481 6F020000 		.4byte	.LASF39
+ 974 0485 05       		.byte	0x5
+ 975 0486 8A       		.byte	0x8a
+ 976 0487 10       		.uleb128 0x10
+ 977 0488 11020000 		.4byte	.LASF40
+ 978 048c 11020000 		.4byte	.LASF40
+ 979 0490 07       		.byte	0x7
+ 980 0491 29       		.byte	0x29
+ 981 0492 10       		.uleb128 0x10
+ 982 0493 77000000 		.4byte	.LASF41
+ 983 0497 77000000 		.4byte	.LASF41
+ 984 049b 06       		.byte	0x6
+ 985 049c DC       		.byte	0xdc
+ 986 049d 10       		.uleb128 0x10
+ 987 049e F3010000 		.4byte	.LASF42
+ 988 04a2 F3010000 		.4byte	.LASF42
+ 989 04a6 05       		.byte	0x5
+ 990 04a7 6F       		.byte	0x6f
+ 991 04a8 10       		.uleb128 0x10
+ 992 04a9 30020000 		.4byte	.LASF43
+ 993 04ad 30020000 		.4byte	.LASF43
+ 994 04b1 05       		.byte	0x5
+ 995 04b2 88       		.byte	0x88
+ 996 04b3 10       		.uleb128 0x10
+ 997 04b4 B8020000 		.4byte	.LASF44
+ 998 04b8 B8020000 		.4byte	.LASF44
+ 999 04bc 05       		.byte	0x5
+ 1000 04bd 73       		.byte	0x73
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccTUmZ2i.s 			page 22
+
+
+ 1001 04be 00       		.byte	0
+ 1002              		.section	.debug_abbrev,"",%progbits
+ 1003              	.Ldebug_abbrev0:
+ 1004 0000 01       		.uleb128 0x1
+ 1005 0001 11       		.uleb128 0x11
+ 1006 0002 01       		.byte	0x1
+ 1007 0003 25       		.uleb128 0x25
+ 1008 0004 0E       		.uleb128 0xe
+ 1009 0005 13       		.uleb128 0x13
+ 1010 0006 0B       		.uleb128 0xb
+ 1011 0007 03       		.uleb128 0x3
+ 1012 0008 0E       		.uleb128 0xe
+ 1013 0009 1B       		.uleb128 0x1b
+ 1014 000a 0E       		.uleb128 0xe
+ 1015 000b 55       		.uleb128 0x55
+ 1016 000c 17       		.uleb128 0x17
+ 1017 000d 11       		.uleb128 0x11
+ 1018 000e 01       		.uleb128 0x1
+ 1019 000f 10       		.uleb128 0x10
+ 1020 0010 17       		.uleb128 0x17
+ 1021 0011 00       		.byte	0
+ 1022 0012 00       		.byte	0
+ 1023 0013 02       		.uleb128 0x2
+ 1024 0014 16       		.uleb128 0x16
+ 1025 0015 00       		.byte	0
+ 1026 0016 03       		.uleb128 0x3
+ 1027 0017 0E       		.uleb128 0xe
+ 1028 0018 3A       		.uleb128 0x3a
+ 1029 0019 0B       		.uleb128 0xb
+ 1030 001a 3B       		.uleb128 0x3b
+ 1031 001b 0B       		.uleb128 0xb
+ 1032 001c 49       		.uleb128 0x49
+ 1033 001d 13       		.uleb128 0x13
+ 1034 001e 00       		.byte	0
+ 1035 001f 00       		.byte	0
+ 1036 0020 03       		.uleb128 0x3
+ 1037 0021 24       		.uleb128 0x24
+ 1038 0022 00       		.byte	0
+ 1039 0023 0B       		.uleb128 0xb
+ 1040 0024 0B       		.uleb128 0xb
+ 1041 0025 3E       		.uleb128 0x3e
+ 1042 0026 0B       		.uleb128 0xb
+ 1043 0027 03       		.uleb128 0x3
+ 1044 0028 0E       		.uleb128 0xe
+ 1045 0029 00       		.byte	0
+ 1046 002a 00       		.byte	0
+ 1047 002b 04       		.uleb128 0x4
+ 1048 002c 24       		.uleb128 0x24
+ 1049 002d 00       		.byte	0
+ 1050 002e 0B       		.uleb128 0xb
+ 1051 002f 0B       		.uleb128 0xb
+ 1052 0030 3E       		.uleb128 0x3e
+ 1053 0031 0B       		.uleb128 0xb
+ 1054 0032 03       		.uleb128 0x3
+ 1055 0033 08       		.uleb128 0x8
+ 1056 0034 00       		.byte	0
+ 1057 0035 00       		.byte	0
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccTUmZ2i.s 			page 23
+
+
+ 1058 0036 05       		.uleb128 0x5
+ 1059 0037 2E       		.uleb128 0x2e
+ 1060 0038 01       		.byte	0x1
+ 1061 0039 3F       		.uleb128 0x3f
+ 1062 003a 19       		.uleb128 0x19
+ 1063 003b 03       		.uleb128 0x3
+ 1064 003c 0E       		.uleb128 0xe
+ 1065 003d 3A       		.uleb128 0x3a
+ 1066 003e 0B       		.uleb128 0xb
+ 1067 003f 3B       		.uleb128 0x3b
+ 1068 0040 0B       		.uleb128 0xb
+ 1069 0041 27       		.uleb128 0x27
+ 1070 0042 19       		.uleb128 0x19
+ 1071 0043 49       		.uleb128 0x49
+ 1072 0044 13       		.uleb128 0x13
+ 1073 0045 8701     		.uleb128 0x87
+ 1074 0047 19       		.uleb128 0x19
+ 1075 0048 11       		.uleb128 0x11
+ 1076 0049 01       		.uleb128 0x1
+ 1077 004a 12       		.uleb128 0x12
+ 1078 004b 06       		.uleb128 0x6
+ 1079 004c 40       		.uleb128 0x40
+ 1080 004d 18       		.uleb128 0x18
+ 1081 004e 9742     		.uleb128 0x2117
+ 1082 0050 19       		.uleb128 0x19
+ 1083 0051 01       		.uleb128 0x1
+ 1084 0052 13       		.uleb128 0x13
+ 1085 0053 00       		.byte	0
+ 1086 0054 00       		.byte	0
+ 1087 0055 06       		.uleb128 0x6
+ 1088 0056 898201   		.uleb128 0x4109
+ 1089 0059 01       		.byte	0x1
+ 1090 005a 11       		.uleb128 0x11
+ 1091 005b 01       		.uleb128 0x1
+ 1092 005c 31       		.uleb128 0x31
+ 1093 005d 13       		.uleb128 0x13
+ 1094 005e 01       		.uleb128 0x1
+ 1095 005f 13       		.uleb128 0x13
+ 1096 0060 00       		.byte	0
+ 1097 0061 00       		.byte	0
+ 1098 0062 07       		.uleb128 0x7
+ 1099 0063 8A8201   		.uleb128 0x410a
+ 1100 0066 00       		.byte	0
+ 1101 0067 02       		.uleb128 0x2
+ 1102 0068 18       		.uleb128 0x18
+ 1103 0069 9142     		.uleb128 0x2111
+ 1104 006b 18       		.uleb128 0x18
+ 1105 006c 00       		.byte	0
+ 1106 006d 00       		.byte	0
+ 1107 006e 08       		.uleb128 0x8
+ 1108 006f 898201   		.uleb128 0x4109
+ 1109 0072 00       		.byte	0
+ 1110 0073 11       		.uleb128 0x11
+ 1111 0074 01       		.uleb128 0x1
+ 1112 0075 31       		.uleb128 0x31
+ 1113 0076 13       		.uleb128 0x13
+ 1114 0077 00       		.byte	0
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccTUmZ2i.s 			page 24
+
+
+ 1115 0078 00       		.byte	0
+ 1116 0079 09       		.uleb128 0x9
+ 1117 007a 898201   		.uleb128 0x4109
+ 1118 007d 01       		.byte	0x1
+ 1119 007e 11       		.uleb128 0x11
+ 1120 007f 01       		.uleb128 0x1
+ 1121 0080 31       		.uleb128 0x31
+ 1122 0081 13       		.uleb128 0x13
+ 1123 0082 00       		.byte	0
+ 1124 0083 00       		.byte	0
+ 1125 0084 0A       		.uleb128 0xa
+ 1126 0085 2E       		.uleb128 0x2e
+ 1127 0086 01       		.byte	0x1
+ 1128 0087 3F       		.uleb128 0x3f
+ 1129 0088 19       		.uleb128 0x19
+ 1130 0089 03       		.uleb128 0x3
+ 1131 008a 0E       		.uleb128 0xe
+ 1132 008b 3A       		.uleb128 0x3a
+ 1133 008c 0B       		.uleb128 0xb
+ 1134 008d 3B       		.uleb128 0x3b
+ 1135 008e 0B       		.uleb128 0xb
+ 1136 008f 27       		.uleb128 0x27
+ 1137 0090 19       		.uleb128 0x19
+ 1138 0091 11       		.uleb128 0x11
+ 1139 0092 01       		.uleb128 0x1
+ 1140 0093 12       		.uleb128 0x12
+ 1141 0094 06       		.uleb128 0x6
+ 1142 0095 40       		.uleb128 0x40
+ 1143 0096 18       		.uleb128 0x18
+ 1144 0097 9742     		.uleb128 0x2117
+ 1145 0099 19       		.uleb128 0x19
+ 1146 009a 01       		.uleb128 0x1
+ 1147 009b 13       		.uleb128 0x13
+ 1148 009c 00       		.byte	0
+ 1149 009d 00       		.byte	0
+ 1150 009e 0B       		.uleb128 0xb
+ 1151 009f 34       		.uleb128 0x34
+ 1152 00a0 00       		.byte	0
+ 1153 00a1 03       		.uleb128 0x3
+ 1154 00a2 0E       		.uleb128 0xe
+ 1155 00a3 3A       		.uleb128 0x3a
+ 1156 00a4 0B       		.uleb128 0xb
+ 1157 00a5 3B       		.uleb128 0x3b
+ 1158 00a6 0B       		.uleb128 0xb
+ 1159 00a7 49       		.uleb128 0x49
+ 1160 00a8 13       		.uleb128 0x13
+ 1161 00a9 02       		.uleb128 0x2
+ 1162 00aa 17       		.uleb128 0x17
+ 1163 00ab 00       		.byte	0
+ 1164 00ac 00       		.byte	0
+ 1165 00ad 0C       		.uleb128 0xc
+ 1166 00ae 05       		.uleb128 0x5
+ 1167 00af 00       		.byte	0
+ 1168 00b0 03       		.uleb128 0x3
+ 1169 00b1 0E       		.uleb128 0xe
+ 1170 00b2 3A       		.uleb128 0x3a
+ 1171 00b3 0B       		.uleb128 0xb
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccTUmZ2i.s 			page 25
+
+
+ 1172 00b4 3B       		.uleb128 0x3b
+ 1173 00b5 0B       		.uleb128 0xb
+ 1174 00b6 49       		.uleb128 0x49
+ 1175 00b7 13       		.uleb128 0x13
+ 1176 00b8 02       		.uleb128 0x2
+ 1177 00b9 17       		.uleb128 0x17
+ 1178 00ba 00       		.byte	0
+ 1179 00bb 00       		.byte	0
+ 1180 00bc 0D       		.uleb128 0xd
+ 1181 00bd 0B       		.uleb128 0xb
+ 1182 00be 01       		.byte	0x1
+ 1183 00bf 11       		.uleb128 0x11
+ 1184 00c0 01       		.uleb128 0x1
+ 1185 00c1 12       		.uleb128 0x12
+ 1186 00c2 06       		.uleb128 0x6
+ 1187 00c3 01       		.uleb128 0x1
+ 1188 00c4 13       		.uleb128 0x13
+ 1189 00c5 00       		.byte	0
+ 1190 00c6 00       		.byte	0
+ 1191 00c7 0E       		.uleb128 0xe
+ 1192 00c8 34       		.uleb128 0x34
+ 1193 00c9 00       		.byte	0
+ 1194 00ca 03       		.uleb128 0x3
+ 1195 00cb 0E       		.uleb128 0xe
+ 1196 00cc 3A       		.uleb128 0x3a
+ 1197 00cd 0B       		.uleb128 0xb
+ 1198 00ce 3B       		.uleb128 0x3b
+ 1199 00cf 05       		.uleb128 0x5
+ 1200 00d0 49       		.uleb128 0x49
+ 1201 00d1 13       		.uleb128 0x13
+ 1202 00d2 3F       		.uleb128 0x3f
+ 1203 00d3 19       		.uleb128 0x19
+ 1204 00d4 3C       		.uleb128 0x3c
+ 1205 00d5 19       		.uleb128 0x19
+ 1206 00d6 00       		.byte	0
+ 1207 00d7 00       		.byte	0
+ 1208 00d8 0F       		.uleb128 0xf
+ 1209 00d9 35       		.uleb128 0x35
+ 1210 00da 00       		.byte	0
+ 1211 00db 49       		.uleb128 0x49
+ 1212 00dc 13       		.uleb128 0x13
+ 1213 00dd 00       		.byte	0
+ 1214 00de 00       		.byte	0
+ 1215 00df 10       		.uleb128 0x10
+ 1216 00e0 2E       		.uleb128 0x2e
+ 1217 00e1 00       		.byte	0
+ 1218 00e2 3F       		.uleb128 0x3f
+ 1219 00e3 19       		.uleb128 0x19
+ 1220 00e4 3C       		.uleb128 0x3c
+ 1221 00e5 19       		.uleb128 0x19
+ 1222 00e6 6E       		.uleb128 0x6e
+ 1223 00e7 0E       		.uleb128 0xe
+ 1224 00e8 03       		.uleb128 0x3
+ 1225 00e9 0E       		.uleb128 0xe
+ 1226 00ea 3A       		.uleb128 0x3a
+ 1227 00eb 0B       		.uleb128 0xb
+ 1228 00ec 3B       		.uleb128 0x3b
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccTUmZ2i.s 			page 26
+
+
+ 1229 00ed 0B       		.uleb128 0xb
+ 1230 00ee 00       		.byte	0
+ 1231 00ef 00       		.byte	0
+ 1232 00f0 00       		.byte	0
+ 1233              		.section	.debug_loc,"",%progbits
+ 1234              	.Ldebug_loc0:
+ 1235              	.LLST0:
+ 1236 0000 10000000 		.4byte	.LVL11
+ 1237 0004 19000000 		.4byte	.LVL13-1
+ 1238 0008 0100     		.2byte	0x1
+ 1239 000a 50       		.byte	0x50
+ 1240 000b 00000000 		.4byte	0
+ 1241 000f 00000000 		.4byte	0
+ 1242              	.LLST1:
+ 1243 0013 10000000 		.4byte	.LVL16
+ 1244 0017 16000000 		.4byte	.LVL17
+ 1245 001b 1600     		.2byte	0x16
+ 1246 001d 70       		.byte	0x70
+ 1247 001e 00       		.sleb128 0
+ 1248 001f 12       		.byte	0x12
+ 1249 0020 40       		.byte	0x40
+ 1250 0021 4B       		.byte	0x4b
+ 1251 0022 24       		.byte	0x24
+ 1252 0023 22       		.byte	0x22
+ 1253 0024 08       		.byte	0x8
+ 1254 0025 64       		.byte	0x64
+ 1255 0026 16       		.byte	0x16
+ 1256 0027 14       		.byte	0x14
+ 1257 0028 40       		.byte	0x40
+ 1258 0029 4B       		.byte	0x4b
+ 1259 002a 24       		.byte	0x24
+ 1260 002b 22       		.byte	0x22
+ 1261 002c 2D       		.byte	0x2d
+ 1262 002d 28       		.byte	0x28
+ 1263 002e 0100     		.2byte	0x1
+ 1264 0030 16       		.byte	0x16
+ 1265 0031 13       		.byte	0x13
+ 1266 0032 9F       		.byte	0x9f
+ 1267 0033 00000000 		.4byte	0
+ 1268 0037 00000000 		.4byte	0
+ 1269              	.LLST2:
+ 1270 003b 00000000 		.4byte	.LVL32
+ 1271 003f 1F000000 		.4byte	.LVL33-1
+ 1272 0043 0100     		.2byte	0x1
+ 1273 0045 50       		.byte	0x50
+ 1274 0046 1F000000 		.4byte	.LVL33-1
+ 1275 004a 22000000 		.4byte	.LVL34
+ 1276 004e 0400     		.2byte	0x4
+ 1277 0050 F3       		.byte	0xf3
+ 1278 0051 01       		.uleb128 0x1
+ 1279 0052 50       		.byte	0x50
+ 1280 0053 9F       		.byte	0x9f
+ 1281 0054 22000000 		.4byte	.LVL34
+ 1282 0058 25000000 		.4byte	.LVL35-1
+ 1283 005c 0100     		.2byte	0x1
+ 1284 005e 50       		.byte	0x50
+ 1285 005f 25000000 		.4byte	.LVL35-1
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccTUmZ2i.s 			page 27
+
+
+ 1286 0063 28000000 		.4byte	.LVL36
+ 1287 0067 0400     		.2byte	0x4
+ 1288 0069 F3       		.byte	0xf3
+ 1289 006a 01       		.uleb128 0x1
+ 1290 006b 50       		.byte	0x50
+ 1291 006c 9F       		.byte	0x9f
+ 1292 006d 28000000 		.4byte	.LVL36
+ 1293 0071 2B000000 		.4byte	.LVL37-1
+ 1294 0075 0100     		.2byte	0x1
+ 1295 0077 50       		.byte	0x50
+ 1296 0078 2B000000 		.4byte	.LVL37-1
+ 1297 007c 2E000000 		.4byte	.LVL38
+ 1298 0080 0400     		.2byte	0x4
+ 1299 0082 F3       		.byte	0xf3
+ 1300 0083 01       		.uleb128 0x1
+ 1301 0084 50       		.byte	0x50
+ 1302 0085 9F       		.byte	0x9f
+ 1303 0086 2E000000 		.4byte	.LVL38
+ 1304 008a 31000000 		.4byte	.LVL39-1
+ 1305 008e 0100     		.2byte	0x1
+ 1306 0090 50       		.byte	0x50
+ 1307 0091 31000000 		.4byte	.LVL39-1
+ 1308 0095 34000000 		.4byte	.LVL40
+ 1309 0099 0400     		.2byte	0x4
+ 1310 009b F3       		.byte	0xf3
+ 1311 009c 01       		.uleb128 0x1
+ 1312 009d 50       		.byte	0x50
+ 1313 009e 9F       		.byte	0x9f
+ 1314 009f 34000000 		.4byte	.LVL40
+ 1315 00a3 37000000 		.4byte	.LVL41-1
+ 1316 00a7 0100     		.2byte	0x1
+ 1317 00a9 50       		.byte	0x50
+ 1318 00aa 37000000 		.4byte	.LVL41-1
+ 1319 00ae 3A000000 		.4byte	.LFE65
+ 1320 00b2 0400     		.2byte	0x4
+ 1321 00b4 F3       		.byte	0xf3
+ 1322 00b5 01       		.uleb128 0x1
+ 1323 00b6 50       		.byte	0x50
+ 1324 00b7 9F       		.byte	0x9f
+ 1325 00b8 00000000 		.4byte	0
+ 1326 00bc 00000000 		.4byte	0
+ 1327              	.LLST3:
+ 1328 00c0 08000000 		.4byte	.LVL43
+ 1329 00c4 1C000000 		.4byte	.LVL48
+ 1330 00c8 0100     		.2byte	0x1
+ 1331 00ca 54       		.byte	0x54
+ 1332 00cb 1E000000 		.4byte	.LVL49
+ 1333 00cf 24000000 		.4byte	.LFE64
+ 1334 00d3 0100     		.2byte	0x1
+ 1335 00d5 54       		.byte	0x54
+ 1336 00d6 00000000 		.4byte	0
+ 1337 00da 00000000 		.4byte	0
+ 1338              	.LLST4:
+ 1339 00de 10000000 		.4byte	.LVL45
+ 1340 00e2 1E000000 		.4byte	.LVL49
+ 1341 00e6 0100     		.2byte	0x1
+ 1342 00e8 55       		.byte	0x55
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccTUmZ2i.s 			page 28
+
+
+ 1343 00e9 00000000 		.4byte	0
+ 1344 00ed 00000000 		.4byte	0
+ 1345              		.section	.debug_aranges,"",%progbits
+ 1346 0000 54000000 		.4byte	0x54
+ 1347 0004 0200     		.2byte	0x2
+ 1348 0006 00000000 		.4byte	.Ldebug_info0
+ 1349 000a 04       		.byte	0x4
+ 1350 000b 00       		.byte	0
+ 1351 000c 0000     		.2byte	0
+ 1352 000e 0000     		.2byte	0
+ 1353 0010 00000000 		.4byte	.LFB63
+ 1354 0014 54000000 		.4byte	.LFE63-.LFB63
+ 1355 0018 00000000 		.4byte	.LFB66
+ 1356 001c 20000000 		.4byte	.LFE66-.LFB66
+ 1357 0020 00000000 		.4byte	.LFB67
+ 1358 0024 20000000 		.4byte	.LFE67-.LFB67
+ 1359 0028 00000000 		.4byte	.LFB68
+ 1360 002c 28000000 		.4byte	.LFE68-.LFB68
+ 1361 0030 00000000 		.4byte	.LFB69
+ 1362 0034 24000000 		.4byte	.LFE69-.LFB69
+ 1363 0038 00000000 		.4byte	.LFB70
+ 1364 003c 14000000 		.4byte	.LFE70-.LFB70
+ 1365 0040 00000000 		.4byte	.LFB65
+ 1366 0044 3A000000 		.4byte	.LFE65-.LFB65
+ 1367 0048 00000000 		.4byte	.LFB64
+ 1368 004c 24000000 		.4byte	.LFE64-.LFB64
+ 1369 0050 00000000 		.4byte	0
+ 1370 0054 00000000 		.4byte	0
+ 1371              		.section	.debug_ranges,"",%progbits
+ 1372              	.Ldebug_ranges0:
+ 1373 0000 00000000 		.4byte	.LFB63
+ 1374 0004 54000000 		.4byte	.LFE63
+ 1375 0008 00000000 		.4byte	.LFB66
+ 1376 000c 20000000 		.4byte	.LFE66
+ 1377 0010 00000000 		.4byte	.LFB67
+ 1378 0014 20000000 		.4byte	.LFE67
+ 1379 0018 00000000 		.4byte	.LFB68
+ 1380 001c 28000000 		.4byte	.LFE68
+ 1381 0020 00000000 		.4byte	.LFB69
+ 1382 0024 24000000 		.4byte	.LFE69
+ 1383 0028 00000000 		.4byte	.LFB70
+ 1384 002c 14000000 		.4byte	.LFE70
+ 1385 0030 00000000 		.4byte	.LFB65
+ 1386 0034 3A000000 		.4byte	.LFE65
+ 1387 0038 00000000 		.4byte	.LFB64
+ 1388 003c 24000000 		.4byte	.LFE64
+ 1389 0040 00000000 		.4byte	0
+ 1390 0044 00000000 		.4byte	0
+ 1391              		.section	.debug_line,"",%progbits
+ 1392              	.Ldebug_line0:
+ 1393 0000 36020000 		.section	.debug_str,"MS",%progbits,1
+ 1393      02008101 
+ 1393      00000201 
+ 1393      FB0E0D00 
+ 1393      01010101 
+ 1394              	.LASF30:
+ 1395 0000 6973725F 		.ascii	"isr_uart_rx_StartEx\000"
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccTUmZ2i.s 			page 29
+
+
+ 1395      75617274 
+ 1395      5F72785F 
+ 1395      53746172 
+ 1395      74457800 
+ 1396              	.LASF0:
+ 1397 0014 5F5F696E 		.ascii	"__int8_t\000"
+ 1397      74385F74 
+ 1397      00
+ 1398              	.LASF1:
+ 1399 001d 5F5F7569 		.ascii	"__uint8_t\000"
+ 1399      6E74385F 
+ 1399      7400
+ 1400              	.LASF37:
+ 1401 0027 50696E5F 		.ascii	"Pin_IN1_Write\000"
+ 1401      494E315F 
+ 1401      57726974 
+ 1401      6500
+ 1402              	.LASF22:
+ 1403 0035 636D7056 		.ascii	"cmpValue\000"
+ 1403      616C7565 
+ 1403      00
+ 1404              	.LASF6:
+ 1405 003e 5F5F696E 		.ascii	"__int32_t\000"
+ 1405      7433325F 
+ 1405      7400
+ 1406              	.LASF21:
+ 1407 0048 696E6372 		.ascii	"increaseSpeed\000"
+ 1407      65617365 
+ 1407      53706565 
+ 1407      6400
+ 1408              	.LASF5:
+ 1409 0056 73686F72 		.ascii	"short unsigned int\000"
+ 1409      7420756E 
+ 1409      7369676E 
+ 1409      65642069 
+ 1409      6E7400
+ 1410              	.LASF36:
+ 1411 0069 50696E5F 		.ascii	"Pin_IN2_Write\000"
+ 1411      494E325F 
+ 1411      57726974 
+ 1411      6500
+ 1412              	.LASF41:
+ 1413 0077 50574D5F 		.ascii	"PWM_1_Sleep\000"
+ 1413      315F536C 
+ 1413      65657000 
+ 1414              	.LASF28:
+ 1415 0083 62797465 		.ascii	"bytesToRead\000"
+ 1415      73546F52 
+ 1415      65616400 
+ 1416              	.LASF34:
+ 1417 008f 50574D5F 		.ascii	"PWM_1_ReadCompare\000"
+ 1417      315F5265 
+ 1417      6164436F 
+ 1417      6D706172 
+ 1417      6500
+ 1418              	.LASF12:
+ 1419 00a1 696E7438 		.ascii	"int8_t\000"
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccTUmZ2i.s 			page 30
+
+
+ 1419      5F7400
+ 1420              	.LASF47:
+ 1421 00a8 433A5C55 		.ascii	"C:\\Users\\esben\\Dropbox\\Documents\\Uni\\2_semest"
+ 1421      73657273 
+ 1421      5C657362 
+ 1421      656E5C44 
+ 1421      726F7062 
+ 1422 00d5 65725C47 		.ascii	"er\\GFV_Graenseflader_til_den_fysiske_verden\\DC mo"
+ 1422      46565F47 
+ 1422      7261656E 
+ 1422      7365666C 
+ 1422      61646572 
+ 1423 0106 746F7273 		.ascii	"tors\\DC-Motor-PWM\\DC-Motor-PWM.cydsn\000"
+ 1423      5C44432D 
+ 1423      4D6F746F 
+ 1423      722D5057 
+ 1423      4D5C4443 
+ 1424              	.LASF15:
+ 1425 012b 666C6F61 		.ascii	"float\000"
+ 1425      7400
+ 1426              	.LASF3:
+ 1427 0131 756E7369 		.ascii	"unsigned char\000"
+ 1427      676E6564 
+ 1427      20636861 
+ 1427      7200
+ 1428              	.LASF45:
+ 1429 013f 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 1429      43313120 
+ 1429      352E342E 
+ 1429      31203230 
+ 1429      31363036 
+ 1430 0172 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 1430      20726576 
+ 1430      6973696F 
+ 1430      6E203233 
+ 1430      37373135 
+ 1431 01a5 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 1431      66756E63 
+ 1431      74696F6E 
+ 1431      2D736563 
+ 1431      74696F6E 
+ 1432              	.LASF27:
+ 1433 01cd 4953525F 		.ascii	"ISR_UART_rx_handler\000"
+ 1433      55415254 
+ 1433      5F72785F 
+ 1433      68616E64 
+ 1433      6C657200 
+ 1434              	.LASF8:
+ 1435 01e1 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1435      20756E73 
+ 1435      69676E65 
+ 1435      6420696E 
+ 1435      7400
+ 1436              	.LASF42:
+ 1437 01f3 55415254 		.ascii	"UART_1_ReadRxData\000"
+ 1437      5F315F52 
+ 1437      65616452 
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccTUmZ2i.s 			page 31
+
+
+ 1437      78446174 
+ 1437      6100
+ 1438              	.LASF32:
+ 1439 0205 50574D5F 		.ascii	"PWM_1_Start\000"
+ 1439      315F5374 
+ 1439      61727400 
+ 1440              	.LASF40:
+ 1441 0211 50696E5F 		.ascii	"Pin_IN2_Read\000"
+ 1441      494E325F 
+ 1441      52656164 
+ 1441      00
+ 1442              	.LASF25:
+ 1443 021e 73746F70 		.ascii	"stop\000"
+ 1443      00
+ 1444              	.LASF49:
+ 1445 0223 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 1445      52784275 
+ 1445      66666572 
+ 1445      00
+ 1446              	.LASF43:
+ 1447 0230 55415254 		.ascii	"UART_1_WriteTxData\000"
+ 1447      5F315F57 
+ 1447      72697465 
+ 1447      54784461 
+ 1447      746100
+ 1448              	.LASF16:
+ 1449 0243 646F7562 		.ascii	"double\000"
+ 1449      6C6500
+ 1450              	.LASF48:
+ 1451 024a 6D61696E 		.ascii	"main\000"
+ 1451      00
+ 1452              	.LASF26:
+ 1453 024f 68616E64 		.ascii	"handleByteReceived\000"
+ 1453      6C654279 
+ 1453      74655265 
+ 1453      63656976 
+ 1453      656400
+ 1454              	.LASF38:
+ 1455 0262 50696E5F 		.ascii	"Pin_IN1_Read\000"
+ 1455      494E315F 
+ 1455      52656164 
+ 1455      00
+ 1456              	.LASF39:
+ 1457 026f 55415254 		.ascii	"UART_1_PutChar\000"
+ 1457      5F315F50 
+ 1457      75744368 
+ 1457      617200
+ 1458              	.LASF11:
+ 1459 027e 756E7369 		.ascii	"unsigned int\000"
+ 1459      676E6564 
+ 1459      20696E74 
+ 1459      00
+ 1460              	.LASF23:
+ 1461 028b 64726976 		.ascii	"driveForwards\000"
+ 1461      65466F72 
+ 1461      77617264 
+ 1461      7300
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccTUmZ2i.s 			page 32
+
+
+ 1462              	.LASF10:
+ 1463 0299 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1463      206C6F6E 
+ 1463      6720756E 
+ 1463      7369676E 
+ 1463      65642069 
+ 1464              	.LASF13:
+ 1465 02b0 75696E74 		.ascii	"uint8_t\000"
+ 1465      385F7400 
+ 1466              	.LASF44:
+ 1467 02b8 55415254 		.ascii	"UART_1_GetRxBufferSize\000"
+ 1467      5F315F47 
+ 1467      65745278 
+ 1467      42756666 
+ 1467      65725369 
+ 1468              	.LASF14:
+ 1469 02cf 696E7433 		.ascii	"int32_t\000"
+ 1469      325F7400 
+ 1470              	.LASF24:
+ 1471 02d7 64726976 		.ascii	"driveBackwards\000"
+ 1471      65426163 
+ 1471      6B776172 
+ 1471      647300
+ 1472              	.LASF35:
+ 1473 02e6 50574D5F 		.ascii	"PWM_1_WriteCompare\000"
+ 1473      315F5772 
+ 1473      69746543 
+ 1473      6F6D7061 
+ 1473      726500
+ 1474              	.LASF9:
+ 1475 02f9 6C6F6E67 		.ascii	"long long int\000"
+ 1475      206C6F6E 
+ 1475      6720696E 
+ 1475      7400
+ 1476              	.LASF19:
+ 1477 0307 73697A65 		.ascii	"sizetype\000"
+ 1477      74797065 
+ 1477      00
+ 1478              	.LASF46:
+ 1479 0310 6D61696E 		.ascii	"main.c\000"
+ 1479      2E6300
+ 1480              	.LASF17:
+ 1481 0317 63686172 		.ascii	"char\000"
+ 1481      00
+ 1482              	.LASF20:
+ 1483 031c 64656372 		.ascii	"decreaseSpeed\000"
+ 1483      65617365 
+ 1483      53706565 
+ 1483      6400
+ 1484              	.LASF4:
+ 1485 032a 73686F72 		.ascii	"short int\000"
+ 1485      7420696E 
+ 1485      7400
+ 1486              	.LASF7:
+ 1487 0334 6C6F6E67 		.ascii	"long int\000"
+ 1487      20696E74 
+ 1487      00
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccTUmZ2i.s 			page 33
+
+
+ 1488              	.LASF18:
+ 1489 033d 6C6F6E67 		.ascii	"long double\000"
+ 1489      20646F75 
+ 1489      626C6500 
+ 1490              	.LASF2:
+ 1491 0349 7369676E 		.ascii	"signed char\000"
+ 1491      65642063 
+ 1491      68617200 
+ 1492              	.LASF33:
+ 1493 0355 55415254 		.ascii	"UART_1_PutString\000"
+ 1493      5F315F50 
+ 1493      75745374 
+ 1493      72696E67 
+ 1493      00
+ 1494              	.LASF29:
+ 1495 0366 62797465 		.ascii	"byteReceived\000"
+ 1495      52656365 
+ 1495      69766564 
+ 1495      00
+ 1496              	.LASF31:
+ 1497 0373 55415254 		.ascii	"UART_1_Start\000"
+ 1497      5F315F53 
+ 1497      74617274 
+ 1497      00
+ 1498              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran
