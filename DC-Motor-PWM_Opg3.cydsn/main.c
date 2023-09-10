@@ -22,13 +22,15 @@ void increaseSpeed(void);
 void driveForwards(void);
 void driveBackwards(void);
 void switchDriveState(void);
+void oneRotationF(void);
+void oneRotationB(void);
 void stop(void);
 void drive(void);
 
 typedef enum
 {
     WAVE_DRIVE,
-    HALF_STEP_DRIVE
+    HALF_STEP_DRIVE,
 }DRIVE_STATE;
 
 typedef enum
@@ -40,13 +42,13 @@ typedef enum
     B1, 
     B1B2, 
     B2,
-    B2A1
+    B2A1,
 }STEP_STATE;
 
 typedef enum
 {
     FORWARDS,
-    BACKWARDS
+    BACKWARDS,
 }DIRECTION_STATE;
 
 static DRIVE_STATE driveState = WAVE_DRIVE;
@@ -54,14 +56,18 @@ static STEP_STATE stepState = A1;
 static DIRECTION_STATE directionState = FORWARDS;
 static bool stepBool = true;
 
+static uint8_t counter = 0;
 
 int main(void)
 {
     CyGlobalIntEnable; /* Enable global interrupts. */
 
     /* Place your initialization/startup code here (e.g. MyInst_Start()) */
+    //Pin_A1_Write(1); // set initial position
     
     isr_uart_rx_StartEx(ISR_UART_rx_handler);
+    isr_timer_StartEx(ISR_Timer);
+    Timer_1_Start();
     UART_1_Start();
     
     UART_1_PutString("DC-Motor-PWM application started\r\n");
@@ -71,24 +77,22 @@ int main(void)
     UART_1_PutString("q: Decrease speed\r\n");
     UART_1_PutString("w: Increase speed\r\n");
     UART_1_PutString("a: Select drive state\r\n");
+    UART_1_PutString("e: One Rotation\r\n");
     
-    //driveState = WAVE_DRIVE;
-    //stepState = A1;
-    //directionState = FORWARDS;
-    //stepBool = true;
-    Pin_A1_Write(1); // set initial position
+    driveState = WAVE_DRIVE;
+    stepState = A1;
+    directionState = FORWARDS;
     
-    isr_timer_StartEx(ISR_Timer);
-    Timer_1_Start();
+    stepBool = true;
     
-    // char timerBuffer[256]; 
-
     for(;;)
     {
         /* Place your application code here. */
         drive();
-        //snprintf(timerBuffer, sizeof(timerBuffer), "Timer period: %d \n\r", Timer_1_ReadCounter());
-        //UART_1_PutString(timerBuffer);
+        //CyDelay(500);
+        //snprintf(debugBuffer, sizeof(debugBuffer), "\rDriveState %d  Step: %d Direction %d", 
+        //    driveState, stepState, directionState);
+        //UART_1_PutString(debugBuffer);
     }
 }
 
@@ -140,6 +144,17 @@ void handleByteReceived(uint8_t byteReceived)
         {
             switchDriveState();
         }
+        break;
+        case 'e':
+        {
+            oneRotationF();
+        }
+        break;
+        case 'r':
+        {
+            oneRotationB();
+        }
+        break;
         default :
         {
             // nothing
@@ -150,71 +165,89 @@ void handleByteReceived(uint8_t byteReceived)
 
 void decreaseSpeed()
 {
-    UART_1_PutString("\rDecreasing speed          ");
+    UART_1_PutString("Decreasing speed\n\r");
     uint16_t period = Timer_1_ReadPeriod() * 1.5f;
     period = period >= 255 ? 255 : period; 
-    /*
+    
     // For debugging
     char buffer[256];
     snprintf(buffer, sizeof(buffer), "Bytes read: %d\r\n", period);
     UART_1_PutString(buffer);
-    */
-    Timer_1_WritePeriod((uint8)period);
+    
+    Timer_1_WritePeriod(period);
     
 }
 
 void increaseSpeed()
 {
-    UART_1_PutString("\rIncreasing speed          ");
+    UART_1_PutString("Increasing speed\n\r");
     uint16_t period = Timer_1_ReadPeriod() * 0.75f;
     period = period <= 2 ? 2 : period; 
-    /*
+    
     char buffer[256];
     snprintf(buffer, sizeof(buffer), "Bytes read: %d\r\n", period);
     UART_1_PutString(buffer);
-    */
-    Timer_1_WritePeriod((uint8)period);
+    
+    Timer_1_WritePeriod(period);
     
 }
 
 void driveForwards()
 {
-    UART_1_PutString("\rSet direction: forwards   ");
-    Timer_1_Start();
+    UART_1_PutString("Set direction: forwards\n\r");
     directionState = FORWARDS;
+    Timer_1_Start();
 }
 
 void driveBackwards()
 {
-    UART_1_PutString("\rSet direction: backwards  ");
-    Timer_1_Start();
+    UART_1_PutString("Set direction: backwards\n\r");
     directionState = BACKWARDS;
+    Timer_1_Start();
+}
+
+void oneRotationF()
+{
+    Timer_1_Sleep();
+    directionState = FORWARDS;
+    counter = driveState == WAVE_DRIVE ? 48 : 96;
+    Timer_1_Start();
+}
+
+void oneRotationB()
+{
+    Timer_1_Sleep();
+    directionState = BACKWARDS;
+    counter = driveState == WAVE_DRIVE ? 48 : 96;
+    Timer_1_Start();
 }
 
 void stop()
 {
-    UART_1_PutString("\rStop                      ");
+    UART_1_PutString("Stop\n\r");
     Timer_1_Sleep();
-    //stepBool = false;
+    stepBool = false;
 }
 
 void switchDriveState()
 {
     if (driveState == WAVE_DRIVE)
     {
-        UART_1_PutString("\rHalf Step Drive                ");
+        UART_1_PutString("Half Step Drive\n\r");
         driveState = HALF_STEP_DRIVE;
     }
     else
     {
-        UART_1_PutString("\rWave Drive                     ");
+        UART_1_PutString("\rWave Drive\n\r");
         driveState = WAVE_DRIVE;
     }
 }
 
 void drive()
 {
-    if (stepBool && driveState == WAVE_DRIVE)
+    if (stepBool)
+    {
+    if (driveState == WAVE_DRIVE)
     {
         if (directionState == FORWARDS)
         {
@@ -250,7 +283,7 @@ void drive()
                     break;
             }
         }
-        else
+        else if (directionState == BACKWARDS)
         {
             switch (stepState)
             {
@@ -286,7 +319,7 @@ void drive()
         }
     }
     
-    else if (stepBool && driveState == HALF_STEP_DRIVE)
+    else if (driveState == HALF_STEP_DRIVE)
     {
         if (directionState == FORWARDS)
         {
@@ -326,7 +359,7 @@ void drive()
                     break;
             }    
         }
-        else
+        else if (directionState == BACKWARDS)
         {
             switch (stepState)
             {
@@ -365,9 +398,16 @@ void drive()
             }
         }
     }
-    
-    stepBool = false;
-    
+    if (counter)
+    {
+        counter--;
+        if (!counter)
+        {
+            Timer_1_Sleep();
+        }
+    }
+    stepBool = false;    
+    }
 }
 
 CY_ISR(ISR_Timer)

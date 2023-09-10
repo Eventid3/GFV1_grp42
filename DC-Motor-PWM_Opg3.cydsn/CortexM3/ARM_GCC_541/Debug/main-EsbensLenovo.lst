@@ -1,0 +1,4054 @@
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.ISR_Timer,"ax",%progbits
+  20              		.align	2
+  21              		.global	ISR_Timer
+  22              		.thumb
+  23              		.thumb_func
+  24              		.type	ISR_Timer, %function
+  25              	ISR_Timer:
+  26              	.LFB74:
+  27              		.file 1 "main.c"
+   1:main.c        **** /* ========================================
+   2:main.c        ****  *
+   3:main.c        ****  * Copyright YOUR COMPANY, THE YEAR
+   4:main.c        ****  * All Rights Reserved
+   5:main.c        ****  * UNPUBLISHED, LICENSED SOFTWARE.
+   6:main.c        ****  *
+   7:main.c        ****  * CONFIDENTIAL AND PROPRIETARY INFORMATION
+   8:main.c        ****  * WHICH IS THE PROPERTY OF your company.
+   9:main.c        ****  *
+  10:main.c        ****  * ========================================
+  11:main.c        **** */
+  12:main.c        **** #include "project.h"
+  13:main.c        **** #include <stdint.h>
+  14:main.c        **** #include <stdbool.h>
+  15:main.c        **** #include <stdio.h>
+  16:main.c        **** 
+  17:main.c        **** CY_ISR_PROTO(ISR_UART_rx_handler);
+  18:main.c        **** CY_ISR_PROTO(ISR_Timer);
+  19:main.c        **** void handleByteReceived(uint8_t byteReceived);
+  20:main.c        **** void decreaseSpeed(void);
+  21:main.c        **** void increaseSpeed(void);
+  22:main.c        **** void driveForwards(void);
+  23:main.c        **** void driveBackwards(void);
+  24:main.c        **** void switchDriveState(void);
+  25:main.c        **** void stop(void);
+  26:main.c        **** void drive(void);
+  27:main.c        **** 
+  28:main.c        **** typedef enum
+  29:main.c        **** {
+  30:main.c        ****     WAVE_DRIVE,
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 2
+
+
+  31:main.c        ****     HALF_STEP_DRIVE,
+  32:main.c        **** }DRIVE_STATE;
+  33:main.c        **** 
+  34:main.c        **** typedef enum
+  35:main.c        **** {
+  36:main.c        ****     A1, 
+  37:main.c        ****     A1A2, 
+  38:main.c        ****     A2, 
+  39:main.c        ****     A2B1, 
+  40:main.c        ****     B1, 
+  41:main.c        ****     B1B2, 
+  42:main.c        ****     B2,
+  43:main.c        ****     B2A1,
+  44:main.c        **** }STEP_STATE;
+  45:main.c        **** 
+  46:main.c        **** typedef enum
+  47:main.c        **** {
+  48:main.c        ****     FORWARDS,
+  49:main.c        ****     BACKWARDS,
+  50:main.c        **** }DIRECTION_STATE;
+  51:main.c        **** 
+  52:main.c        **** static DRIVE_STATE driveState = WAVE_DRIVE;
+  53:main.c        **** static STEP_STATE stepState = A1;
+  54:main.c        **** static DIRECTION_STATE directionState = FORWARDS;
+  55:main.c        **** static bool stepBool = true;
+  56:main.c        **** 
+  57:main.c        **** 
+  58:main.c        **** 
+  59:main.c        **** int main(void)
+  60:main.c        **** {
+  61:main.c        ****     CyGlobalIntEnable; /* Enable global interrupts. */
+  62:main.c        **** 
+  63:main.c        ****     /* Place your initialization/startup code here (e.g. MyInst_Start()) */
+  64:main.c        ****     //Pin_A1_Write(1); // set initial position
+  65:main.c        ****     
+  66:main.c        ****     isr_uart_rx_StartEx(ISR_UART_rx_handler);
+  67:main.c        ****     isr_timer_StartEx(ISR_Timer);
+  68:main.c        ****     Timer_1_Start();
+  69:main.c        ****     UART_1_Start();
+  70:main.c        ****     
+  71:main.c        ****     UART_1_PutString("DC-Motor-PWM application started\r\n");
+  72:main.c        ****     UART_1_PutString("0: Stop\r\n");
+  73:main.c        ****     UART_1_PutString("1: Drive forwards\r\n");
+  74:main.c        ****     UART_1_PutString("2: Drive backwards\r\n");
+  75:main.c        ****     UART_1_PutString("q: Decrease speed\r\n");
+  76:main.c        ****     UART_1_PutString("w: Increase speed\r\n");
+  77:main.c        ****     UART_1_PutString("a: Select drive state\r\n");
+  78:main.c        ****     
+  79:main.c        ****     driveState = WAVE_DRIVE;
+  80:main.c        ****     stepState = A1;
+  81:main.c        ****     directionState = FORWARDS;
+  82:main.c        ****     char debugBuffer[256]; 
+  83:main.c        ****     
+  84:main.c        ****     stepBool = true;
+  85:main.c        ****     
+  86:main.c        ****     for(;;)
+  87:main.c        ****     {
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 3
+
+
+  88:main.c        ****         /* Place your application code here. */
+  89:main.c        ****         drive();
+  90:main.c        ****         //CyDelay(500);
+  91:main.c        ****         snprintf(debugBuffer, sizeof(debugBuffer), "\rDriveState %d  Step: %d Direction %d", 
+  92:main.c        ****             driveState, stepState, directionState);
+  93:main.c        ****         UART_1_PutString(debugBuffer);
+  94:main.c        ****     }
+  95:main.c        **** }
+  96:main.c        **** 
+  97:main.c        **** CY_ISR(ISR_UART_rx_handler)
+  98:main.c        **** {
+  99:main.c        ****     uint8_t bytesToRead = UART_1_GetRxBufferSize();
+ 100:main.c        ****     while (bytesToRead > 0)
+ 101:main.c        ****     {
+ 102:main.c        ****         uint8_t byteReceived = UART_1_ReadRxData();
+ 103:main.c        ****         // UART_1_WriteTxData(byteReceived); // echo back
+ 104:main.c        ****         
+ 105:main.c        ****         handleByteReceived(byteReceived);
+ 106:main.c        ****         
+ 107:main.c        ****         bytesToRead--;
+ 108:main.c        ****     }
+ 109:main.c        **** }
+ 110:main.c        **** 
+ 111:main.c        **** void handleByteReceived(uint8_t byteReceived)
+ 112:main.c        **** {
+ 113:main.c        ****     switch(byteReceived)
+ 114:main.c        ****     {
+ 115:main.c        ****         case 'q' :
+ 116:main.c        ****         {
+ 117:main.c        ****             decreaseSpeed();
+ 118:main.c        ****         }
+ 119:main.c        ****         break;
+ 120:main.c        ****         case 'w' :
+ 121:main.c        ****         {
+ 122:main.c        ****             increaseSpeed();
+ 123:main.c        ****         }
+ 124:main.c        ****         break;
+ 125:main.c        ****         case '1' :
+ 126:main.c        ****         {
+ 127:main.c        ****             driveForwards();
+ 128:main.c        ****         }
+ 129:main.c        ****         break;
+ 130:main.c        ****         case '2' :
+ 131:main.c        ****         {
+ 132:main.c        ****             driveBackwards();
+ 133:main.c        ****         }
+ 134:main.c        ****         break;
+ 135:main.c        ****         case '0' :
+ 136:main.c        ****         {
+ 137:main.c        ****             stop();
+ 138:main.c        ****             
+ 139:main.c        ****         }
+ 140:main.c        ****         break;
+ 141:main.c        ****         case 'a':
+ 142:main.c        ****         {
+ 143:main.c        ****             switchDriveState();
+ 144:main.c        ****         }
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 4
+
+
+ 145:main.c        ****         break;
+ 146:main.c        ****         default :
+ 147:main.c        ****         {
+ 148:main.c        ****             // nothing
+ 149:main.c        ****         }
+ 150:main.c        ****         break;
+ 151:main.c        ****     }
+ 152:main.c        **** }
+ 153:main.c        **** 
+ 154:main.c        **** void decreaseSpeed()
+ 155:main.c        **** {
+ 156:main.c        ****     UART_1_PutString("Decreasing speed\n\r");
+ 157:main.c        ****     uint16_t period = Timer_1_ReadPeriod() * 1.5f;
+ 158:main.c        ****     period = period >= 255 ? 255 : period; 
+ 159:main.c        ****     
+ 160:main.c        ****     // For debugging
+ 161:main.c        ****     char buffer[256];
+ 162:main.c        ****     snprintf(buffer, sizeof(buffer), "Bytes read: %d\r\n", period);
+ 163:main.c        ****     UART_1_PutString(buffer);
+ 164:main.c        ****     
+ 165:main.c        ****     Timer_1_WritePeriod(period);
+ 166:main.c        ****     
+ 167:main.c        **** }
+ 168:main.c        **** 
+ 169:main.c        **** void increaseSpeed()
+ 170:main.c        **** {
+ 171:main.c        ****     UART_1_PutString("Increasing speed\n\r");
+ 172:main.c        ****     uint16_t period = Timer_1_ReadPeriod() * 0.75f;
+ 173:main.c        ****     period = period <= 2 ? 2 : period; 
+ 174:main.c        ****     
+ 175:main.c        ****     char buffer[256];
+ 176:main.c        ****     snprintf(buffer, sizeof(buffer), "Bytes read: %d\r\n", period);
+ 177:main.c        ****     UART_1_PutString(buffer);
+ 178:main.c        ****     
+ 179:main.c        ****     Timer_1_WritePeriod(period);
+ 180:main.c        ****     
+ 181:main.c        **** }
+ 182:main.c        **** 
+ 183:main.c        **** void driveForwards()
+ 184:main.c        **** {
+ 185:main.c        ****     UART_1_PutString("Set direction: forwards\n\r");
+ 186:main.c        ****     directionState = FORWARDS;
+ 187:main.c        ****     Timer_1_Start();
+ 188:main.c        **** }
+ 189:main.c        **** 
+ 190:main.c        **** void driveBackwards()
+ 191:main.c        **** {
+ 192:main.c        ****     UART_1_PutString("Set direction: backwards\n\r");
+ 193:main.c        ****     directionState = BACKWARDS;
+ 194:main.c        ****     Timer_1_Start();
+ 195:main.c        **** }
+ 196:main.c        **** 
+ 197:main.c        **** void stop()
+ 198:main.c        **** {
+ 199:main.c        ****     UART_1_PutString("Stop\n\r");
+ 200:main.c        ****     Timer_1_Sleep();
+ 201:main.c        ****     stepBool = false;
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 5
+
+
+ 202:main.c        **** }
+ 203:main.c        **** 
+ 204:main.c        **** void switchDriveState()
+ 205:main.c        **** {
+ 206:main.c        ****     if (driveState == WAVE_DRIVE)
+ 207:main.c        ****     {
+ 208:main.c        ****         UART_1_PutString("Half Step Drive\n\r");
+ 209:main.c        ****         driveState = HALF_STEP_DRIVE;
+ 210:main.c        ****     }
+ 211:main.c        ****     else
+ 212:main.c        ****     {
+ 213:main.c        ****         UART_1_PutString("\rWave Drive\n\r");
+ 214:main.c        ****         driveState = WAVE_DRIVE;
+ 215:main.c        ****     }
+ 216:main.c        **** }
+ 217:main.c        **** 
+ 218:main.c        **** void drive()
+ 219:main.c        **** {
+ 220:main.c        ****     if (stepBool)
+ 221:main.c        ****     {
+ 222:main.c        ****     if (driveState == WAVE_DRIVE)
+ 223:main.c        ****     {
+ 224:main.c        ****         if (directionState == FORWARDS)
+ 225:main.c        ****         {
+ 226:main.c        ****             switch (stepState)
+ 227:main.c        ****             {
+ 228:main.c        ****                 case A1:
+ 229:main.c        ****                     Pin_A1_Write(0);
+ 230:main.c        ****                     Pin_A2_Write(1);
+ 231:main.c        ****                     stepState = A2;
+ 232:main.c        ****                     break;
+ 233:main.c        ****                 case A2:
+ 234:main.c        ****                     Pin_A2_Write(0);
+ 235:main.c        ****                     Pin_B1_Write(1);
+ 236:main.c        ****                     stepState = B1;
+ 237:main.c        ****                     break;
+ 238:main.c        ****                 case B1:
+ 239:main.c        ****                     Pin_B1_Write(0);
+ 240:main.c        ****                     Pin_B2_Write(1);
+ 241:main.c        ****                     stepState = B2;
+ 242:main.c        ****                     break;
+ 243:main.c        ****                 case B2:
+ 244:main.c        ****                     Pin_B2_Write(0);
+ 245:main.c        ****                     Pin_A1_Write(1);
+ 246:main.c        ****                     stepState = A1;
+ 247:main.c        ****                     break;
+ 248:main.c        ****                 default:
+ 249:main.c        ****                     // failsafe hvis vi kommer fra half step drive
+ 250:main.c        ****                     Pin_B1_Write(0);
+ 251:main.c        ****                     Pin_B2_Write(0);
+ 252:main.c        ****                     Pin_A2_Write(0);
+ 253:main.c        ****                     Pin_A1_Write(1);
+ 254:main.c        ****                     stepState = A1;
+ 255:main.c        ****                     break;
+ 256:main.c        ****             }
+ 257:main.c        ****         }
+ 258:main.c        ****         else if (directionState == BACKWARDS)
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 6
+
+
+ 259:main.c        ****         {
+ 260:main.c        ****             switch (stepState)
+ 261:main.c        ****             {
+ 262:main.c        ****                 case A1:
+ 263:main.c        ****                     Pin_A1_Write(0);
+ 264:main.c        ****                     Pin_B2_Write(1);
+ 265:main.c        ****                     stepState = B2;
+ 266:main.c        ****                     break;
+ 267:main.c        ****                 case A2:
+ 268:main.c        ****                     Pin_A2_Write(0);
+ 269:main.c        ****                     Pin_A1_Write(1);
+ 270:main.c        ****                     stepState = A1;
+ 271:main.c        ****                     break;
+ 272:main.c        ****                 case B1:
+ 273:main.c        ****                     Pin_B1_Write(0);
+ 274:main.c        ****                     Pin_A2_Write(1);
+ 275:main.c        ****                     stepState = A2;
+ 276:main.c        ****                     break;
+ 277:main.c        ****                 case B2:
+ 278:main.c        ****                     Pin_B2_Write(0);
+ 279:main.c        ****                     Pin_B1_Write(1);
+ 280:main.c        ****                     stepState = B1;
+ 281:main.c        ****                     break;
+ 282:main.c        ****                 default:
+ 283:main.c        ****                     // failsafe hvis vi kommer fra half step drive
+ 284:main.c        ****                     Pin_B1_Write(0);
+ 285:main.c        ****                     Pin_B2_Write(0);
+ 286:main.c        ****                     Pin_A2_Write(0);
+ 287:main.c        ****                     Pin_A1_Write(1);
+ 288:main.c        ****                     stepState = A1;
+ 289:main.c        ****                     break;
+ 290:main.c        ****             }
+ 291:main.c        ****         }
+ 292:main.c        ****     }
+ 293:main.c        ****     
+ 294:main.c        ****     else if (driveState == HALF_STEP_DRIVE)
+ 295:main.c        ****     {
+ 296:main.c        ****         if (directionState == FORWARDS)
+ 297:main.c        ****         {
+ 298:main.c        ****             switch (stepState)
+ 299:main.c        ****             {
+ 300:main.c        ****                 case A1:
+ 301:main.c        ****                     Pin_A2_Write(1);
+ 302:main.c        ****                     stepState = A1A2;
+ 303:main.c        ****                     break;
+ 304:main.c        ****                 case A1A2:
+ 305:main.c        ****                     Pin_A1_Write(0);
+ 306:main.c        ****                     stepState = A2;
+ 307:main.c        ****                     break;
+ 308:main.c        ****                 case A2:
+ 309:main.c        ****                     Pin_B1_Write(1);
+ 310:main.c        ****                     stepState = A2B1;
+ 311:main.c        ****                     break;
+ 312:main.c        ****                 case A2B1:
+ 313:main.c        ****                     Pin_A2_Write(0);
+ 314:main.c        ****                     stepState = B1;
+ 315:main.c        ****                     break;
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 7
+
+
+ 316:main.c        ****                 case B1:
+ 317:main.c        ****                     Pin_B2_Write(1);
+ 318:main.c        ****                     stepState = B1B2;
+ 319:main.c        ****                     break;
+ 320:main.c        ****                 case B1B2:
+ 321:main.c        ****                     Pin_B1_Write(0);
+ 322:main.c        ****                     stepState = B2;
+ 323:main.c        ****                     break;
+ 324:main.c        ****                 case B2:
+ 325:main.c        ****                     Pin_A1_Write(1);
+ 326:main.c        ****                     stepState = B2A1;
+ 327:main.c        ****                     break;
+ 328:main.c        ****                 case B2A1:
+ 329:main.c        ****                     Pin_B2_Write(0);
+ 330:main.c        ****                     stepState = A1;
+ 331:main.c        ****                     break;
+ 332:main.c        ****             }    
+ 333:main.c        ****         }
+ 334:main.c        ****         else if (directionState == BACKWARDS)
+ 335:main.c        ****         {
+ 336:main.c        ****             switch (stepState)
+ 337:main.c        ****             {
+ 338:main.c        ****                 case A1:
+ 339:main.c        ****                     Pin_B2_Write(1);
+ 340:main.c        ****                     stepState = B2A1;
+ 341:main.c        ****                     break;
+ 342:main.c        ****                 case A1A2:
+ 343:main.c        ****                     Pin_A2_Write(0);
+ 344:main.c        ****                     stepState = A1;
+ 345:main.c        ****                     break;
+ 346:main.c        ****                 case A2:
+ 347:main.c        ****                     Pin_A1_Write(1);
+ 348:main.c        ****                     stepState = A1A2;
+ 349:main.c        ****                     break;
+ 350:main.c        ****                 case A2B1:
+ 351:main.c        ****                     Pin_B1_Write(0);
+ 352:main.c        ****                     stepState = A2;
+ 353:main.c        ****                     break;
+ 354:main.c        ****                 case B1:
+ 355:main.c        ****                     Pin_A2_Write(1);
+ 356:main.c        ****                     stepState = A2B1;
+ 357:main.c        ****                     break;
+ 358:main.c        ****                 case B1B2:
+ 359:main.c        ****                     Pin_B2_Write(0);
+ 360:main.c        ****                     stepState = B1;
+ 361:main.c        ****                     break;
+ 362:main.c        ****                 case B2:
+ 363:main.c        ****                     Pin_B1_Write(1);
+ 364:main.c        ****                     stepState = B1B2;
+ 365:main.c        ****                     break;
+ 366:main.c        ****                 case B2A1:
+ 367:main.c        ****                     Pin_A1_Write(0);
+ 368:main.c        ****                     stepState = B2;
+ 369:main.c        ****                     break;
+ 370:main.c        ****             }
+ 371:main.c        ****         }
+ 372:main.c        ****     }
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 8
+
+
+ 373:main.c        ****     }
+ 374:main.c        ****     stepBool = false;
+ 375:main.c        ****     
+ 376:main.c        **** }
+ 377:main.c        **** 
+ 378:main.c        **** CY_ISR(ISR_Timer)
+ 379:main.c        **** {
+  28              		.loc 1 379 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+ 380:main.c        ****     //drive();
+ 381:main.c        ****     stepBool = true;
+  33              		.loc 1 381 0
+  34 0000 0122     		movs	r2, #1
+  35 0002 014B     		ldr	r3, .L2
+  36 0004 1A70     		strb	r2, [r3]
+  37 0006 7047     		bx	lr
+  38              	.L3:
+  39              		.align	2
+  40              	.L2:
+  41 0008 00000000 		.word	.LANCHOR0
+  42              		.cfi_endproc
+  43              	.LFE74:
+  44              		.size	ISR_Timer, .-ISR_Timer
+  45              		.global	__aeabi_i2f
+  46              		.global	__aeabi_fmul
+  47              		.global	__aeabi_f2uiz
+  48              		.section	.text.decreaseSpeed,"ax",%progbits
+  49              		.align	2
+  50              		.global	decreaseSpeed
+  51              		.thumb
+  52              		.thumb_func
+  53              		.type	decreaseSpeed, %function
+  54              	decreaseSpeed:
+  55              	.LFB67:
+ 155:main.c        ****     UART_1_PutString("Decreasing speed\n\r");
+  56              		.loc 1 155 0
+  57              		.cfi_startproc
+  58              		@ args = 0, pretend = 0, frame = 256
+  59              		@ frame_needed = 0, uses_anonymous_args = 0
+  60 0000 10B5     		push	{r4, lr}
+  61              		.cfi_def_cfa_offset 8
+  62              		.cfi_offset 4, -8
+  63              		.cfi_offset 14, -4
+  64 0002 C0B0     		sub	sp, sp, #256
+  65              		.cfi_def_cfa_offset 264
+ 156:main.c        ****     uint16_t period = Timer_1_ReadPeriod() * 1.5f;
+  66              		.loc 1 156 0
+  67 0004 1048     		ldr	r0, .L6
+  68 0006 FFF7FEFF 		bl	UART_1_PutString
+  69              	.LVL0:
+ 157:main.c        ****     period = period >= 255 ? 255 : period; 
+  70              		.loc 1 157 0
+  71 000a FFF7FEFF 		bl	Timer_1_ReadPeriod
+  72              	.LVL1:
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 9
+
+
+  73 000e FFF7FEFF 		bl	__aeabi_i2f
+  74              	.LVL2:
+  75 0012 4FF07F51 		mov	r1, #1069547520
+  76 0016 FFF7FEFF 		bl	__aeabi_fmul
+  77              	.LVL3:
+  78 001a FFF7FEFF 		bl	__aeabi_f2uiz
+  79              	.LVL4:
+  80 001e 80B2     		uxth	r0, r0
+  81              	.LVL5:
+ 158:main.c        ****     
+  82              		.loc 1 158 0
+  83 0020 FF28     		cmp	r0, #255
+  84 0022 28BF     		it	cs
+  85 0024 FF20     		movcs	r0, #255
+  86              	.LVL6:
+  87 0026 0446     		mov	r4, r0
+  88              	.LVL7:
+ 162:main.c        ****     UART_1_PutString(buffer);
+  89              		.loc 1 162 0
+  90 0028 0346     		mov	r3, r0
+  91 002a 084A     		ldr	r2, .L6+4
+  92 002c 4FF48071 		mov	r1, #256
+  93 0030 6846     		mov	r0, sp
+  94              	.LVL8:
+  95 0032 FFF7FEFF 		bl	snprintf
+  96              	.LVL9:
+ 163:main.c        ****     
+  97              		.loc 1 163 0
+  98 0036 6846     		mov	r0, sp
+  99 0038 FFF7FEFF 		bl	UART_1_PutString
+ 100              	.LVL10:
+ 165:main.c        ****     
+ 101              		.loc 1 165 0
+ 102 003c E0B2     		uxtb	r0, r4
+ 103 003e FFF7FEFF 		bl	Timer_1_WritePeriod
+ 104              	.LVL11:
+ 167:main.c        **** 
+ 105              		.loc 1 167 0
+ 106 0042 40B0     		add	sp, sp, #256
+ 107              		.cfi_def_cfa_offset 8
+ 108              		@ sp needed
+ 109 0044 10BD     		pop	{r4, pc}
+ 110              	.LVL12:
+ 111              	.L7:
+ 112 0046 00BF     		.align	2
+ 113              	.L6:
+ 114 0048 00000000 		.word	.LC0
+ 115 004c 14000000 		.word	.LC1
+ 116              		.cfi_endproc
+ 117              	.LFE67:
+ 118              		.size	decreaseSpeed, .-decreaseSpeed
+ 119              		.section	.text.increaseSpeed,"ax",%progbits
+ 120              		.align	2
+ 121              		.global	increaseSpeed
+ 122              		.thumb
+ 123              		.thumb_func
+ 124              		.type	increaseSpeed, %function
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 10
+
+
+ 125              	increaseSpeed:
+ 126              	.LFB68:
+ 170:main.c        ****     UART_1_PutString("Increasing speed\n\r");
+ 127              		.loc 1 170 0
+ 128              		.cfi_startproc
+ 129              		@ args = 0, pretend = 0, frame = 256
+ 130              		@ frame_needed = 0, uses_anonymous_args = 0
+ 131 0000 10B5     		push	{r4, lr}
+ 132              		.cfi_def_cfa_offset 8
+ 133              		.cfi_offset 4, -8
+ 134              		.cfi_offset 14, -4
+ 135 0002 C0B0     		sub	sp, sp, #256
+ 136              		.cfi_def_cfa_offset 264
+ 171:main.c        ****     uint16_t period = Timer_1_ReadPeriod() * 0.75f;
+ 137              		.loc 1 171 0
+ 138 0004 1048     		ldr	r0, .L10
+ 139 0006 FFF7FEFF 		bl	UART_1_PutString
+ 140              	.LVL13:
+ 172:main.c        ****     period = period <= 2 ? 2 : period; 
+ 141              		.loc 1 172 0
+ 142 000a FFF7FEFF 		bl	Timer_1_ReadPeriod
+ 143              	.LVL14:
+ 144 000e FFF7FEFF 		bl	__aeabi_i2f
+ 145              	.LVL15:
+ 146 0012 4FF07D51 		mov	r1, #1061158912
+ 147 0016 FFF7FEFF 		bl	__aeabi_fmul
+ 148              	.LVL16:
+ 149 001a FFF7FEFF 		bl	__aeabi_f2uiz
+ 150              	.LVL17:
+ 151 001e 80B2     		uxth	r0, r0
+ 152              	.LVL18:
+ 173:main.c        ****     
+ 153              		.loc 1 173 0
+ 154 0020 0228     		cmp	r0, #2
+ 155 0022 38BF     		it	cc
+ 156 0024 0220     		movcc	r0, #2
+ 157              	.LVL19:
+ 158 0026 0446     		mov	r4, r0
+ 159              	.LVL20:
+ 176:main.c        ****     UART_1_PutString(buffer);
+ 160              		.loc 1 176 0
+ 161 0028 0346     		mov	r3, r0
+ 162 002a 084A     		ldr	r2, .L10+4
+ 163 002c 4FF48071 		mov	r1, #256
+ 164 0030 6846     		mov	r0, sp
+ 165              	.LVL21:
+ 166 0032 FFF7FEFF 		bl	snprintf
+ 167              	.LVL22:
+ 177:main.c        ****     
+ 168              		.loc 1 177 0
+ 169 0036 6846     		mov	r0, sp
+ 170 0038 FFF7FEFF 		bl	UART_1_PutString
+ 171              	.LVL23:
+ 179:main.c        ****     
+ 172              		.loc 1 179 0
+ 173 003c E0B2     		uxtb	r0, r4
+ 174 003e FFF7FEFF 		bl	Timer_1_WritePeriod
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 11
+
+
+ 175              	.LVL24:
+ 181:main.c        **** 
+ 176              		.loc 1 181 0
+ 177 0042 40B0     		add	sp, sp, #256
+ 178              		.cfi_def_cfa_offset 8
+ 179              		@ sp needed
+ 180 0044 10BD     		pop	{r4, pc}
+ 181              	.LVL25:
+ 182              	.L11:
+ 183 0046 00BF     		.align	2
+ 184              	.L10:
+ 185 0048 28000000 		.word	.LC2
+ 186 004c 14000000 		.word	.LC1
+ 187              		.cfi_endproc
+ 188              	.LFE68:
+ 189              		.size	increaseSpeed, .-increaseSpeed
+ 190              		.section	.text.driveForwards,"ax",%progbits
+ 191              		.align	2
+ 192              		.global	driveForwards
+ 193              		.thumb
+ 194              		.thumb_func
+ 195              		.type	driveForwards, %function
+ 196              	driveForwards:
+ 197              	.LFB69:
+ 184:main.c        ****     UART_1_PutString("Set direction: forwards\n\r");
+ 198              		.loc 1 184 0
+ 199              		.cfi_startproc
+ 200              		@ args = 0, pretend = 0, frame = 0
+ 201              		@ frame_needed = 0, uses_anonymous_args = 0
+ 202 0000 08B5     		push	{r3, lr}
+ 203              		.cfi_def_cfa_offset 8
+ 204              		.cfi_offset 3, -8
+ 205              		.cfi_offset 14, -4
+ 185:main.c        ****     directionState = FORWARDS;
+ 206              		.loc 1 185 0
+ 207 0002 0448     		ldr	r0, .L14
+ 208 0004 FFF7FEFF 		bl	UART_1_PutString
+ 209              	.LVL26:
+ 186:main.c        ****     Timer_1_Start();
+ 210              		.loc 1 186 0
+ 211 0008 0022     		movs	r2, #0
+ 212 000a 034B     		ldr	r3, .L14+4
+ 213 000c 1A70     		strb	r2, [r3]
+ 187:main.c        **** }
+ 214              		.loc 1 187 0
+ 215 000e FFF7FEFF 		bl	Timer_1_Start
+ 216              	.LVL27:
+ 217 0012 08BD     		pop	{r3, pc}
+ 218              	.L15:
+ 219              		.align	2
+ 220              	.L14:
+ 221 0014 3C000000 		.word	.LC3
+ 222 0018 00000000 		.word	.LANCHOR1
+ 223              		.cfi_endproc
+ 224              	.LFE69:
+ 225              		.size	driveForwards, .-driveForwards
+ 226              		.section	.text.driveBackwards,"ax",%progbits
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 12
+
+
+ 227              		.align	2
+ 228              		.global	driveBackwards
+ 229              		.thumb
+ 230              		.thumb_func
+ 231              		.type	driveBackwards, %function
+ 232              	driveBackwards:
+ 233              	.LFB70:
+ 191:main.c        ****     UART_1_PutString("Set direction: backwards\n\r");
+ 234              		.loc 1 191 0
+ 235              		.cfi_startproc
+ 236              		@ args = 0, pretend = 0, frame = 0
+ 237              		@ frame_needed = 0, uses_anonymous_args = 0
+ 238 0000 08B5     		push	{r3, lr}
+ 239              		.cfi_def_cfa_offset 8
+ 240              		.cfi_offset 3, -8
+ 241              		.cfi_offset 14, -4
+ 192:main.c        ****     directionState = BACKWARDS;
+ 242              		.loc 1 192 0
+ 243 0002 0448     		ldr	r0, .L18
+ 244 0004 FFF7FEFF 		bl	UART_1_PutString
+ 245              	.LVL28:
+ 193:main.c        ****     Timer_1_Start();
+ 246              		.loc 1 193 0
+ 247 0008 0122     		movs	r2, #1
+ 248 000a 034B     		ldr	r3, .L18+4
+ 249 000c 1A70     		strb	r2, [r3]
+ 194:main.c        **** }
+ 250              		.loc 1 194 0
+ 251 000e FFF7FEFF 		bl	Timer_1_Start
+ 252              	.LVL29:
+ 253 0012 08BD     		pop	{r3, pc}
+ 254              	.L19:
+ 255              		.align	2
+ 256              	.L18:
+ 257 0014 58000000 		.word	.LC4
+ 258 0018 00000000 		.word	.LANCHOR1
+ 259              		.cfi_endproc
+ 260              	.LFE70:
+ 261              		.size	driveBackwards, .-driveBackwards
+ 262              		.section	.text.stop,"ax",%progbits
+ 263              		.align	2
+ 264              		.global	stop
+ 265              		.thumb
+ 266              		.thumb_func
+ 267              		.type	stop, %function
+ 268              	stop:
+ 269              	.LFB71:
+ 198:main.c        ****     UART_1_PutString("Stop\n\r");
+ 270              		.loc 1 198 0
+ 271              		.cfi_startproc
+ 272              		@ args = 0, pretend = 0, frame = 0
+ 273              		@ frame_needed = 0, uses_anonymous_args = 0
+ 274 0000 08B5     		push	{r3, lr}
+ 275              		.cfi_def_cfa_offset 8
+ 276              		.cfi_offset 3, -8
+ 277              		.cfi_offset 14, -4
+ 199:main.c        ****     Timer_1_Sleep();
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 13
+
+
+ 278              		.loc 1 199 0
+ 279 0002 0448     		ldr	r0, .L22
+ 280 0004 FFF7FEFF 		bl	UART_1_PutString
+ 281              	.LVL30:
+ 200:main.c        ****     stepBool = false;
+ 282              		.loc 1 200 0
+ 283 0008 FFF7FEFF 		bl	Timer_1_Sleep
+ 284              	.LVL31:
+ 201:main.c        **** }
+ 285              		.loc 1 201 0
+ 286 000c 0022     		movs	r2, #0
+ 287 000e 024B     		ldr	r3, .L22+4
+ 288 0010 1A70     		strb	r2, [r3]
+ 289 0012 08BD     		pop	{r3, pc}
+ 290              	.L23:
+ 291              		.align	2
+ 292              	.L22:
+ 293 0014 74000000 		.word	.LC5
+ 294 0018 00000000 		.word	.LANCHOR0
+ 295              		.cfi_endproc
+ 296              	.LFE71:
+ 297              		.size	stop, .-stop
+ 298              		.section	.text.switchDriveState,"ax",%progbits
+ 299              		.align	2
+ 300              		.global	switchDriveState
+ 301              		.thumb
+ 302              		.thumb_func
+ 303              		.type	switchDriveState, %function
+ 304              	switchDriveState:
+ 305              	.LFB72:
+ 205:main.c        ****     if (driveState == WAVE_DRIVE)
+ 306              		.loc 1 205 0
+ 307              		.cfi_startproc
+ 308              		@ args = 0, pretend = 0, frame = 0
+ 309              		@ frame_needed = 0, uses_anonymous_args = 0
+ 310 0000 08B5     		push	{r3, lr}
+ 311              		.cfi_def_cfa_offset 8
+ 312              		.cfi_offset 3, -8
+ 313              		.cfi_offset 14, -4
+ 206:main.c        ****     {
+ 314              		.loc 1 206 0
+ 315 0002 084B     		ldr	r3, .L28
+ 316 0004 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 317 0006 33B9     		cbnz	r3, .L25
+ 208:main.c        ****         driveState = HALF_STEP_DRIVE;
+ 318              		.loc 1 208 0
+ 319 0008 0748     		ldr	r0, .L28+4
+ 320 000a FFF7FEFF 		bl	UART_1_PutString
+ 321              	.LVL32:
+ 209:main.c        ****     }
+ 322              		.loc 1 209 0
+ 323 000e 0122     		movs	r2, #1
+ 324 0010 044B     		ldr	r3, .L28
+ 325 0012 5A70     		strb	r2, [r3, #1]
+ 326 0014 08BD     		pop	{r3, pc}
+ 327              	.L25:
+ 213:main.c        ****         driveState = WAVE_DRIVE;
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 14
+
+
+ 328              		.loc 1 213 0
+ 329 0016 0548     		ldr	r0, .L28+8
+ 330 0018 FFF7FEFF 		bl	UART_1_PutString
+ 331              	.LVL33:
+ 214:main.c        ****     }
+ 332              		.loc 1 214 0
+ 333 001c 0022     		movs	r2, #0
+ 334 001e 014B     		ldr	r3, .L28
+ 335 0020 5A70     		strb	r2, [r3, #1]
+ 336 0022 08BD     		pop	{r3, pc}
+ 337              	.L29:
+ 338              		.align	2
+ 339              	.L28:
+ 340 0024 00000000 		.word	.LANCHOR1
+ 341 0028 7C000000 		.word	.LC6
+ 342 002c 90000000 		.word	.LC7
+ 343              		.cfi_endproc
+ 344              	.LFE72:
+ 345              		.size	switchDriveState, .-switchDriveState
+ 346              		.section	.text.handleByteReceived,"ax",%progbits
+ 347              		.align	2
+ 348              		.global	handleByteReceived
+ 349              		.thumb
+ 350              		.thumb_func
+ 351              		.type	handleByteReceived, %function
+ 352              	handleByteReceived:
+ 353              	.LFB66:
+ 112:main.c        ****     switch(byteReceived)
+ 354              		.loc 1 112 0
+ 355              		.cfi_startproc
+ 356              		@ args = 0, pretend = 0, frame = 0
+ 357              		@ frame_needed = 0, uses_anonymous_args = 0
+ 358              	.LVL34:
+ 359 0000 08B5     		push	{r3, lr}
+ 360              		.cfi_def_cfa_offset 8
+ 361              		.cfi_offset 3, -8
+ 362              		.cfi_offset 14, -4
+ 113:main.c        ****     {
+ 363              		.loc 1 113 0
+ 364 0002 3228     		cmp	r0, #50
+ 365 0004 15D0     		beq	.L32
+ 366 0006 04D8     		bhi	.L33
+ 367 0008 3028     		cmp	r0, #48
+ 368 000a 15D0     		beq	.L34
+ 369 000c 3128     		cmp	r0, #49
+ 370 000e 0DD0     		beq	.L35
+ 371 0010 08BD     		pop	{r3, pc}
+ 372              	.L33:
+ 373 0012 7128     		cmp	r0, #113
+ 374 0014 04D0     		beq	.L36
+ 375 0016 7728     		cmp	r0, #119
+ 376 0018 05D0     		beq	.L37
+ 377 001a 6128     		cmp	r0, #97
+ 378 001c 11D1     		bne	.L30
+ 379 001e 0EE0     		b	.L38
+ 380              	.L36:
+ 117:main.c        ****         }
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 15
+
+
+ 381              		.loc 1 117 0
+ 382 0020 FFF7FEFF 		bl	decreaseSpeed
+ 383              	.LVL35:
+ 119:main.c        ****         case 'w' :
+ 384              		.loc 1 119 0
+ 385 0024 08BD     		pop	{r3, pc}
+ 386              	.LVL36:
+ 387              	.L37:
+ 122:main.c        ****         }
+ 388              		.loc 1 122 0
+ 389 0026 FFF7FEFF 		bl	increaseSpeed
+ 390              	.LVL37:
+ 124:main.c        ****         case '1' :
+ 391              		.loc 1 124 0
+ 392 002a 08BD     		pop	{r3, pc}
+ 393              	.LVL38:
+ 394              	.L35:
+ 127:main.c        ****         }
+ 395              		.loc 1 127 0
+ 396 002c FFF7FEFF 		bl	driveForwards
+ 397              	.LVL39:
+ 129:main.c        ****         case '2' :
+ 398              		.loc 1 129 0
+ 399 0030 08BD     		pop	{r3, pc}
+ 400              	.LVL40:
+ 401              	.L32:
+ 132:main.c        ****         }
+ 402              		.loc 1 132 0
+ 403 0032 FFF7FEFF 		bl	driveBackwards
+ 404              	.LVL41:
+ 134:main.c        ****         case '0' :
+ 405              		.loc 1 134 0
+ 406 0036 08BD     		pop	{r3, pc}
+ 407              	.LVL42:
+ 408              	.L34:
+ 137:main.c        ****             
+ 409              		.loc 1 137 0
+ 410 0038 FFF7FEFF 		bl	stop
+ 411              	.LVL43:
+ 140:main.c        ****         case 'a':
+ 412              		.loc 1 140 0
+ 413 003c 08BD     		pop	{r3, pc}
+ 414              	.LVL44:
+ 415              	.L38:
+ 143:main.c        ****         }
+ 416              		.loc 1 143 0
+ 417 003e FFF7FEFF 		bl	switchDriveState
+ 418              	.LVL45:
+ 419              	.L30:
+ 420 0042 08BD     		pop	{r3, pc}
+ 421              		.cfi_endproc
+ 422              	.LFE66:
+ 423              		.size	handleByteReceived, .-handleByteReceived
+ 424              		.section	.text.ISR_UART_rx_handler,"ax",%progbits
+ 425              		.align	2
+ 426              		.global	ISR_UART_rx_handler
+ 427              		.thumb
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 16
+
+
+ 428              		.thumb_func
+ 429              		.type	ISR_UART_rx_handler, %function
+ 430              	ISR_UART_rx_handler:
+ 431              	.LFB65:
+  98:main.c        ****     uint8_t bytesToRead = UART_1_GetRxBufferSize();
+ 432              		.loc 1 98 0
+ 433              		.cfi_startproc
+ 434              		@ args = 0, pretend = 0, frame = 0
+ 435              		@ frame_needed = 0, uses_anonymous_args = 0
+ 436 0000 10B5     		push	{r4, lr}
+ 437              		.cfi_def_cfa_offset 8
+ 438              		.cfi_offset 4, -8
+ 439              		.cfi_offset 14, -4
+  99:main.c        ****     while (bytesToRead > 0)
+ 440              		.loc 1 99 0
+ 441 0002 FFF7FEFF 		bl	UART_1_GetRxBufferSize
+ 442              	.LVL46:
+ 443 0006 0446     		mov	r4, r0
+ 444              	.LVL47:
+ 100:main.c        ****     {
+ 445              		.loc 1 100 0
+ 446 0008 05E0     		b	.L41
+ 447              	.L42:
+ 448              	.LBB2:
+ 102:main.c        ****         // UART_1_WriteTxData(byteReceived); // echo back
+ 449              		.loc 1 102 0
+ 450 000a FFF7FEFF 		bl	UART_1_ReadRxData
+ 451              	.LVL48:
+ 105:main.c        ****         
+ 452              		.loc 1 105 0
+ 453 000e FFF7FEFF 		bl	handleByteReceived
+ 454              	.LVL49:
+ 107:main.c        ****     }
+ 455              		.loc 1 107 0
+ 456 0012 013C     		subs	r4, r4, #1
+ 457              	.LVL50:
+ 458 0014 E4B2     		uxtb	r4, r4
+ 459              	.LVL51:
+ 460              	.L41:
+ 461              	.LBE2:
+ 100:main.c        ****     {
+ 462              		.loc 1 100 0
+ 463 0016 002C     		cmp	r4, #0
+ 464 0018 F7D1     		bne	.L42
+ 109:main.c        **** 
+ 465              		.loc 1 109 0
+ 466 001a 10BD     		pop	{r4, pc}
+ 467              		.cfi_endproc
+ 468              	.LFE65:
+ 469              		.size	ISR_UART_rx_handler, .-ISR_UART_rx_handler
+ 470              		.section	.text.drive,"ax",%progbits
+ 471              		.align	2
+ 472              		.global	drive
+ 473              		.thumb
+ 474              		.thumb_func
+ 475              		.type	drive, %function
+ 476              	drive:
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 17
+
+
+ 477              	.LFB73:
+ 219:main.c        ****     if (stepBool)
+ 478              		.loc 1 219 0
+ 479              		.cfi_startproc
+ 480              		@ args = 0, pretend = 0, frame = 0
+ 481              		@ frame_needed = 0, uses_anonymous_args = 0
+ 482 0000 08B5     		push	{r3, lr}
+ 483              		.cfi_def_cfa_offset 8
+ 484              		.cfi_offset 3, -8
+ 485              		.cfi_offset 14, -4
+ 220:main.c        ****     {
+ 486              		.loc 1 220 0
+ 487 0002 934B     		ldr	r3, .L80
+ 488 0004 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 489 0006 002B     		cmp	r3, #0
+ 490 0008 00F01D81 		beq	.L45
+ 222:main.c        ****     {
+ 491              		.loc 1 222 0
+ 492 000c 914B     		ldr	r3, .L80+4
+ 493 000e 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 494 0010 002B     		cmp	r3, #0
+ 495 0012 40F08B80 		bne	.L46
+ 224:main.c        ****         {
+ 496              		.loc 1 224 0
+ 497 0016 8F4B     		ldr	r3, .L80+4
+ 498 0018 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 499 001a 002B     		cmp	r3, #0
+ 500 001c 41D1     		bne	.L47
+ 226:main.c        ****             {
+ 501              		.loc 1 226 0
+ 502 001e 8D4B     		ldr	r3, .L80+4
+ 503 0020 9B78     		ldrb	r3, [r3, #2]	@ zero_extendqisi2
+ 504 0022 062B     		cmp	r3, #6
+ 505 0024 2DD8     		bhi	.L48
+ 506 0026 DFE803F0 		tbb	[pc, r3]
+ 507              	.L50:
+ 508 002a 04       		.byte	(.L49-.L50)/2
+ 509 002b 2C       		.byte	(.L48-.L50)/2
+ 510 002c 0E       		.byte	(.L51-.L50)/2
+ 511 002d 2C       		.byte	(.L48-.L50)/2
+ 512 002e 18       		.byte	(.L52-.L50)/2
+ 513 002f 2C       		.byte	(.L48-.L50)/2
+ 514 0030 22       		.byte	(.L53-.L50)/2
+ 515 0031 00       		.p2align 1
+ 516              	.L49:
+ 229:main.c        ****                     Pin_A2_Write(1);
+ 517              		.loc 1 229 0
+ 518 0032 0020     		movs	r0, #0
+ 519 0034 FFF7FEFF 		bl	Pin_A1_Write
+ 520              	.LVL52:
+ 230:main.c        ****                     stepState = A2;
+ 521              		.loc 1 230 0
+ 522 0038 0120     		movs	r0, #1
+ 523 003a FFF7FEFF 		bl	Pin_A2_Write
+ 524              	.LVL53:
+ 231:main.c        ****                     break;
+ 525              		.loc 1 231 0
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 18
+
+
+ 526 003e 0222     		movs	r2, #2
+ 527 0040 844B     		ldr	r3, .L80+4
+ 528 0042 9A70     		strb	r2, [r3, #2]
+ 232:main.c        ****                 case A2:
+ 529              		.loc 1 232 0
+ 530 0044 FFE0     		b	.L45
+ 531              	.L51:
+ 234:main.c        ****                     Pin_B1_Write(1);
+ 532              		.loc 1 234 0
+ 533 0046 0020     		movs	r0, #0
+ 534 0048 FFF7FEFF 		bl	Pin_A2_Write
+ 535              	.LVL54:
+ 235:main.c        ****                     stepState = B1;
+ 536              		.loc 1 235 0
+ 537 004c 0120     		movs	r0, #1
+ 538 004e FFF7FEFF 		bl	Pin_B1_Write
+ 539              	.LVL55:
+ 236:main.c        ****                     break;
+ 540              		.loc 1 236 0
+ 541 0052 0422     		movs	r2, #4
+ 542 0054 7F4B     		ldr	r3, .L80+4
+ 543 0056 9A70     		strb	r2, [r3, #2]
+ 237:main.c        ****                 case B1:
+ 544              		.loc 1 237 0
+ 545 0058 F5E0     		b	.L45
+ 546              	.L52:
+ 239:main.c        ****                     Pin_B2_Write(1);
+ 547              		.loc 1 239 0
+ 548 005a 0020     		movs	r0, #0
+ 549 005c FFF7FEFF 		bl	Pin_B1_Write
+ 550              	.LVL56:
+ 240:main.c        ****                     stepState = B2;
+ 551              		.loc 1 240 0
+ 552 0060 0120     		movs	r0, #1
+ 553 0062 FFF7FEFF 		bl	Pin_B2_Write
+ 554              	.LVL57:
+ 241:main.c        ****                     break;
+ 555              		.loc 1 241 0
+ 556 0066 0622     		movs	r2, #6
+ 557 0068 7A4B     		ldr	r3, .L80+4
+ 558 006a 9A70     		strb	r2, [r3, #2]
+ 242:main.c        ****                 case B2:
+ 559              		.loc 1 242 0
+ 560 006c EBE0     		b	.L45
+ 561              	.L53:
+ 244:main.c        ****                     Pin_A1_Write(1);
+ 562              		.loc 1 244 0
+ 563 006e 0020     		movs	r0, #0
+ 564 0070 FFF7FEFF 		bl	Pin_B2_Write
+ 565              	.LVL58:
+ 245:main.c        ****                     stepState = A1;
+ 566              		.loc 1 245 0
+ 567 0074 0120     		movs	r0, #1
+ 568 0076 FFF7FEFF 		bl	Pin_A1_Write
+ 569              	.LVL59:
+ 246:main.c        ****                     break;
+ 570              		.loc 1 246 0
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 19
+
+
+ 571 007a 0022     		movs	r2, #0
+ 572 007c 754B     		ldr	r3, .L80+4
+ 573 007e 9A70     		strb	r2, [r3, #2]
+ 247:main.c        ****                 default:
+ 574              		.loc 1 247 0
+ 575 0080 E1E0     		b	.L45
+ 576              	.L48:
+ 250:main.c        ****                     Pin_B2_Write(0);
+ 577              		.loc 1 250 0
+ 578 0082 0020     		movs	r0, #0
+ 579 0084 FFF7FEFF 		bl	Pin_B1_Write
+ 580              	.LVL60:
+ 251:main.c        ****                     Pin_A2_Write(0);
+ 581              		.loc 1 251 0
+ 582 0088 0020     		movs	r0, #0
+ 583 008a FFF7FEFF 		bl	Pin_B2_Write
+ 584              	.LVL61:
+ 252:main.c        ****                     Pin_A1_Write(1);
+ 585              		.loc 1 252 0
+ 586 008e 0020     		movs	r0, #0
+ 587 0090 FFF7FEFF 		bl	Pin_A2_Write
+ 588              	.LVL62:
+ 253:main.c        ****                     stepState = A1;
+ 589              		.loc 1 253 0
+ 590 0094 0120     		movs	r0, #1
+ 591 0096 FFF7FEFF 		bl	Pin_A1_Write
+ 592              	.LVL63:
+ 254:main.c        ****                     break;
+ 593              		.loc 1 254 0
+ 594 009a 0022     		movs	r2, #0
+ 595 009c 6D4B     		ldr	r3, .L80+4
+ 596 009e 9A70     		strb	r2, [r3, #2]
+ 255:main.c        ****             }
+ 597              		.loc 1 255 0
+ 598 00a0 D1E0     		b	.L45
+ 599              	.L47:
+ 258:main.c        ****         {
+ 600              		.loc 1 258 0
+ 601 00a2 012B     		cmp	r3, #1
+ 602 00a4 40F0CF80 		bne	.L45
+ 260:main.c        ****             {
+ 603              		.loc 1 260 0
+ 604 00a8 6A4B     		ldr	r3, .L80+4
+ 605 00aa 9B78     		ldrb	r3, [r3, #2]	@ zero_extendqisi2
+ 606 00ac 062B     		cmp	r3, #6
+ 607 00ae 2DD8     		bhi	.L54
+ 608 00b0 DFE803F0 		tbb	[pc, r3]
+ 609              	.L56:
+ 610 00b4 04       		.byte	(.L55-.L56)/2
+ 611 00b5 2C       		.byte	(.L54-.L56)/2
+ 612 00b6 0E       		.byte	(.L57-.L56)/2
+ 613 00b7 2C       		.byte	(.L54-.L56)/2
+ 614 00b8 18       		.byte	(.L58-.L56)/2
+ 615 00b9 2C       		.byte	(.L54-.L56)/2
+ 616 00ba 22       		.byte	(.L59-.L56)/2
+ 617 00bb 00       		.p2align 1
+ 618              	.L55:
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 20
+
+
+ 263:main.c        ****                     Pin_B2_Write(1);
+ 619              		.loc 1 263 0
+ 620 00bc 0020     		movs	r0, #0
+ 621 00be FFF7FEFF 		bl	Pin_A1_Write
+ 622              	.LVL64:
+ 264:main.c        ****                     stepState = B2;
+ 623              		.loc 1 264 0
+ 624 00c2 0120     		movs	r0, #1
+ 625 00c4 FFF7FEFF 		bl	Pin_B2_Write
+ 626              	.LVL65:
+ 265:main.c        ****                     break;
+ 627              		.loc 1 265 0
+ 628 00c8 0622     		movs	r2, #6
+ 629 00ca 624B     		ldr	r3, .L80+4
+ 630 00cc 9A70     		strb	r2, [r3, #2]
+ 266:main.c        ****                 case A2:
+ 631              		.loc 1 266 0
+ 632 00ce BAE0     		b	.L45
+ 633              	.L57:
+ 268:main.c        ****                     Pin_A1_Write(1);
+ 634              		.loc 1 268 0
+ 635 00d0 0020     		movs	r0, #0
+ 636 00d2 FFF7FEFF 		bl	Pin_A2_Write
+ 637              	.LVL66:
+ 269:main.c        ****                     stepState = A1;
+ 638              		.loc 1 269 0
+ 639 00d6 0120     		movs	r0, #1
+ 640 00d8 FFF7FEFF 		bl	Pin_A1_Write
+ 641              	.LVL67:
+ 270:main.c        ****                     break;
+ 642              		.loc 1 270 0
+ 643 00dc 0022     		movs	r2, #0
+ 644 00de 5D4B     		ldr	r3, .L80+4
+ 645 00e0 9A70     		strb	r2, [r3, #2]
+ 271:main.c        ****                 case B1:
+ 646              		.loc 1 271 0
+ 647 00e2 B0E0     		b	.L45
+ 648              	.L58:
+ 273:main.c        ****                     Pin_A2_Write(1);
+ 649              		.loc 1 273 0
+ 650 00e4 0020     		movs	r0, #0
+ 651 00e6 FFF7FEFF 		bl	Pin_B1_Write
+ 652              	.LVL68:
+ 274:main.c        ****                     stepState = A2;
+ 653              		.loc 1 274 0
+ 654 00ea 0120     		movs	r0, #1
+ 655 00ec FFF7FEFF 		bl	Pin_A2_Write
+ 656              	.LVL69:
+ 275:main.c        ****                     break;
+ 657              		.loc 1 275 0
+ 658 00f0 0222     		movs	r2, #2
+ 659 00f2 584B     		ldr	r3, .L80+4
+ 660 00f4 9A70     		strb	r2, [r3, #2]
+ 276:main.c        ****                 case B2:
+ 661              		.loc 1 276 0
+ 662 00f6 A6E0     		b	.L45
+ 663              	.L59:
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 21
+
+
+ 278:main.c        ****                     Pin_B1_Write(1);
+ 664              		.loc 1 278 0
+ 665 00f8 0020     		movs	r0, #0
+ 666 00fa FFF7FEFF 		bl	Pin_B2_Write
+ 667              	.LVL70:
+ 279:main.c        ****                     stepState = B1;
+ 668              		.loc 1 279 0
+ 669 00fe 0120     		movs	r0, #1
+ 670 0100 FFF7FEFF 		bl	Pin_B1_Write
+ 671              	.LVL71:
+ 280:main.c        ****                     break;
+ 672              		.loc 1 280 0
+ 673 0104 0422     		movs	r2, #4
+ 674 0106 534B     		ldr	r3, .L80+4
+ 675 0108 9A70     		strb	r2, [r3, #2]
+ 281:main.c        ****                 default:
+ 676              		.loc 1 281 0
+ 677 010a 9CE0     		b	.L45
+ 678              	.L54:
+ 284:main.c        ****                     Pin_B2_Write(0);
+ 679              		.loc 1 284 0
+ 680 010c 0020     		movs	r0, #0
+ 681 010e FFF7FEFF 		bl	Pin_B1_Write
+ 682              	.LVL72:
+ 285:main.c        ****                     Pin_A2_Write(0);
+ 683              		.loc 1 285 0
+ 684 0112 0020     		movs	r0, #0
+ 685 0114 FFF7FEFF 		bl	Pin_B2_Write
+ 686              	.LVL73:
+ 286:main.c        ****                     Pin_A1_Write(1);
+ 687              		.loc 1 286 0
+ 688 0118 0020     		movs	r0, #0
+ 689 011a FFF7FEFF 		bl	Pin_A2_Write
+ 690              	.LVL74:
+ 287:main.c        ****                     stepState = A1;
+ 691              		.loc 1 287 0
+ 692 011e 0120     		movs	r0, #1
+ 693 0120 FFF7FEFF 		bl	Pin_A1_Write
+ 694              	.LVL75:
+ 288:main.c        ****                     break;
+ 695              		.loc 1 288 0
+ 696 0124 0022     		movs	r2, #0
+ 697 0126 4B4B     		ldr	r3, .L80+4
+ 698 0128 9A70     		strb	r2, [r3, #2]
+ 289:main.c        ****             }
+ 699              		.loc 1 289 0
+ 700 012a 8CE0     		b	.L45
+ 701              	.L46:
+ 294:main.c        ****     {
+ 702              		.loc 1 294 0
+ 703 012c 012B     		cmp	r3, #1
+ 704 012e 40F08A80 		bne	.L45
+ 296:main.c        ****         {
+ 705              		.loc 1 296 0
+ 706 0132 484B     		ldr	r3, .L80+4
+ 707 0134 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 708 0136 002B     		cmp	r3, #0
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 22
+
+
+ 709 0138 42D1     		bne	.L60
+ 298:main.c        ****             {
+ 710              		.loc 1 298 0
+ 711 013a 464B     		ldr	r3, .L80+4
+ 712 013c 9B78     		ldrb	r3, [r3, #2]	@ zero_extendqisi2
+ 713 013e 072B     		cmp	r3, #7
+ 714 0140 00F28180 		bhi	.L45
+ 715 0144 DFE803F0 		tbb	[pc, r3]
+ 716              	.L62:
+ 717 0148 04       		.byte	(.L61-.L62)/2
+ 718 0149 0B       		.byte	(.L63-.L62)/2
+ 719 014a 12       		.byte	(.L64-.L62)/2
+ 720 014b 19       		.byte	(.L65-.L62)/2
+ 721 014c 20       		.byte	(.L66-.L62)/2
+ 722 014d 27       		.byte	(.L67-.L62)/2
+ 723 014e 2E       		.byte	(.L68-.L62)/2
+ 724 014f 35       		.byte	(.L69-.L62)/2
+ 725              		.p2align 1
+ 726              	.L61:
+ 301:main.c        ****                     stepState = A1A2;
+ 727              		.loc 1 301 0
+ 728 0150 0120     		movs	r0, #1
+ 729 0152 FFF7FEFF 		bl	Pin_A2_Write
+ 730              	.LVL76:
+ 302:main.c        ****                     break;
+ 731              		.loc 1 302 0
+ 732 0156 0122     		movs	r2, #1
+ 733 0158 3E4B     		ldr	r3, .L80+4
+ 734 015a 9A70     		strb	r2, [r3, #2]
+ 303:main.c        ****                 case A1A2:
+ 735              		.loc 1 303 0
+ 736 015c 73E0     		b	.L45
+ 737              	.L63:
+ 305:main.c        ****                     stepState = A2;
+ 738              		.loc 1 305 0
+ 739 015e 0020     		movs	r0, #0
+ 740 0160 FFF7FEFF 		bl	Pin_A1_Write
+ 741              	.LVL77:
+ 306:main.c        ****                     break;
+ 742              		.loc 1 306 0
+ 743 0164 0222     		movs	r2, #2
+ 744 0166 3B4B     		ldr	r3, .L80+4
+ 745 0168 9A70     		strb	r2, [r3, #2]
+ 307:main.c        ****                 case A2:
+ 746              		.loc 1 307 0
+ 747 016a 6CE0     		b	.L45
+ 748              	.L64:
+ 309:main.c        ****                     stepState = A2B1;
+ 749              		.loc 1 309 0
+ 750 016c 0120     		movs	r0, #1
+ 751 016e FFF7FEFF 		bl	Pin_B1_Write
+ 752              	.LVL78:
+ 310:main.c        ****                     break;
+ 753              		.loc 1 310 0
+ 754 0172 0322     		movs	r2, #3
+ 755 0174 374B     		ldr	r3, .L80+4
+ 756 0176 9A70     		strb	r2, [r3, #2]
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 23
+
+
+ 311:main.c        ****                 case A2B1:
+ 757              		.loc 1 311 0
+ 758 0178 65E0     		b	.L45
+ 759              	.L65:
+ 313:main.c        ****                     stepState = B1;
+ 760              		.loc 1 313 0
+ 761 017a 0020     		movs	r0, #0
+ 762 017c FFF7FEFF 		bl	Pin_A2_Write
+ 763              	.LVL79:
+ 314:main.c        ****                     break;
+ 764              		.loc 1 314 0
+ 765 0180 0422     		movs	r2, #4
+ 766 0182 344B     		ldr	r3, .L80+4
+ 767 0184 9A70     		strb	r2, [r3, #2]
+ 315:main.c        ****                 case B1:
+ 768              		.loc 1 315 0
+ 769 0186 5EE0     		b	.L45
+ 770              	.L66:
+ 317:main.c        ****                     stepState = B1B2;
+ 771              		.loc 1 317 0
+ 772 0188 0120     		movs	r0, #1
+ 773 018a FFF7FEFF 		bl	Pin_B2_Write
+ 774              	.LVL80:
+ 318:main.c        ****                     break;
+ 775              		.loc 1 318 0
+ 776 018e 0522     		movs	r2, #5
+ 777 0190 304B     		ldr	r3, .L80+4
+ 778 0192 9A70     		strb	r2, [r3, #2]
+ 319:main.c        ****                 case B1B2:
+ 779              		.loc 1 319 0
+ 780 0194 57E0     		b	.L45
+ 781              	.L67:
+ 321:main.c        ****                     stepState = B2;
+ 782              		.loc 1 321 0
+ 783 0196 0020     		movs	r0, #0
+ 784 0198 FFF7FEFF 		bl	Pin_B1_Write
+ 785              	.LVL81:
+ 322:main.c        ****                     break;
+ 786              		.loc 1 322 0
+ 787 019c 0622     		movs	r2, #6
+ 788 019e 2D4B     		ldr	r3, .L80+4
+ 789 01a0 9A70     		strb	r2, [r3, #2]
+ 323:main.c        ****                 case B2:
+ 790              		.loc 1 323 0
+ 791 01a2 50E0     		b	.L45
+ 792              	.L68:
+ 325:main.c        ****                     stepState = B2A1;
+ 793              		.loc 1 325 0
+ 794 01a4 0120     		movs	r0, #1
+ 795 01a6 FFF7FEFF 		bl	Pin_A1_Write
+ 796              	.LVL82:
+ 326:main.c        ****                     break;
+ 797              		.loc 1 326 0
+ 798 01aa 0722     		movs	r2, #7
+ 799 01ac 294B     		ldr	r3, .L80+4
+ 800 01ae 9A70     		strb	r2, [r3, #2]
+ 327:main.c        ****                 case B2A1:
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 24
+
+
+ 801              		.loc 1 327 0
+ 802 01b0 49E0     		b	.L45
+ 803              	.L69:
+ 329:main.c        ****                     stepState = A1;
+ 804              		.loc 1 329 0
+ 805 01b2 0020     		movs	r0, #0
+ 806 01b4 FFF7FEFF 		bl	Pin_B2_Write
+ 807              	.LVL83:
+ 330:main.c        ****                     break;
+ 808              		.loc 1 330 0
+ 809 01b8 0022     		movs	r2, #0
+ 810 01ba 264B     		ldr	r3, .L80+4
+ 811 01bc 9A70     		strb	r2, [r3, #2]
+ 331:main.c        ****             }    
+ 812              		.loc 1 331 0
+ 813 01be 42E0     		b	.L45
+ 814              	.L60:
+ 334:main.c        ****         {
+ 815              		.loc 1 334 0
+ 816 01c0 012B     		cmp	r3, #1
+ 817 01c2 40D1     		bne	.L45
+ 336:main.c        ****             {
+ 818              		.loc 1 336 0
+ 819 01c4 234B     		ldr	r3, .L80+4
+ 820 01c6 9B78     		ldrb	r3, [r3, #2]	@ zero_extendqisi2
+ 821 01c8 072B     		cmp	r3, #7
+ 822 01ca 3CD8     		bhi	.L45
+ 823 01cc DFE803F0 		tbb	[pc, r3]
+ 824              	.L71:
+ 825 01d0 04       		.byte	(.L70-.L71)/2
+ 826 01d1 0B       		.byte	(.L72-.L71)/2
+ 827 01d2 12       		.byte	(.L73-.L71)/2
+ 828 01d3 19       		.byte	(.L74-.L71)/2
+ 829 01d4 20       		.byte	(.L75-.L71)/2
+ 830 01d5 27       		.byte	(.L76-.L71)/2
+ 831 01d6 2E       		.byte	(.L77-.L71)/2
+ 832 01d7 35       		.byte	(.L78-.L71)/2
+ 833              		.p2align 1
+ 834              	.L70:
+ 339:main.c        ****                     stepState = B2A1;
+ 835              		.loc 1 339 0
+ 836 01d8 0120     		movs	r0, #1
+ 837 01da FFF7FEFF 		bl	Pin_B2_Write
+ 838              	.LVL84:
+ 340:main.c        ****                     break;
+ 839              		.loc 1 340 0
+ 840 01de 0722     		movs	r2, #7
+ 841 01e0 1C4B     		ldr	r3, .L80+4
+ 842 01e2 9A70     		strb	r2, [r3, #2]
+ 341:main.c        ****                 case A1A2:
+ 843              		.loc 1 341 0
+ 844 01e4 2FE0     		b	.L45
+ 845              	.L72:
+ 343:main.c        ****                     stepState = A1;
+ 846              		.loc 1 343 0
+ 847 01e6 0020     		movs	r0, #0
+ 848 01e8 FFF7FEFF 		bl	Pin_A2_Write
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 25
+
+
+ 849              	.LVL85:
+ 344:main.c        ****                     break;
+ 850              		.loc 1 344 0
+ 851 01ec 0022     		movs	r2, #0
+ 852 01ee 194B     		ldr	r3, .L80+4
+ 853 01f0 9A70     		strb	r2, [r3, #2]
+ 345:main.c        ****                 case A2:
+ 854              		.loc 1 345 0
+ 855 01f2 28E0     		b	.L45
+ 856              	.L73:
+ 347:main.c        ****                     stepState = A1A2;
+ 857              		.loc 1 347 0
+ 858 01f4 0120     		movs	r0, #1
+ 859 01f6 FFF7FEFF 		bl	Pin_A1_Write
+ 860              	.LVL86:
+ 348:main.c        ****                     break;
+ 861              		.loc 1 348 0
+ 862 01fa 0122     		movs	r2, #1
+ 863 01fc 154B     		ldr	r3, .L80+4
+ 864 01fe 9A70     		strb	r2, [r3, #2]
+ 349:main.c        ****                 case A2B1:
+ 865              		.loc 1 349 0
+ 866 0200 21E0     		b	.L45
+ 867              	.L74:
+ 351:main.c        ****                     stepState = A2;
+ 868              		.loc 1 351 0
+ 869 0202 0020     		movs	r0, #0
+ 870 0204 FFF7FEFF 		bl	Pin_B1_Write
+ 871              	.LVL87:
+ 352:main.c        ****                     break;
+ 872              		.loc 1 352 0
+ 873 0208 0222     		movs	r2, #2
+ 874 020a 124B     		ldr	r3, .L80+4
+ 875 020c 9A70     		strb	r2, [r3, #2]
+ 353:main.c        ****                 case B1:
+ 876              		.loc 1 353 0
+ 877 020e 1AE0     		b	.L45
+ 878              	.L75:
+ 355:main.c        ****                     stepState = A2B1;
+ 879              		.loc 1 355 0
+ 880 0210 0120     		movs	r0, #1
+ 881 0212 FFF7FEFF 		bl	Pin_A2_Write
+ 882              	.LVL88:
+ 356:main.c        ****                     break;
+ 883              		.loc 1 356 0
+ 884 0216 0322     		movs	r2, #3
+ 885 0218 0E4B     		ldr	r3, .L80+4
+ 886 021a 9A70     		strb	r2, [r3, #2]
+ 357:main.c        ****                 case B1B2:
+ 887              		.loc 1 357 0
+ 888 021c 13E0     		b	.L45
+ 889              	.L76:
+ 359:main.c        ****                     stepState = B1;
+ 890              		.loc 1 359 0
+ 891 021e 0020     		movs	r0, #0
+ 892 0220 FFF7FEFF 		bl	Pin_B2_Write
+ 893              	.LVL89:
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 26
+
+
+ 360:main.c        ****                     break;
+ 894              		.loc 1 360 0
+ 895 0224 0422     		movs	r2, #4
+ 896 0226 0B4B     		ldr	r3, .L80+4
+ 897 0228 9A70     		strb	r2, [r3, #2]
+ 361:main.c        ****                 case B2:
+ 898              		.loc 1 361 0
+ 899 022a 0CE0     		b	.L45
+ 900              	.L77:
+ 363:main.c        ****                     stepState = B1B2;
+ 901              		.loc 1 363 0
+ 902 022c 0120     		movs	r0, #1
+ 903 022e FFF7FEFF 		bl	Pin_B1_Write
+ 904              	.LVL90:
+ 364:main.c        ****                     break;
+ 905              		.loc 1 364 0
+ 906 0232 0522     		movs	r2, #5
+ 907 0234 074B     		ldr	r3, .L80+4
+ 908 0236 9A70     		strb	r2, [r3, #2]
+ 365:main.c        ****                 case B2A1:
+ 909              		.loc 1 365 0
+ 910 0238 05E0     		b	.L45
+ 911              	.L78:
+ 367:main.c        ****                     stepState = B2;
+ 912              		.loc 1 367 0
+ 913 023a 0020     		movs	r0, #0
+ 914 023c FFF7FEFF 		bl	Pin_A1_Write
+ 915              	.LVL91:
+ 368:main.c        ****                     break;
+ 916              		.loc 1 368 0
+ 917 0240 0622     		movs	r2, #6
+ 918 0242 044B     		ldr	r3, .L80+4
+ 919 0244 9A70     		strb	r2, [r3, #2]
+ 920              	.L45:
+ 374:main.c        ****     
+ 921              		.loc 1 374 0
+ 922 0246 0022     		movs	r2, #0
+ 923 0248 014B     		ldr	r3, .L80
+ 924 024a 1A70     		strb	r2, [r3]
+ 925 024c 08BD     		pop	{r3, pc}
+ 926              	.L81:
+ 927 024e 00BF     		.align	2
+ 928              	.L80:
+ 929 0250 00000000 		.word	.LANCHOR0
+ 930 0254 00000000 		.word	.LANCHOR1
+ 931              		.cfi_endproc
+ 932              	.LFE73:
+ 933              		.size	drive, .-drive
+ 934              		.section	.text.main,"ax",%progbits
+ 935              		.align	2
+ 936              		.global	main
+ 937              		.thumb
+ 938              		.thumb_func
+ 939              		.type	main, %function
+ 940              	main:
+ 941              	.LFB64:
+  60:main.c        ****     CyGlobalIntEnable; /* Enable global interrupts. */
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 27
+
+
+ 942              		.loc 1 60 0
+ 943              		.cfi_startproc
+ 944              		@ args = 0, pretend = 0, frame = 256
+ 945              		@ frame_needed = 0, uses_anonymous_args = 0
+ 946 0000 00B5     		push	{lr}
+ 947              		.cfi_def_cfa_offset 4
+ 948              		.cfi_offset 14, -4
+ 949 0002 C3B0     		sub	sp, sp, #268
+ 950              		.cfi_def_cfa_offset 272
+  61:main.c        **** 
+ 951              		.loc 1 61 0
+ 952              		.syntax unified
+ 953              	@ 61 "main.c" 1
+ 954 0004 62B6     		CPSIE   i
+ 955              	@ 0 "" 2
+  66:main.c        ****     isr_timer_StartEx(ISR_Timer);
+ 956              		.loc 1 66 0
+ 957              		.thumb
+ 958              		.syntax unified
+ 959 0006 1C48     		ldr	r0, .L85
+ 960 0008 FFF7FEFF 		bl	isr_uart_rx_StartEx
+ 961              	.LVL92:
+  67:main.c        ****     Timer_1_Start();
+ 962              		.loc 1 67 0
+ 963 000c 1B48     		ldr	r0, .L85+4
+ 964 000e FFF7FEFF 		bl	isr_timer_StartEx
+ 965              	.LVL93:
+  68:main.c        ****     UART_1_Start();
+ 966              		.loc 1 68 0
+ 967 0012 FFF7FEFF 		bl	Timer_1_Start
+ 968              	.LVL94:
+  69:main.c        ****     
+ 969              		.loc 1 69 0
+ 970 0016 FFF7FEFF 		bl	UART_1_Start
+ 971              	.LVL95:
+  71:main.c        ****     UART_1_PutString("0: Stop\r\n");
+ 972              		.loc 1 71 0
+ 973 001a 1948     		ldr	r0, .L85+8
+ 974 001c FFF7FEFF 		bl	UART_1_PutString
+ 975              	.LVL96:
+  72:main.c        ****     UART_1_PutString("1: Drive forwards\r\n");
+ 976              		.loc 1 72 0
+ 977 0020 1848     		ldr	r0, .L85+12
+ 978 0022 FFF7FEFF 		bl	UART_1_PutString
+ 979              	.LVL97:
+  73:main.c        ****     UART_1_PutString("2: Drive backwards\r\n");
+ 980              		.loc 1 73 0
+ 981 0026 1848     		ldr	r0, .L85+16
+ 982 0028 FFF7FEFF 		bl	UART_1_PutString
+ 983              	.LVL98:
+  74:main.c        ****     UART_1_PutString("q: Decrease speed\r\n");
+ 984              		.loc 1 74 0
+ 985 002c 1748     		ldr	r0, .L85+20
+ 986 002e FFF7FEFF 		bl	UART_1_PutString
+ 987              	.LVL99:
+  75:main.c        ****     UART_1_PutString("w: Increase speed\r\n");
+ 988              		.loc 1 75 0
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 28
+
+
+ 989 0032 1748     		ldr	r0, .L85+24
+ 990 0034 FFF7FEFF 		bl	UART_1_PutString
+ 991              	.LVL100:
+  76:main.c        ****     UART_1_PutString("a: Select drive state\r\n");
+ 992              		.loc 1 76 0
+ 993 0038 1648     		ldr	r0, .L85+28
+ 994 003a FFF7FEFF 		bl	UART_1_PutString
+ 995              	.LVL101:
+  77:main.c        ****     
+ 996              		.loc 1 77 0
+ 997 003e 1648     		ldr	r0, .L85+32
+ 998 0040 FFF7FEFF 		bl	UART_1_PutString
+ 999              	.LVL102:
+  79:main.c        ****     stepState = A1;
+ 1000              		.loc 1 79 0
+ 1001 0044 154B     		ldr	r3, .L85+36
+ 1002 0046 0022     		movs	r2, #0
+ 1003 0048 5A70     		strb	r2, [r3, #1]
+  80:main.c        ****     directionState = FORWARDS;
+ 1004              		.loc 1 80 0
+ 1005 004a 9A70     		strb	r2, [r3, #2]
+  81:main.c        ****     char debugBuffer[256]; 
+ 1006              		.loc 1 81 0
+ 1007 004c 1A70     		strb	r2, [r3]
+  84:main.c        ****     
+ 1008              		.loc 1 84 0
+ 1009 004e 0122     		movs	r2, #1
+ 1010 0050 134B     		ldr	r3, .L85+40
+ 1011 0052 1A70     		strb	r2, [r3]
+ 1012              	.L83:
+  89:main.c        ****         //CyDelay(500);
+ 1013              		.loc 1 89 0 discriminator 1
+ 1014 0054 FFF7FEFF 		bl	drive
+ 1015              	.LVL103:
+  91:main.c        ****             driveState, stepState, directionState);
+ 1016              		.loc 1 91 0 discriminator 1
+ 1017 0058 104A     		ldr	r2, .L85+36
+ 1018 005a 5378     		ldrb	r3, [r2, #1]	@ zero_extendqisi2
+ 1019 005c 1178     		ldrb	r1, [r2]	@ zero_extendqisi2
+ 1020 005e 0191     		str	r1, [sp, #4]
+ 1021 0060 9278     		ldrb	r2, [r2, #2]	@ zero_extendqisi2
+ 1022 0062 0092     		str	r2, [sp]
+ 1023 0064 0F4A     		ldr	r2, .L85+44
+ 1024 0066 4FF48071 		mov	r1, #256
+ 1025 006a 02A8     		add	r0, sp, #8
+ 1026 006c FFF7FEFF 		bl	snprintf
+ 1027              	.LVL104:
+  93:main.c        ****     }
+ 1028              		.loc 1 93 0 discriminator 1
+ 1029 0070 02A8     		add	r0, sp, #8
+ 1030 0072 FFF7FEFF 		bl	UART_1_PutString
+ 1031              	.LVL105:
+ 1032 0076 EDE7     		b	.L83
+ 1033              	.L86:
+ 1034              		.align	2
+ 1035              	.L85:
+ 1036 0078 00000000 		.word	ISR_UART_rx_handler
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 29
+
+
+ 1037 007c 00000000 		.word	ISR_Timer
+ 1038 0080 A0000000 		.word	.LC8
+ 1039 0084 C4000000 		.word	.LC9
+ 1040 0088 D0000000 		.word	.LC10
+ 1041 008c E4000000 		.word	.LC11
+ 1042 0090 FC000000 		.word	.LC12
+ 1043 0094 10010000 		.word	.LC13
+ 1044 0098 24010000 		.word	.LC14
+ 1045 009c 00000000 		.word	.LANCHOR1
+ 1046 00a0 00000000 		.word	.LANCHOR0
+ 1047 00a4 3C010000 		.word	.LC15
+ 1048              		.cfi_endproc
+ 1049              	.LFE64:
+ 1050              		.size	main, .-main
+ 1051              		.data
+ 1052              		.set	.LANCHOR0,. + 0
+ 1053              		.type	stepBool, %object
+ 1054              		.size	stepBool, 1
+ 1055              	stepBool:
+ 1056 0000 01       		.byte	1
+ 1057              		.section	.rodata.str1.4,"aMS",%progbits,1
+ 1058              		.align	2
+ 1059              	.LC0:
+ 1060 0000 44656372 		.ascii	"Decreasing speed\012\015\000"
+ 1060      65617369 
+ 1060      6E672073 
+ 1060      70656564 
+ 1060      0A0D00
+ 1061 0013 00       		.space	1
+ 1062              	.LC1:
+ 1063 0014 42797465 		.ascii	"Bytes read: %d\015\012\000"
+ 1063      73207265 
+ 1063      61643A20 
+ 1063      25640D0A 
+ 1063      00
+ 1064 0025 000000   		.space	3
+ 1065              	.LC2:
+ 1066 0028 496E6372 		.ascii	"Increasing speed\012\015\000"
+ 1066      65617369 
+ 1066      6E672073 
+ 1066      70656564 
+ 1066      0A0D00
+ 1067 003b 00       		.space	1
+ 1068              	.LC3:
+ 1069 003c 53657420 		.ascii	"Set direction: forwards\012\015\000"
+ 1069      64697265 
+ 1069      6374696F 
+ 1069      6E3A2066 
+ 1069      6F727761 
+ 1070 0056 0000     		.space	2
+ 1071              	.LC4:
+ 1072 0058 53657420 		.ascii	"Set direction: backwards\012\015\000"
+ 1072      64697265 
+ 1072      6374696F 
+ 1072      6E3A2062 
+ 1072      61636B77 
+ 1073 0073 00       		.space	1
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 30
+
+
+ 1074              	.LC5:
+ 1075 0074 53746F70 		.ascii	"Stop\012\015\000"
+ 1075      0A0D00
+ 1076 007b 00       		.space	1
+ 1077              	.LC6:
+ 1078 007c 48616C66 		.ascii	"Half Step Drive\012\015\000"
+ 1078      20537465 
+ 1078      70204472 
+ 1078      6976650A 
+ 1078      0D00
+ 1079 008e 0000     		.space	2
+ 1080              	.LC7:
+ 1081 0090 0D576176 		.ascii	"\015Wave Drive\012\015\000"
+ 1081      65204472 
+ 1081      6976650A 
+ 1081      0D00
+ 1082 009e 0000     		.space	2
+ 1083              	.LC8:
+ 1084 00a0 44432D4D 		.ascii	"DC-Motor-PWM application started\015\012\000"
+ 1084      6F746F72 
+ 1084      2D50574D 
+ 1084      20617070 
+ 1084      6C696361 
+ 1085 00c3 00       		.space	1
+ 1086              	.LC9:
+ 1087 00c4 303A2053 		.ascii	"0: Stop\015\012\000"
+ 1087      746F700D 
+ 1087      0A00
+ 1088 00ce 0000     		.space	2
+ 1089              	.LC10:
+ 1090 00d0 313A2044 		.ascii	"1: Drive forwards\015\012\000"
+ 1090      72697665 
+ 1090      20666F72 
+ 1090      77617264 
+ 1090      730D0A00 
+ 1091              	.LC11:
+ 1092 00e4 323A2044 		.ascii	"2: Drive backwards\015\012\000"
+ 1092      72697665 
+ 1092      20626163 
+ 1092      6B776172 
+ 1092      64730D0A 
+ 1093 00f9 000000   		.space	3
+ 1094              	.LC12:
+ 1095 00fc 713A2044 		.ascii	"q: Decrease speed\015\012\000"
+ 1095      65637265 
+ 1095      61736520 
+ 1095      73706565 
+ 1095      640D0A00 
+ 1096              	.LC13:
+ 1097 0110 773A2049 		.ascii	"w: Increase speed\015\012\000"
+ 1097      6E637265 
+ 1097      61736520 
+ 1097      73706565 
+ 1097      640D0A00 
+ 1098              	.LC14:
+ 1099 0124 613A2053 		.ascii	"a: Select drive state\015\012\000"
+ 1099      656C6563 
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 31
+
+
+ 1099      74206472 
+ 1099      69766520 
+ 1099      73746174 
+ 1100              	.LC15:
+ 1101 013c 0D447269 		.ascii	"\015DriveState %d  Step: %d Direction %d\000"
+ 1101      76655374 
+ 1101      61746520 
+ 1101      25642020 
+ 1101      53746570 
+ 1102              		.bss
+ 1103              		.set	.LANCHOR1,. + 0
+ 1104              		.type	directionState, %object
+ 1105              		.size	directionState, 1
+ 1106              	directionState:
+ 1107 0000 00       		.space	1
+ 1108              		.type	driveState, %object
+ 1109              		.size	driveState, 1
+ 1110              	driveState:
+ 1111 0001 00       		.space	1
+ 1112              		.type	stepState, %object
+ 1113              		.size	stepState, 1
+ 1114              	stepState:
+ 1115 0002 00       		.space	1
+ 1116              		.text
+ 1117              	.Letext0:
+ 1118              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
+ 1119              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
+ 1120              		.file 4 "Generated_Source\\PSoC5/UART_1.h"
+ 1121              		.file 5 "Generated_Source\\PSoC5/Timer_1.h"
+ 1122              		.file 6 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
+ 1123              		.file 7 "Generated_Source\\PSoC5/Pin_A1.h"
+ 1124              		.file 8 "Generated_Source\\PSoC5/Pin_A2.h"
+ 1125              		.file 9 "Generated_Source\\PSoC5/Pin_B1.h"
+ 1126              		.file 10 "Generated_Source\\PSoC5/Pin_B2.h"
+ 1127              		.file 11 "Generated_Source\\PSoC5/isr_uart_rx.h"
+ 1128              		.file 12 "Generated_Source\\PSoC5/isr_timer.h"
+ 1129              		.file 13 "Generated_Source\\PSoC5/core_cm3.h"
+ 1130              		.section	.debug_info,"",%progbits
+ 1131              	.Ldebug_info0:
+ 1132 0000 AD090000 		.4byte	0x9ad
+ 1133 0004 0400     		.2byte	0x4
+ 1134 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 1135 000a 04       		.byte	0x4
+ 1136 000b 01       		.uleb128 0x1
+ 1137 000c 94030000 		.4byte	.LASF65
+ 1138 0010 0C       		.byte	0xc
+ 1139 0011 0E030000 		.4byte	.LASF66
+ 1140 0015 0C000000 		.4byte	.LASF67
+ 1141 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 1142 001d 00000000 		.4byte	0
+ 1143 0021 00000000 		.4byte	.Ldebug_line0
+ 1144 0025 02       		.uleb128 0x2
+ 1145 0026 01       		.byte	0x1
+ 1146 0027 06       		.byte	0x6
+ 1147 0028 90000000 		.4byte	.LASF0
+ 1148 002c 03       		.uleb128 0x3
+ 1149 002d 3F040000 		.4byte	.LASF3
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 32
+
+
+ 1150 0031 02       		.byte	0x2
+ 1151 0032 1D       		.byte	0x1d
+ 1152 0033 37000000 		.4byte	0x37
+ 1153 0037 02       		.uleb128 0x2
+ 1154 0038 01       		.byte	0x1
+ 1155 0039 08       		.byte	0x8
+ 1156 003a FA010000 		.4byte	.LASF1
+ 1157 003e 02       		.uleb128 0x2
+ 1158 003f 02       		.byte	0x2
+ 1159 0040 05       		.byte	0x5
+ 1160 0041 FC000000 		.4byte	.LASF2
+ 1161 0045 03       		.uleb128 0x3
+ 1162 0046 F1000000 		.4byte	.LASF4
+ 1163 004a 02       		.byte	0x2
+ 1164 004b 2B       		.byte	0x2b
+ 1165 004c 50000000 		.4byte	0x50
+ 1166 0050 02       		.uleb128 0x2
+ 1167 0051 02       		.byte	0x2
+ 1168 0052 07       		.byte	0x7
+ 1169 0053 AC020000 		.4byte	.LASF5
+ 1170 0057 03       		.uleb128 0x3
+ 1171 0058 6B030000 		.4byte	.LASF6
+ 1172 005c 02       		.byte	0x2
+ 1173 005d 3F       		.byte	0x3f
+ 1174 005e 62000000 		.4byte	0x62
+ 1175 0062 02       		.uleb128 0x2
+ 1176 0063 04       		.byte	0x4
+ 1177 0064 05       		.byte	0x5
+ 1178 0065 62010000 		.4byte	.LASF7
+ 1179 0069 02       		.uleb128 0x2
+ 1180 006a 04       		.byte	0x4
+ 1181 006b 07       		.byte	0x7
+ 1182 006c 15030000 		.4byte	.LASF8
+ 1183 0070 02       		.uleb128 0x2
+ 1184 0071 08       		.byte	0x8
+ 1185 0072 05       		.byte	0x5
+ 1186 0073 54010000 		.4byte	.LASF9
+ 1187 0077 02       		.uleb128 0x2
+ 1188 0078 08       		.byte	0x8
+ 1189 0079 07       		.byte	0x7
+ 1190 007a 43020000 		.4byte	.LASF10
+ 1191 007e 04       		.uleb128 0x4
+ 1192 007f 04       		.byte	0x4
+ 1193 0080 05       		.byte	0x5
+ 1194 0081 696E7400 		.ascii	"int\000"
+ 1195 0085 02       		.uleb128 0x2
+ 1196 0086 04       		.byte	0x4
+ 1197 0087 07       		.byte	0x7
+ 1198 0088 68020000 		.4byte	.LASF11
+ 1199 008c 03       		.uleb128 0x3
+ 1200 008d 15010000 		.4byte	.LASF12
+ 1201 0091 03       		.byte	0x3
+ 1202 0092 18       		.byte	0x18
+ 1203 0093 2C000000 		.4byte	0x2c
+ 1204 0097 03       		.uleb128 0x3
+ 1205 0098 62030000 		.4byte	.LASF13
+ 1206 009c 03       		.byte	0x3
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 33
+
+
+ 1207 009d 24       		.byte	0x24
+ 1208 009e 45000000 		.4byte	0x45
+ 1209 00a2 03       		.uleb128 0x3
+ 1210 00a3 CF020000 		.4byte	.LASF14
+ 1211 00a7 03       		.byte	0x3
+ 1212 00a8 2C       		.byte	0x2c
+ 1213 00a9 57000000 		.4byte	0x57
+ 1214 00ad 02       		.uleb128 0x2
+ 1215 00ae 04       		.byte	0x4
+ 1216 00af 04       		.byte	0x4
+ 1217 00b0 4E010000 		.4byte	.LASF15
+ 1218 00b4 02       		.uleb128 0x2
+ 1219 00b5 08       		.byte	0x8
+ 1220 00b6 04       		.byte	0x4
+ 1221 00b7 4A030000 		.4byte	.LASF16
+ 1222 00bb 02       		.uleb128 0x2
+ 1223 00bc 01       		.byte	0x1
+ 1224 00bd 08       		.byte	0x8
+ 1225 00be C4020000 		.4byte	.LASF17
+ 1226 00c2 02       		.uleb128 0x2
+ 1227 00c3 08       		.byte	0x8
+ 1228 00c4 04       		.byte	0x4
+ 1229 00c5 EE010000 		.4byte	.LASF18
+ 1230 00c9 02       		.uleb128 0x2
+ 1231 00ca 04       		.byte	0x4
+ 1232 00cb 07       		.byte	0x7
+ 1233 00cc CF000000 		.4byte	.LASF19
+ 1234 00d0 05       		.uleb128 0x5
+ 1235 00d1 01       		.byte	0x1
+ 1236 00d2 37000000 		.4byte	0x37
+ 1237 00d6 01       		.byte	0x1
+ 1238 00d7 1D       		.byte	0x1d
+ 1239 00d8 E9000000 		.4byte	0xe9
+ 1240 00dc 06       		.uleb128 0x6
+ 1241 00dd 1D010000 		.4byte	.LASF20
+ 1242 00e1 00       		.byte	0
+ 1243 00e2 06       		.uleb128 0x6
+ 1244 00e3 81010000 		.4byte	.LASF21
+ 1245 00e7 01       		.byte	0x1
+ 1246 00e8 00       		.byte	0
+ 1247 00e9 03       		.uleb128 0x3
+ 1248 00ea 00000000 		.4byte	.LASF22
+ 1249 00ee 01       		.byte	0x1
+ 1250 00ef 20       		.byte	0x20
+ 1251 00f0 D0000000 		.4byte	0xd0
+ 1252 00f4 05       		.uleb128 0x5
+ 1253 00f5 01       		.byte	0x1
+ 1254 00f6 37000000 		.4byte	0x37
+ 1255 00fa 01       		.byte	0x1
+ 1256 00fb 23       		.byte	0x23
+ 1257 00fc 2D010000 		.4byte	0x12d
+ 1258 0100 07       		.uleb128 0x7
+ 1259 0101 413100   		.ascii	"A1\000"
+ 1260 0104 00       		.byte	0
+ 1261 0105 06       		.uleb128 0x6
+ 1262 0106 91010000 		.4byte	.LASF23
+ 1263 010a 01       		.byte	0x1
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 34
+
+
+ 1264 010b 07       		.uleb128 0x7
+ 1265 010c 413200   		.ascii	"A2\000"
+ 1266 010f 02       		.byte	0x2
+ 1267 0110 06       		.uleb128 0x6
+ 1268 0111 5A020000 		.4byte	.LASF24
+ 1269 0115 03       		.byte	0x3
+ 1270 0116 07       		.uleb128 0x7
+ 1271 0117 423100   		.ascii	"B1\000"
+ 1272 011a 04       		.byte	0x4
+ 1273 011b 06       		.uleb128 0x6
+ 1274 011c 82030000 		.4byte	.LASF25
+ 1275 0120 05       		.byte	0x5
+ 1276 0121 07       		.uleb128 0x7
+ 1277 0122 423200   		.ascii	"B2\000"
+ 1278 0125 06       		.byte	0x6
+ 1279 0126 06       		.uleb128 0x6
+ 1280 0127 F7020000 		.4byte	.LASF26
+ 1281 012b 07       		.byte	0x7
+ 1282 012c 00       		.byte	0
+ 1283 012d 03       		.uleb128 0x3
+ 1284 012e C4000000 		.4byte	.LASF27
+ 1285 0132 01       		.byte	0x1
+ 1286 0133 2C       		.byte	0x2c
+ 1287 0134 F4000000 		.4byte	0xf4
+ 1288 0138 05       		.uleb128 0x5
+ 1289 0139 01       		.byte	0x1
+ 1290 013a 37000000 		.4byte	0x37
+ 1291 013e 01       		.byte	0x1
+ 1292 013f 2F       		.byte	0x2f
+ 1293 0140 51010000 		.4byte	0x151
+ 1294 0144 06       		.uleb128 0x6
+ 1295 0145 78010000 		.4byte	.LASF28
+ 1296 0149 00       		.byte	0
+ 1297 014a 06       		.uleb128 0x6
+ 1298 014b 2B020000 		.4byte	.LASF29
+ 1299 014f 01       		.byte	0x1
+ 1300 0150 00       		.byte	0
+ 1301 0151 03       		.uleb128 0x3
+ 1302 0152 08020000 		.4byte	.LASF30
+ 1303 0156 01       		.byte	0x1
+ 1304 0157 32       		.byte	0x32
+ 1305 0158 38010000 		.4byte	0x138
+ 1306 015c 08       		.uleb128 0x8
+ 1307 015d 94020000 		.4byte	.LASF68
+ 1308 0161 01       		.byte	0x1
+ 1309 0162 7A01     		.2byte	0x17a
+ 1310 0164 00000000 		.4byte	.LFB74
+ 1311 0168 0C000000 		.4byte	.LFE74-.LFB74
+ 1312 016c 01       		.uleb128 0x1
+ 1313 016d 9C       		.byte	0x9c
+ 1314 016e 09       		.uleb128 0x9
+ 1315 016f 22040000 		.4byte	.LASF33
+ 1316 0173 01       		.byte	0x1
+ 1317 0174 9A       		.byte	0x9a
+ 1318 0175 00000000 		.4byte	.LFB67
+ 1319 0179 50000000 		.4byte	.LFE67-.LFB67
+ 1320 017d 01       		.uleb128 0x1
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 35
+
+
+ 1321 017e 9C       		.byte	0x9c
+ 1322 017f 10020000 		.4byte	0x210
+ 1323 0183 0A       		.uleb128 0xa
+ 1324 0184 89000000 		.4byte	.LASF31
+ 1325 0188 01       		.byte	0x1
+ 1326 0189 9D       		.byte	0x9d
+ 1327 018a 97000000 		.4byte	0x97
+ 1328 018e 00000000 		.4byte	.LLST0
+ 1329 0192 0B       		.uleb128 0xb
+ 1330 0193 07030000 		.4byte	.LASF32
+ 1331 0197 01       		.byte	0x1
+ 1332 0198 A1       		.byte	0xa1
+ 1333 0199 10020000 		.4byte	0x210
+ 1334 019d 03       		.uleb128 0x3
+ 1335 019e 91       		.byte	0x91
+ 1336 019f F87D     		.sleb128 -264
+ 1337 01a1 0C       		.uleb128 0xc
+ 1338 01a2 0A000000 		.4byte	.LVL0
+ 1339 01a6 0B090000 		.4byte	0x90b
+ 1340 01aa B8010000 		.4byte	0x1b8
+ 1341 01ae 0D       		.uleb128 0xd
+ 1342 01af 01       		.uleb128 0x1
+ 1343 01b0 50       		.byte	0x50
+ 1344 01b1 05       		.uleb128 0x5
+ 1345 01b2 03       		.byte	0x3
+ 1346 01b3 00000000 		.4byte	.LC0
+ 1347 01b7 00       		.byte	0
+ 1348 01b8 0E       		.uleb128 0xe
+ 1349 01b9 0E000000 		.4byte	.LVL1
+ 1350 01bd 16090000 		.4byte	0x916
+ 1351 01c1 0C       		.uleb128 0xc
+ 1352 01c2 36000000 		.4byte	.LVL9
+ 1353 01c6 21090000 		.4byte	0x921
+ 1354 01ca EB010000 		.4byte	0x1eb
+ 1355 01ce 0D       		.uleb128 0xd
+ 1356 01cf 01       		.uleb128 0x1
+ 1357 01d0 50       		.byte	0x50
+ 1358 01d1 02       		.uleb128 0x2
+ 1359 01d2 7D       		.byte	0x7d
+ 1360 01d3 00       		.sleb128 0
+ 1361 01d4 0D       		.uleb128 0xd
+ 1362 01d5 01       		.uleb128 0x1
+ 1363 01d6 51       		.byte	0x51
+ 1364 01d7 03       		.uleb128 0x3
+ 1365 01d8 0A       		.byte	0xa
+ 1366 01d9 0001     		.2byte	0x100
+ 1367 01db 0D       		.uleb128 0xd
+ 1368 01dc 01       		.uleb128 0x1
+ 1369 01dd 52       		.byte	0x52
+ 1370 01de 05       		.uleb128 0x5
+ 1371 01df 03       		.byte	0x3
+ 1372 01e0 14000000 		.4byte	.LC1
+ 1373 01e4 0D       		.uleb128 0xd
+ 1374 01e5 01       		.uleb128 0x1
+ 1375 01e6 53       		.byte	0x53
+ 1376 01e7 02       		.uleb128 0x2
+ 1377 01e8 74       		.byte	0x74
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 36
+
+
+ 1378 01e9 00       		.sleb128 0
+ 1379 01ea 00       		.byte	0
+ 1380 01eb 0C       		.uleb128 0xc
+ 1381 01ec 3C000000 		.4byte	.LVL10
+ 1382 01f0 0B090000 		.4byte	0x90b
+ 1383 01f4 FF010000 		.4byte	0x1ff
+ 1384 01f8 0D       		.uleb128 0xd
+ 1385 01f9 01       		.uleb128 0x1
+ 1386 01fa 50       		.byte	0x50
+ 1387 01fb 02       		.uleb128 0x2
+ 1388 01fc 7D       		.byte	0x7d
+ 1389 01fd 00       		.sleb128 0
+ 1390 01fe 00       		.byte	0
+ 1391 01ff 0F       		.uleb128 0xf
+ 1392 0200 42000000 		.4byte	.LVL11
+ 1393 0204 2C090000 		.4byte	0x92c
+ 1394 0208 0D       		.uleb128 0xd
+ 1395 0209 01       		.uleb128 0x1
+ 1396 020a 50       		.byte	0x50
+ 1397 020b 02       		.uleb128 0x2
+ 1398 020c 74       		.byte	0x74
+ 1399 020d 00       		.sleb128 0
+ 1400 020e 00       		.byte	0
+ 1401 020f 00       		.byte	0
+ 1402 0210 10       		.uleb128 0x10
+ 1403 0211 BB000000 		.4byte	0xbb
+ 1404 0215 20020000 		.4byte	0x220
+ 1405 0219 11       		.uleb128 0x11
+ 1406 021a C9000000 		.4byte	0xc9
+ 1407 021e FF       		.byte	0xff
+ 1408 021f 00       		.byte	0
+ 1409 0220 09       		.uleb128 0x9
+ 1410 0221 9E020000 		.4byte	.LASF34
+ 1411 0225 01       		.byte	0x1
+ 1412 0226 A9       		.byte	0xa9
+ 1413 0227 00000000 		.4byte	.LFB68
+ 1414 022b 50000000 		.4byte	.LFE68-.LFB68
+ 1415 022f 01       		.uleb128 0x1
+ 1416 0230 9C       		.byte	0x9c
+ 1417 0231 C2020000 		.4byte	0x2c2
+ 1418 0235 0A       		.uleb128 0xa
+ 1419 0236 89000000 		.4byte	.LASF31
+ 1420 023a 01       		.byte	0x1
+ 1421 023b AC       		.byte	0xac
+ 1422 023c 97000000 		.4byte	0x97
+ 1423 0240 34000000 		.4byte	.LLST1
+ 1424 0244 0B       		.uleb128 0xb
+ 1425 0245 07030000 		.4byte	.LASF32
+ 1426 0249 01       		.byte	0x1
+ 1427 024a AF       		.byte	0xaf
+ 1428 024b 10020000 		.4byte	0x210
+ 1429 024f 03       		.uleb128 0x3
+ 1430 0250 91       		.byte	0x91
+ 1431 0251 F87D     		.sleb128 -264
+ 1432 0253 0C       		.uleb128 0xc
+ 1433 0254 0A000000 		.4byte	.LVL13
+ 1434 0258 0B090000 		.4byte	0x90b
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 37
+
+
+ 1435 025c 6A020000 		.4byte	0x26a
+ 1436 0260 0D       		.uleb128 0xd
+ 1437 0261 01       		.uleb128 0x1
+ 1438 0262 50       		.byte	0x50
+ 1439 0263 05       		.uleb128 0x5
+ 1440 0264 03       		.byte	0x3
+ 1441 0265 28000000 		.4byte	.LC2
+ 1442 0269 00       		.byte	0
+ 1443 026a 0E       		.uleb128 0xe
+ 1444 026b 0E000000 		.4byte	.LVL14
+ 1445 026f 16090000 		.4byte	0x916
+ 1446 0273 0C       		.uleb128 0xc
+ 1447 0274 36000000 		.4byte	.LVL22
+ 1448 0278 21090000 		.4byte	0x921
+ 1449 027c 9D020000 		.4byte	0x29d
+ 1450 0280 0D       		.uleb128 0xd
+ 1451 0281 01       		.uleb128 0x1
+ 1452 0282 50       		.byte	0x50
+ 1453 0283 02       		.uleb128 0x2
+ 1454 0284 7D       		.byte	0x7d
+ 1455 0285 00       		.sleb128 0
+ 1456 0286 0D       		.uleb128 0xd
+ 1457 0287 01       		.uleb128 0x1
+ 1458 0288 51       		.byte	0x51
+ 1459 0289 03       		.uleb128 0x3
+ 1460 028a 0A       		.byte	0xa
+ 1461 028b 0001     		.2byte	0x100
+ 1462 028d 0D       		.uleb128 0xd
+ 1463 028e 01       		.uleb128 0x1
+ 1464 028f 52       		.byte	0x52
+ 1465 0290 05       		.uleb128 0x5
+ 1466 0291 03       		.byte	0x3
+ 1467 0292 14000000 		.4byte	.LC1
+ 1468 0296 0D       		.uleb128 0xd
+ 1469 0297 01       		.uleb128 0x1
+ 1470 0298 53       		.byte	0x53
+ 1471 0299 02       		.uleb128 0x2
+ 1472 029a 74       		.byte	0x74
+ 1473 029b 00       		.sleb128 0
+ 1474 029c 00       		.byte	0
+ 1475 029d 0C       		.uleb128 0xc
+ 1476 029e 3C000000 		.4byte	.LVL23
+ 1477 02a2 0B090000 		.4byte	0x90b
+ 1478 02a6 B1020000 		.4byte	0x2b1
+ 1479 02aa 0D       		.uleb128 0xd
+ 1480 02ab 01       		.uleb128 0x1
+ 1481 02ac 50       		.byte	0x50
+ 1482 02ad 02       		.uleb128 0x2
+ 1483 02ae 7D       		.byte	0x7d
+ 1484 02af 00       		.sleb128 0
+ 1485 02b0 00       		.byte	0
+ 1486 02b1 0F       		.uleb128 0xf
+ 1487 02b2 42000000 		.4byte	.LVL24
+ 1488 02b6 2C090000 		.4byte	0x92c
+ 1489 02ba 0D       		.uleb128 0xd
+ 1490 02bb 01       		.uleb128 0x1
+ 1491 02bc 50       		.byte	0x50
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 38
+
+
+ 1492 02bd 02       		.uleb128 0x2
+ 1493 02be 74       		.byte	0x74
+ 1494 02bf 00       		.sleb128 0
+ 1495 02c0 00       		.byte	0
+ 1496 02c1 00       		.byte	0
+ 1497 02c2 12       		.uleb128 0x12
+ 1498 02c3 AF010000 		.4byte	.LASF35
+ 1499 02c7 01       		.byte	0x1
+ 1500 02c8 B7       		.byte	0xb7
+ 1501 02c9 00000000 		.4byte	.LFB69
+ 1502 02cd 1C000000 		.4byte	.LFE69-.LFB69
+ 1503 02d1 01       		.uleb128 0x1
+ 1504 02d2 9C       		.byte	0x9c
+ 1505 02d3 F8020000 		.4byte	0x2f8
+ 1506 02d7 0C       		.uleb128 0xc
+ 1507 02d8 08000000 		.4byte	.LVL26
+ 1508 02dc 0B090000 		.4byte	0x90b
+ 1509 02e0 EE020000 		.4byte	0x2ee
+ 1510 02e4 0D       		.uleb128 0xd
+ 1511 02e5 01       		.uleb128 0x1
+ 1512 02e6 50       		.byte	0x50
+ 1513 02e7 05       		.uleb128 0x5
+ 1514 02e8 03       		.byte	0x3
+ 1515 02e9 3C000000 		.4byte	.LC3
+ 1516 02ed 00       		.byte	0
+ 1517 02ee 0E       		.uleb128 0xe
+ 1518 02ef 12000000 		.4byte	.LVL27
+ 1519 02f3 37090000 		.4byte	0x937
+ 1520 02f7 00       		.byte	0
+ 1521 02f8 12       		.uleb128 0x12
+ 1522 02f9 06010000 		.4byte	.LASF36
+ 1523 02fd 01       		.byte	0x1
+ 1524 02fe BE       		.byte	0xbe
+ 1525 02ff 00000000 		.4byte	.LFB70
+ 1526 0303 1C000000 		.4byte	.LFE70-.LFB70
+ 1527 0307 01       		.uleb128 0x1
+ 1528 0308 9C       		.byte	0x9c
+ 1529 0309 2E030000 		.4byte	0x32e
+ 1530 030d 0C       		.uleb128 0xc
+ 1531 030e 08000000 		.4byte	.LVL28
+ 1532 0312 0B090000 		.4byte	0x90b
+ 1533 0316 24030000 		.4byte	0x324
+ 1534 031a 0D       		.uleb128 0xd
+ 1535 031b 01       		.uleb128 0x1
+ 1536 031c 50       		.byte	0x50
+ 1537 031d 05       		.uleb128 0x5
+ 1538 031e 03       		.byte	0x3
+ 1539 031f 58000000 		.4byte	.LC4
+ 1540 0323 00       		.byte	0
+ 1541 0324 0E       		.uleb128 0xe
+ 1542 0325 12000000 		.4byte	.LVL29
+ 1543 0329 37090000 		.4byte	0x937
+ 1544 032d 00       		.byte	0
+ 1545 032e 12       		.uleb128 0x12
+ 1546 032f BF020000 		.4byte	.LASF37
+ 1547 0333 01       		.byte	0x1
+ 1548 0334 C5       		.byte	0xc5
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 39
+
+
+ 1549 0335 00000000 		.4byte	.LFB71
+ 1550 0339 1C000000 		.4byte	.LFE71-.LFB71
+ 1551 033d 01       		.uleb128 0x1
+ 1552 033e 9C       		.byte	0x9c
+ 1553 033f 64030000 		.4byte	0x364
+ 1554 0343 0C       		.uleb128 0xc
+ 1555 0344 08000000 		.4byte	.LVL30
+ 1556 0348 0B090000 		.4byte	0x90b
+ 1557 034c 5A030000 		.4byte	0x35a
+ 1558 0350 0D       		.uleb128 0xd
+ 1559 0351 01       		.uleb128 0x1
+ 1560 0352 50       		.byte	0x50
+ 1561 0353 05       		.uleb128 0x5
+ 1562 0354 03       		.byte	0x3
+ 1563 0355 74000000 		.4byte	.LC5
+ 1564 0359 00       		.byte	0
+ 1565 035a 0E       		.uleb128 0xe
+ 1566 035b 0C000000 		.4byte	.LVL31
+ 1567 035f 42090000 		.4byte	0x942
+ 1568 0363 00       		.byte	0
+ 1569 0364 12       		.uleb128 0x12
+ 1570 0365 BD010000 		.4byte	.LASF38
+ 1571 0369 01       		.byte	0x1
+ 1572 036a CC       		.byte	0xcc
+ 1573 036b 00000000 		.4byte	.LFB72
+ 1574 036f 30000000 		.4byte	.LFE72-.LFB72
+ 1575 0373 01       		.uleb128 0x1
+ 1576 0374 9C       		.byte	0x9c
+ 1577 0375 A4030000 		.4byte	0x3a4
+ 1578 0379 0C       		.uleb128 0xc
+ 1579 037a 0E000000 		.4byte	.LVL32
+ 1580 037e 0B090000 		.4byte	0x90b
+ 1581 0382 90030000 		.4byte	0x390
+ 1582 0386 0D       		.uleb128 0xd
+ 1583 0387 01       		.uleb128 0x1
+ 1584 0388 50       		.byte	0x50
+ 1585 0389 05       		.uleb128 0x5
+ 1586 038a 03       		.byte	0x3
+ 1587 038b 7C000000 		.4byte	.LC6
+ 1588 038f 00       		.byte	0
+ 1589 0390 0F       		.uleb128 0xf
+ 1590 0391 1C000000 		.4byte	.LVL33
+ 1591 0395 0B090000 		.4byte	0x90b
+ 1592 0399 0D       		.uleb128 0xd
+ 1593 039a 01       		.uleb128 0x1
+ 1594 039b 50       		.byte	0x50
+ 1595 039c 05       		.uleb128 0x5
+ 1596 039d 03       		.byte	0x3
+ 1597 039e 90000000 		.4byte	.LC7
+ 1598 03a2 00       		.byte	0
+ 1599 03a3 00       		.byte	0
+ 1600 03a4 12       		.uleb128 0x12
+ 1601 03a5 9C010000 		.4byte	.LASF39
+ 1602 03a9 01       		.byte	0x1
+ 1603 03aa 6F       		.byte	0x6f
+ 1604 03ab 00000000 		.4byte	.LFB66
+ 1605 03af 44000000 		.4byte	.LFE66-.LFB66
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 40
+
+
+ 1606 03b3 01       		.uleb128 0x1
+ 1607 03b4 9C       		.byte	0x9c
+ 1608 03b5 FF030000 		.4byte	0x3ff
+ 1609 03b9 13       		.uleb128 0x13
+ 1610 03ba 41010000 		.4byte	.LASF42
+ 1611 03be 01       		.byte	0x1
+ 1612 03bf 6F       		.byte	0x6f
+ 1613 03c0 8C000000 		.4byte	0x8c
+ 1614 03c4 68000000 		.4byte	.LLST2
+ 1615 03c8 0E       		.uleb128 0xe
+ 1616 03c9 24000000 		.4byte	.LVL35
+ 1617 03cd 6E010000 		.4byte	0x16e
+ 1618 03d1 0E       		.uleb128 0xe
+ 1619 03d2 2A000000 		.4byte	.LVL37
+ 1620 03d6 20020000 		.4byte	0x220
+ 1621 03da 0E       		.uleb128 0xe
+ 1622 03db 30000000 		.4byte	.LVL39
+ 1623 03df C2020000 		.4byte	0x2c2
+ 1624 03e3 0E       		.uleb128 0xe
+ 1625 03e4 36000000 		.4byte	.LVL41
+ 1626 03e8 F8020000 		.4byte	0x2f8
+ 1627 03ec 0E       		.uleb128 0xe
+ 1628 03ed 3C000000 		.4byte	.LVL43
+ 1629 03f1 2E030000 		.4byte	0x32e
+ 1630 03f5 0E       		.uleb128 0xe
+ 1631 03f6 42000000 		.4byte	.LVL45
+ 1632 03fa 64030000 		.4byte	0x364
+ 1633 03fe 00       		.byte	0
+ 1634 03ff 12       		.uleb128 0x12
+ 1635 0400 9C000000 		.4byte	.LASF40
+ 1636 0404 01       		.byte	0x1
+ 1637 0405 61       		.byte	0x61
+ 1638 0406 00000000 		.4byte	.LFB65
+ 1639 040a 1C000000 		.4byte	.LFE65-.LFB65
+ 1640 040e 01       		.uleb128 0x1
+ 1641 040f 9C       		.byte	0x9c
+ 1642 0410 5C040000 		.4byte	0x45c
+ 1643 0414 0A       		.uleb128 0xa
+ 1644 0415 27030000 		.4byte	.LASF41
+ 1645 0419 01       		.byte	0x1
+ 1646 041a 63       		.byte	0x63
+ 1647 041b 8C000000 		.4byte	0x8c
+ 1648 041f 06010000 		.4byte	.LLST3
+ 1649 0423 14       		.uleb128 0x14
+ 1650 0424 0A000000 		.4byte	.LBB2
+ 1651 0428 0C000000 		.4byte	.LBE2-.LBB2
+ 1652 042c 52040000 		.4byte	0x452
+ 1653 0430 0A       		.uleb128 0xa
+ 1654 0431 41010000 		.4byte	.LASF42
+ 1655 0435 01       		.byte	0x1
+ 1656 0436 66       		.byte	0x66
+ 1657 0437 8C000000 		.4byte	0x8c
+ 1658 043b 24010000 		.4byte	.LLST4
+ 1659 043f 0E       		.uleb128 0xe
+ 1660 0440 0E000000 		.4byte	.LVL48
+ 1661 0444 4D090000 		.4byte	0x94d
+ 1662 0448 0E       		.uleb128 0xe
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 41
+
+
+ 1663 0449 12000000 		.4byte	.LVL49
+ 1664 044d A4030000 		.4byte	0x3a4
+ 1665 0451 00       		.byte	0
+ 1666 0452 0E       		.uleb128 0xe
+ 1667 0453 06000000 		.4byte	.LVL46
+ 1668 0457 58090000 		.4byte	0x958
+ 1669 045b 00       		.byte	0
+ 1670 045c 12       		.uleb128 0x12
+ 1671 045d 96010000 		.4byte	.LASF43
+ 1672 0461 01       		.byte	0x1
+ 1673 0462 DA       		.byte	0xda
+ 1674 0463 00000000 		.4byte	.LFB73
+ 1675 0467 58020000 		.4byte	.LFE73-.LFB73
+ 1676 046b 01       		.uleb128 0x1
+ 1677 046c 9C       		.byte	0x9c
+ 1678 046d 66070000 		.4byte	0x766
+ 1679 0471 0C       		.uleb128 0xc
+ 1680 0472 38000000 		.4byte	.LVL52
+ 1681 0476 63090000 		.4byte	0x963
+ 1682 047a 84040000 		.4byte	0x484
+ 1683 047e 0D       		.uleb128 0xd
+ 1684 047f 01       		.uleb128 0x1
+ 1685 0480 50       		.byte	0x50
+ 1686 0481 01       		.uleb128 0x1
+ 1687 0482 30       		.byte	0x30
+ 1688 0483 00       		.byte	0
+ 1689 0484 0C       		.uleb128 0xc
+ 1690 0485 3E000000 		.4byte	.LVL53
+ 1691 0489 6E090000 		.4byte	0x96e
+ 1692 048d 97040000 		.4byte	0x497
+ 1693 0491 0D       		.uleb128 0xd
+ 1694 0492 01       		.uleb128 0x1
+ 1695 0493 50       		.byte	0x50
+ 1696 0494 01       		.uleb128 0x1
+ 1697 0495 31       		.byte	0x31
+ 1698 0496 00       		.byte	0
+ 1699 0497 0C       		.uleb128 0xc
+ 1700 0498 4C000000 		.4byte	.LVL54
+ 1701 049c 6E090000 		.4byte	0x96e
+ 1702 04a0 AA040000 		.4byte	0x4aa
+ 1703 04a4 0D       		.uleb128 0xd
+ 1704 04a5 01       		.uleb128 0x1
+ 1705 04a6 50       		.byte	0x50
+ 1706 04a7 01       		.uleb128 0x1
+ 1707 04a8 30       		.byte	0x30
+ 1708 04a9 00       		.byte	0
+ 1709 04aa 0C       		.uleb128 0xc
+ 1710 04ab 52000000 		.4byte	.LVL55
+ 1711 04af 79090000 		.4byte	0x979
+ 1712 04b3 BD040000 		.4byte	0x4bd
+ 1713 04b7 0D       		.uleb128 0xd
+ 1714 04b8 01       		.uleb128 0x1
+ 1715 04b9 50       		.byte	0x50
+ 1716 04ba 01       		.uleb128 0x1
+ 1717 04bb 31       		.byte	0x31
+ 1718 04bc 00       		.byte	0
+ 1719 04bd 0C       		.uleb128 0xc
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 42
+
+
+ 1720 04be 60000000 		.4byte	.LVL56
+ 1721 04c2 79090000 		.4byte	0x979
+ 1722 04c6 D0040000 		.4byte	0x4d0
+ 1723 04ca 0D       		.uleb128 0xd
+ 1724 04cb 01       		.uleb128 0x1
+ 1725 04cc 50       		.byte	0x50
+ 1726 04cd 01       		.uleb128 0x1
+ 1727 04ce 30       		.byte	0x30
+ 1728 04cf 00       		.byte	0
+ 1729 04d0 0C       		.uleb128 0xc
+ 1730 04d1 66000000 		.4byte	.LVL57
+ 1731 04d5 84090000 		.4byte	0x984
+ 1732 04d9 E3040000 		.4byte	0x4e3
+ 1733 04dd 0D       		.uleb128 0xd
+ 1734 04de 01       		.uleb128 0x1
+ 1735 04df 50       		.byte	0x50
+ 1736 04e0 01       		.uleb128 0x1
+ 1737 04e1 31       		.byte	0x31
+ 1738 04e2 00       		.byte	0
+ 1739 04e3 0C       		.uleb128 0xc
+ 1740 04e4 74000000 		.4byte	.LVL58
+ 1741 04e8 84090000 		.4byte	0x984
+ 1742 04ec F6040000 		.4byte	0x4f6
+ 1743 04f0 0D       		.uleb128 0xd
+ 1744 04f1 01       		.uleb128 0x1
+ 1745 04f2 50       		.byte	0x50
+ 1746 04f3 01       		.uleb128 0x1
+ 1747 04f4 30       		.byte	0x30
+ 1748 04f5 00       		.byte	0
+ 1749 04f6 0C       		.uleb128 0xc
+ 1750 04f7 7A000000 		.4byte	.LVL59
+ 1751 04fb 63090000 		.4byte	0x963
+ 1752 04ff 09050000 		.4byte	0x509
+ 1753 0503 0D       		.uleb128 0xd
+ 1754 0504 01       		.uleb128 0x1
+ 1755 0505 50       		.byte	0x50
+ 1756 0506 01       		.uleb128 0x1
+ 1757 0507 31       		.byte	0x31
+ 1758 0508 00       		.byte	0
+ 1759 0509 0C       		.uleb128 0xc
+ 1760 050a 88000000 		.4byte	.LVL60
+ 1761 050e 79090000 		.4byte	0x979
+ 1762 0512 1C050000 		.4byte	0x51c
+ 1763 0516 0D       		.uleb128 0xd
+ 1764 0517 01       		.uleb128 0x1
+ 1765 0518 50       		.byte	0x50
+ 1766 0519 01       		.uleb128 0x1
+ 1767 051a 30       		.byte	0x30
+ 1768 051b 00       		.byte	0
+ 1769 051c 0C       		.uleb128 0xc
+ 1770 051d 8E000000 		.4byte	.LVL61
+ 1771 0521 84090000 		.4byte	0x984
+ 1772 0525 2F050000 		.4byte	0x52f
+ 1773 0529 0D       		.uleb128 0xd
+ 1774 052a 01       		.uleb128 0x1
+ 1775 052b 50       		.byte	0x50
+ 1776 052c 01       		.uleb128 0x1
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 43
+
+
+ 1777 052d 30       		.byte	0x30
+ 1778 052e 00       		.byte	0
+ 1779 052f 0C       		.uleb128 0xc
+ 1780 0530 94000000 		.4byte	.LVL62
+ 1781 0534 6E090000 		.4byte	0x96e
+ 1782 0538 42050000 		.4byte	0x542
+ 1783 053c 0D       		.uleb128 0xd
+ 1784 053d 01       		.uleb128 0x1
+ 1785 053e 50       		.byte	0x50
+ 1786 053f 01       		.uleb128 0x1
+ 1787 0540 30       		.byte	0x30
+ 1788 0541 00       		.byte	0
+ 1789 0542 0C       		.uleb128 0xc
+ 1790 0543 9A000000 		.4byte	.LVL63
+ 1791 0547 63090000 		.4byte	0x963
+ 1792 054b 55050000 		.4byte	0x555
+ 1793 054f 0D       		.uleb128 0xd
+ 1794 0550 01       		.uleb128 0x1
+ 1795 0551 50       		.byte	0x50
+ 1796 0552 01       		.uleb128 0x1
+ 1797 0553 31       		.byte	0x31
+ 1798 0554 00       		.byte	0
+ 1799 0555 0C       		.uleb128 0xc
+ 1800 0556 C2000000 		.4byte	.LVL64
+ 1801 055a 63090000 		.4byte	0x963
+ 1802 055e 68050000 		.4byte	0x568
+ 1803 0562 0D       		.uleb128 0xd
+ 1804 0563 01       		.uleb128 0x1
+ 1805 0564 50       		.byte	0x50
+ 1806 0565 01       		.uleb128 0x1
+ 1807 0566 30       		.byte	0x30
+ 1808 0567 00       		.byte	0
+ 1809 0568 0C       		.uleb128 0xc
+ 1810 0569 C8000000 		.4byte	.LVL65
+ 1811 056d 84090000 		.4byte	0x984
+ 1812 0571 7B050000 		.4byte	0x57b
+ 1813 0575 0D       		.uleb128 0xd
+ 1814 0576 01       		.uleb128 0x1
+ 1815 0577 50       		.byte	0x50
+ 1816 0578 01       		.uleb128 0x1
+ 1817 0579 31       		.byte	0x31
+ 1818 057a 00       		.byte	0
+ 1819 057b 0C       		.uleb128 0xc
+ 1820 057c D6000000 		.4byte	.LVL66
+ 1821 0580 6E090000 		.4byte	0x96e
+ 1822 0584 8E050000 		.4byte	0x58e
+ 1823 0588 0D       		.uleb128 0xd
+ 1824 0589 01       		.uleb128 0x1
+ 1825 058a 50       		.byte	0x50
+ 1826 058b 01       		.uleb128 0x1
+ 1827 058c 30       		.byte	0x30
+ 1828 058d 00       		.byte	0
+ 1829 058e 0C       		.uleb128 0xc
+ 1830 058f DC000000 		.4byte	.LVL67
+ 1831 0593 63090000 		.4byte	0x963
+ 1832 0597 A1050000 		.4byte	0x5a1
+ 1833 059b 0D       		.uleb128 0xd
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 44
+
+
+ 1834 059c 01       		.uleb128 0x1
+ 1835 059d 50       		.byte	0x50
+ 1836 059e 01       		.uleb128 0x1
+ 1837 059f 31       		.byte	0x31
+ 1838 05a0 00       		.byte	0
+ 1839 05a1 0C       		.uleb128 0xc
+ 1840 05a2 EA000000 		.4byte	.LVL68
+ 1841 05a6 79090000 		.4byte	0x979
+ 1842 05aa B4050000 		.4byte	0x5b4
+ 1843 05ae 0D       		.uleb128 0xd
+ 1844 05af 01       		.uleb128 0x1
+ 1845 05b0 50       		.byte	0x50
+ 1846 05b1 01       		.uleb128 0x1
+ 1847 05b2 30       		.byte	0x30
+ 1848 05b3 00       		.byte	0
+ 1849 05b4 0C       		.uleb128 0xc
+ 1850 05b5 F0000000 		.4byte	.LVL69
+ 1851 05b9 6E090000 		.4byte	0x96e
+ 1852 05bd C7050000 		.4byte	0x5c7
+ 1853 05c1 0D       		.uleb128 0xd
+ 1854 05c2 01       		.uleb128 0x1
+ 1855 05c3 50       		.byte	0x50
+ 1856 05c4 01       		.uleb128 0x1
+ 1857 05c5 31       		.byte	0x31
+ 1858 05c6 00       		.byte	0
+ 1859 05c7 0C       		.uleb128 0xc
+ 1860 05c8 FE000000 		.4byte	.LVL70
+ 1861 05cc 84090000 		.4byte	0x984
+ 1862 05d0 DA050000 		.4byte	0x5da
+ 1863 05d4 0D       		.uleb128 0xd
+ 1864 05d5 01       		.uleb128 0x1
+ 1865 05d6 50       		.byte	0x50
+ 1866 05d7 01       		.uleb128 0x1
+ 1867 05d8 30       		.byte	0x30
+ 1868 05d9 00       		.byte	0
+ 1869 05da 0C       		.uleb128 0xc
+ 1870 05db 04010000 		.4byte	.LVL71
+ 1871 05df 79090000 		.4byte	0x979
+ 1872 05e3 ED050000 		.4byte	0x5ed
+ 1873 05e7 0D       		.uleb128 0xd
+ 1874 05e8 01       		.uleb128 0x1
+ 1875 05e9 50       		.byte	0x50
+ 1876 05ea 01       		.uleb128 0x1
+ 1877 05eb 31       		.byte	0x31
+ 1878 05ec 00       		.byte	0
+ 1879 05ed 0C       		.uleb128 0xc
+ 1880 05ee 12010000 		.4byte	.LVL72
+ 1881 05f2 79090000 		.4byte	0x979
+ 1882 05f6 00060000 		.4byte	0x600
+ 1883 05fa 0D       		.uleb128 0xd
+ 1884 05fb 01       		.uleb128 0x1
+ 1885 05fc 50       		.byte	0x50
+ 1886 05fd 01       		.uleb128 0x1
+ 1887 05fe 30       		.byte	0x30
+ 1888 05ff 00       		.byte	0
+ 1889 0600 0C       		.uleb128 0xc
+ 1890 0601 18010000 		.4byte	.LVL73
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 45
+
+
+ 1891 0605 84090000 		.4byte	0x984
+ 1892 0609 13060000 		.4byte	0x613
+ 1893 060d 0D       		.uleb128 0xd
+ 1894 060e 01       		.uleb128 0x1
+ 1895 060f 50       		.byte	0x50
+ 1896 0610 01       		.uleb128 0x1
+ 1897 0611 30       		.byte	0x30
+ 1898 0612 00       		.byte	0
+ 1899 0613 0C       		.uleb128 0xc
+ 1900 0614 1E010000 		.4byte	.LVL74
+ 1901 0618 6E090000 		.4byte	0x96e
+ 1902 061c 26060000 		.4byte	0x626
+ 1903 0620 0D       		.uleb128 0xd
+ 1904 0621 01       		.uleb128 0x1
+ 1905 0622 50       		.byte	0x50
+ 1906 0623 01       		.uleb128 0x1
+ 1907 0624 30       		.byte	0x30
+ 1908 0625 00       		.byte	0
+ 1909 0626 0C       		.uleb128 0xc
+ 1910 0627 24010000 		.4byte	.LVL75
+ 1911 062b 63090000 		.4byte	0x963
+ 1912 062f 39060000 		.4byte	0x639
+ 1913 0633 0D       		.uleb128 0xd
+ 1914 0634 01       		.uleb128 0x1
+ 1915 0635 50       		.byte	0x50
+ 1916 0636 01       		.uleb128 0x1
+ 1917 0637 31       		.byte	0x31
+ 1918 0638 00       		.byte	0
+ 1919 0639 0C       		.uleb128 0xc
+ 1920 063a 56010000 		.4byte	.LVL76
+ 1921 063e 6E090000 		.4byte	0x96e
+ 1922 0642 4C060000 		.4byte	0x64c
+ 1923 0646 0D       		.uleb128 0xd
+ 1924 0647 01       		.uleb128 0x1
+ 1925 0648 50       		.byte	0x50
+ 1926 0649 01       		.uleb128 0x1
+ 1927 064a 31       		.byte	0x31
+ 1928 064b 00       		.byte	0
+ 1929 064c 0C       		.uleb128 0xc
+ 1930 064d 64010000 		.4byte	.LVL77
+ 1931 0651 63090000 		.4byte	0x963
+ 1932 0655 5F060000 		.4byte	0x65f
+ 1933 0659 0D       		.uleb128 0xd
+ 1934 065a 01       		.uleb128 0x1
+ 1935 065b 50       		.byte	0x50
+ 1936 065c 01       		.uleb128 0x1
+ 1937 065d 30       		.byte	0x30
+ 1938 065e 00       		.byte	0
+ 1939 065f 0C       		.uleb128 0xc
+ 1940 0660 72010000 		.4byte	.LVL78
+ 1941 0664 79090000 		.4byte	0x979
+ 1942 0668 72060000 		.4byte	0x672
+ 1943 066c 0D       		.uleb128 0xd
+ 1944 066d 01       		.uleb128 0x1
+ 1945 066e 50       		.byte	0x50
+ 1946 066f 01       		.uleb128 0x1
+ 1947 0670 31       		.byte	0x31
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 46
+
+
+ 1948 0671 00       		.byte	0
+ 1949 0672 0C       		.uleb128 0xc
+ 1950 0673 80010000 		.4byte	.LVL79
+ 1951 0677 6E090000 		.4byte	0x96e
+ 1952 067b 85060000 		.4byte	0x685
+ 1953 067f 0D       		.uleb128 0xd
+ 1954 0680 01       		.uleb128 0x1
+ 1955 0681 50       		.byte	0x50
+ 1956 0682 01       		.uleb128 0x1
+ 1957 0683 30       		.byte	0x30
+ 1958 0684 00       		.byte	0
+ 1959 0685 0C       		.uleb128 0xc
+ 1960 0686 8E010000 		.4byte	.LVL80
+ 1961 068a 84090000 		.4byte	0x984
+ 1962 068e 98060000 		.4byte	0x698
+ 1963 0692 0D       		.uleb128 0xd
+ 1964 0693 01       		.uleb128 0x1
+ 1965 0694 50       		.byte	0x50
+ 1966 0695 01       		.uleb128 0x1
+ 1967 0696 31       		.byte	0x31
+ 1968 0697 00       		.byte	0
+ 1969 0698 0C       		.uleb128 0xc
+ 1970 0699 9C010000 		.4byte	.LVL81
+ 1971 069d 79090000 		.4byte	0x979
+ 1972 06a1 AB060000 		.4byte	0x6ab
+ 1973 06a5 0D       		.uleb128 0xd
+ 1974 06a6 01       		.uleb128 0x1
+ 1975 06a7 50       		.byte	0x50
+ 1976 06a8 01       		.uleb128 0x1
+ 1977 06a9 30       		.byte	0x30
+ 1978 06aa 00       		.byte	0
+ 1979 06ab 0C       		.uleb128 0xc
+ 1980 06ac AA010000 		.4byte	.LVL82
+ 1981 06b0 63090000 		.4byte	0x963
+ 1982 06b4 BE060000 		.4byte	0x6be
+ 1983 06b8 0D       		.uleb128 0xd
+ 1984 06b9 01       		.uleb128 0x1
+ 1985 06ba 50       		.byte	0x50
+ 1986 06bb 01       		.uleb128 0x1
+ 1987 06bc 31       		.byte	0x31
+ 1988 06bd 00       		.byte	0
+ 1989 06be 0C       		.uleb128 0xc
+ 1990 06bf B8010000 		.4byte	.LVL83
+ 1991 06c3 84090000 		.4byte	0x984
+ 1992 06c7 D1060000 		.4byte	0x6d1
+ 1993 06cb 0D       		.uleb128 0xd
+ 1994 06cc 01       		.uleb128 0x1
+ 1995 06cd 50       		.byte	0x50
+ 1996 06ce 01       		.uleb128 0x1
+ 1997 06cf 30       		.byte	0x30
+ 1998 06d0 00       		.byte	0
+ 1999 06d1 0C       		.uleb128 0xc
+ 2000 06d2 DE010000 		.4byte	.LVL84
+ 2001 06d6 84090000 		.4byte	0x984
+ 2002 06da E4060000 		.4byte	0x6e4
+ 2003 06de 0D       		.uleb128 0xd
+ 2004 06df 01       		.uleb128 0x1
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 47
+
+
+ 2005 06e0 50       		.byte	0x50
+ 2006 06e1 01       		.uleb128 0x1
+ 2007 06e2 31       		.byte	0x31
+ 2008 06e3 00       		.byte	0
+ 2009 06e4 0C       		.uleb128 0xc
+ 2010 06e5 EC010000 		.4byte	.LVL85
+ 2011 06e9 6E090000 		.4byte	0x96e
+ 2012 06ed F7060000 		.4byte	0x6f7
+ 2013 06f1 0D       		.uleb128 0xd
+ 2014 06f2 01       		.uleb128 0x1
+ 2015 06f3 50       		.byte	0x50
+ 2016 06f4 01       		.uleb128 0x1
+ 2017 06f5 30       		.byte	0x30
+ 2018 06f6 00       		.byte	0
+ 2019 06f7 0C       		.uleb128 0xc
+ 2020 06f8 FA010000 		.4byte	.LVL86
+ 2021 06fc 63090000 		.4byte	0x963
+ 2022 0700 0A070000 		.4byte	0x70a
+ 2023 0704 0D       		.uleb128 0xd
+ 2024 0705 01       		.uleb128 0x1
+ 2025 0706 50       		.byte	0x50
+ 2026 0707 01       		.uleb128 0x1
+ 2027 0708 31       		.byte	0x31
+ 2028 0709 00       		.byte	0
+ 2029 070a 0C       		.uleb128 0xc
+ 2030 070b 08020000 		.4byte	.LVL87
+ 2031 070f 79090000 		.4byte	0x979
+ 2032 0713 1D070000 		.4byte	0x71d
+ 2033 0717 0D       		.uleb128 0xd
+ 2034 0718 01       		.uleb128 0x1
+ 2035 0719 50       		.byte	0x50
+ 2036 071a 01       		.uleb128 0x1
+ 2037 071b 30       		.byte	0x30
+ 2038 071c 00       		.byte	0
+ 2039 071d 0C       		.uleb128 0xc
+ 2040 071e 16020000 		.4byte	.LVL88
+ 2041 0722 6E090000 		.4byte	0x96e
+ 2042 0726 30070000 		.4byte	0x730
+ 2043 072a 0D       		.uleb128 0xd
+ 2044 072b 01       		.uleb128 0x1
+ 2045 072c 50       		.byte	0x50
+ 2046 072d 01       		.uleb128 0x1
+ 2047 072e 31       		.byte	0x31
+ 2048 072f 00       		.byte	0
+ 2049 0730 0C       		.uleb128 0xc
+ 2050 0731 24020000 		.4byte	.LVL89
+ 2051 0735 84090000 		.4byte	0x984
+ 2052 0739 43070000 		.4byte	0x743
+ 2053 073d 0D       		.uleb128 0xd
+ 2054 073e 01       		.uleb128 0x1
+ 2055 073f 50       		.byte	0x50
+ 2056 0740 01       		.uleb128 0x1
+ 2057 0741 30       		.byte	0x30
+ 2058 0742 00       		.byte	0
+ 2059 0743 0C       		.uleb128 0xc
+ 2060 0744 32020000 		.4byte	.LVL90
+ 2061 0748 79090000 		.4byte	0x979
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 48
+
+
+ 2062 074c 56070000 		.4byte	0x756
+ 2063 0750 0D       		.uleb128 0xd
+ 2064 0751 01       		.uleb128 0x1
+ 2065 0752 50       		.byte	0x50
+ 2066 0753 01       		.uleb128 0x1
+ 2067 0754 31       		.byte	0x31
+ 2068 0755 00       		.byte	0
+ 2069 0756 0F       		.uleb128 0xf
+ 2070 0757 40020000 		.4byte	.LVL91
+ 2071 075b 63090000 		.4byte	0x963
+ 2072 075f 0D       		.uleb128 0xd
+ 2073 0760 01       		.uleb128 0x1
+ 2074 0761 50       		.byte	0x50
+ 2075 0762 01       		.uleb128 0x1
+ 2076 0763 30       		.byte	0x30
+ 2077 0764 00       		.byte	0
+ 2078 0765 00       		.byte	0
+ 2079 0766 15       		.uleb128 0x15
+ 2080 0767 EC000000 		.4byte	.LASF69
+ 2081 076b 01       		.byte	0x1
+ 2082 076c 3B       		.byte	0x3b
+ 2083 076d 7E000000 		.4byte	0x7e
+ 2084 0771 00000000 		.4byte	.LFB64
+ 2085 0775 A8000000 		.4byte	.LFE64-.LFB64
+ 2086 0779 01       		.uleb128 0x1
+ 2087 077a 9C       		.byte	0x9c
+ 2088 077b AF080000 		.4byte	0x8af
+ 2089 077f 0B       		.uleb128 0xb
+ 2090 0780 35010000 		.4byte	.LASF44
+ 2091 0784 01       		.byte	0x1
+ 2092 0785 52       		.byte	0x52
+ 2093 0786 10020000 		.4byte	0x210
+ 2094 078a 03       		.uleb128 0x3
+ 2095 078b 91       		.byte	0x91
+ 2096 078c F87D     		.sleb128 -264
+ 2097 078e 0C       		.uleb128 0xc
+ 2098 078f 0C000000 		.4byte	.LVL92
+ 2099 0793 8F090000 		.4byte	0x98f
+ 2100 0797 A5070000 		.4byte	0x7a5
+ 2101 079b 0D       		.uleb128 0xd
+ 2102 079c 01       		.uleb128 0x1
+ 2103 079d 50       		.byte	0x50
+ 2104 079e 05       		.uleb128 0x5
+ 2105 079f 03       		.byte	0x3
+ 2106 07a0 00000000 		.4byte	ISR_UART_rx_handler
+ 2107 07a4 00       		.byte	0
+ 2108 07a5 0C       		.uleb128 0xc
+ 2109 07a6 12000000 		.4byte	.LVL93
+ 2110 07aa 9A090000 		.4byte	0x99a
+ 2111 07ae BC070000 		.4byte	0x7bc
+ 2112 07b2 0D       		.uleb128 0xd
+ 2113 07b3 01       		.uleb128 0x1
+ 2114 07b4 50       		.byte	0x50
+ 2115 07b5 05       		.uleb128 0x5
+ 2116 07b6 03       		.byte	0x3
+ 2117 07b7 00000000 		.4byte	ISR_Timer
+ 2118 07bb 00       		.byte	0
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 49
+
+
+ 2119 07bc 0E       		.uleb128 0xe
+ 2120 07bd 16000000 		.4byte	.LVL94
+ 2121 07c1 37090000 		.4byte	0x937
+ 2122 07c5 0E       		.uleb128 0xe
+ 2123 07c6 1A000000 		.4byte	.LVL95
+ 2124 07ca A5090000 		.4byte	0x9a5
+ 2125 07ce 0C       		.uleb128 0xc
+ 2126 07cf 20000000 		.4byte	.LVL96
+ 2127 07d3 0B090000 		.4byte	0x90b
+ 2128 07d7 E5070000 		.4byte	0x7e5
+ 2129 07db 0D       		.uleb128 0xd
+ 2130 07dc 01       		.uleb128 0x1
+ 2131 07dd 50       		.byte	0x50
+ 2132 07de 05       		.uleb128 0x5
+ 2133 07df 03       		.byte	0x3
+ 2134 07e0 A0000000 		.4byte	.LC8
+ 2135 07e4 00       		.byte	0
+ 2136 07e5 0C       		.uleb128 0xc
+ 2137 07e6 26000000 		.4byte	.LVL97
+ 2138 07ea 0B090000 		.4byte	0x90b
+ 2139 07ee FC070000 		.4byte	0x7fc
+ 2140 07f2 0D       		.uleb128 0xd
+ 2141 07f3 01       		.uleb128 0x1
+ 2142 07f4 50       		.byte	0x50
+ 2143 07f5 05       		.uleb128 0x5
+ 2144 07f6 03       		.byte	0x3
+ 2145 07f7 C4000000 		.4byte	.LC9
+ 2146 07fb 00       		.byte	0
+ 2147 07fc 0C       		.uleb128 0xc
+ 2148 07fd 2C000000 		.4byte	.LVL98
+ 2149 0801 0B090000 		.4byte	0x90b
+ 2150 0805 13080000 		.4byte	0x813
+ 2151 0809 0D       		.uleb128 0xd
+ 2152 080a 01       		.uleb128 0x1
+ 2153 080b 50       		.byte	0x50
+ 2154 080c 05       		.uleb128 0x5
+ 2155 080d 03       		.byte	0x3
+ 2156 080e D0000000 		.4byte	.LC10
+ 2157 0812 00       		.byte	0
+ 2158 0813 0C       		.uleb128 0xc
+ 2159 0814 32000000 		.4byte	.LVL99
+ 2160 0818 0B090000 		.4byte	0x90b
+ 2161 081c 2A080000 		.4byte	0x82a
+ 2162 0820 0D       		.uleb128 0xd
+ 2163 0821 01       		.uleb128 0x1
+ 2164 0822 50       		.byte	0x50
+ 2165 0823 05       		.uleb128 0x5
+ 2166 0824 03       		.byte	0x3
+ 2167 0825 E4000000 		.4byte	.LC11
+ 2168 0829 00       		.byte	0
+ 2169 082a 0C       		.uleb128 0xc
+ 2170 082b 38000000 		.4byte	.LVL100
+ 2171 082f 0B090000 		.4byte	0x90b
+ 2172 0833 41080000 		.4byte	0x841
+ 2173 0837 0D       		.uleb128 0xd
+ 2174 0838 01       		.uleb128 0x1
+ 2175 0839 50       		.byte	0x50
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 50
+
+
+ 2176 083a 05       		.uleb128 0x5
+ 2177 083b 03       		.byte	0x3
+ 2178 083c FC000000 		.4byte	.LC12
+ 2179 0840 00       		.byte	0
+ 2180 0841 0C       		.uleb128 0xc
+ 2181 0842 3E000000 		.4byte	.LVL101
+ 2182 0846 0B090000 		.4byte	0x90b
+ 2183 084a 58080000 		.4byte	0x858
+ 2184 084e 0D       		.uleb128 0xd
+ 2185 084f 01       		.uleb128 0x1
+ 2186 0850 50       		.byte	0x50
+ 2187 0851 05       		.uleb128 0x5
+ 2188 0852 03       		.byte	0x3
+ 2189 0853 10010000 		.4byte	.LC13
+ 2190 0857 00       		.byte	0
+ 2191 0858 0C       		.uleb128 0xc
+ 2192 0859 44000000 		.4byte	.LVL102
+ 2193 085d 0B090000 		.4byte	0x90b
+ 2194 0861 6F080000 		.4byte	0x86f
+ 2195 0865 0D       		.uleb128 0xd
+ 2196 0866 01       		.uleb128 0x1
+ 2197 0867 50       		.byte	0x50
+ 2198 0868 05       		.uleb128 0x5
+ 2199 0869 03       		.byte	0x3
+ 2200 086a 24010000 		.4byte	.LC14
+ 2201 086e 00       		.byte	0
+ 2202 086f 0E       		.uleb128 0xe
+ 2203 0870 58000000 		.4byte	.LVL103
+ 2204 0874 5C040000 		.4byte	0x45c
+ 2205 0878 0C       		.uleb128 0xc
+ 2206 0879 70000000 		.4byte	.LVL104
+ 2207 087d 21090000 		.4byte	0x921
+ 2208 0881 9D080000 		.4byte	0x89d
+ 2209 0885 0D       		.uleb128 0xd
+ 2210 0886 01       		.uleb128 0x1
+ 2211 0887 50       		.byte	0x50
+ 2212 0888 03       		.uleb128 0x3
+ 2213 0889 91       		.byte	0x91
+ 2214 088a F87D     		.sleb128 -264
+ 2215 088c 0D       		.uleb128 0xd
+ 2216 088d 01       		.uleb128 0x1
+ 2217 088e 51       		.byte	0x51
+ 2218 088f 03       		.uleb128 0x3
+ 2219 0890 0A       		.byte	0xa
+ 2220 0891 0001     		.2byte	0x100
+ 2221 0893 0D       		.uleb128 0xd
+ 2222 0894 01       		.uleb128 0x1
+ 2223 0895 52       		.byte	0x52
+ 2224 0896 05       		.uleb128 0x5
+ 2225 0897 03       		.byte	0x3
+ 2226 0898 3C010000 		.4byte	.LC15
+ 2227 089c 00       		.byte	0
+ 2228 089d 0F       		.uleb128 0xf
+ 2229 089e 76000000 		.4byte	.LVL105
+ 2230 08a2 0B090000 		.4byte	0x90b
+ 2231 08a6 0D       		.uleb128 0xd
+ 2232 08a7 01       		.uleb128 0x1
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 51
+
+
+ 2233 08a8 50       		.byte	0x50
+ 2234 08a9 03       		.uleb128 0x3
+ 2235 08aa 91       		.byte	0x91
+ 2236 08ab F87D     		.sleb128 -264
+ 2237 08ad 00       		.byte	0
+ 2238 08ae 00       		.byte	0
+ 2239 08af 0B       		.uleb128 0xb
+ 2240 08b0 FC020000 		.4byte	.LASF45
+ 2241 08b4 01       		.byte	0x1
+ 2242 08b5 34       		.byte	0x34
+ 2243 08b6 E9000000 		.4byte	0xe9
+ 2244 08ba 05       		.uleb128 0x5
+ 2245 08bb 03       		.byte	0x3
+ 2246 08bc 01000000 		.4byte	driveState
+ 2247 08c0 0B       		.uleb128 0xb
+ 2248 08c1 E4010000 		.4byte	.LASF46
+ 2249 08c5 01       		.byte	0x1
+ 2250 08c6 35       		.byte	0x35
+ 2251 08c7 2D010000 		.4byte	0x12d
+ 2252 08cb 05       		.uleb128 0x5
+ 2253 08cc 03       		.byte	0x3
+ 2254 08cd 02000000 		.4byte	stepState
+ 2255 08d1 0B       		.uleb128 0xb
+ 2256 08d2 30040000 		.4byte	.LASF47
+ 2257 08d6 01       		.byte	0x1
+ 2258 08d7 36       		.byte	0x36
+ 2259 08d8 51010000 		.4byte	0x151
+ 2260 08dc 05       		.uleb128 0x5
+ 2261 08dd 03       		.byte	0x3
+ 2262 08de 00000000 		.4byte	directionState
+ 2263 08e2 0B       		.uleb128 0xb
+ 2264 08e3 5F020000 		.4byte	.LASF48
+ 2265 08e7 01       		.byte	0x1
+ 2266 08e8 37       		.byte	0x37
+ 2267 08e9 F3080000 		.4byte	0x8f3
+ 2268 08ed 05       		.uleb128 0x5
+ 2269 08ee 03       		.byte	0x3
+ 2270 08ef 00000000 		.4byte	stepBool
+ 2271 08f3 02       		.uleb128 0x2
+ 2272 08f4 01       		.byte	0x1
+ 2273 08f5 02       		.byte	0x2
+ 2274 08f6 C9020000 		.4byte	.LASF49
+ 2275 08fa 16       		.uleb128 0x16
+ 2276 08fb 87030000 		.4byte	.LASF70
+ 2277 08ff 0D       		.byte	0xd
+ 2278 0900 9606     		.2byte	0x696
+ 2279 0902 06090000 		.4byte	0x906
+ 2280 0906 17       		.uleb128 0x17
+ 2281 0907 A2000000 		.4byte	0xa2
+ 2282 090b 18       		.uleb128 0x18
+ 2283 090c 51030000 		.4byte	.LASF50
+ 2284 0910 51030000 		.4byte	.LASF50
+ 2285 0914 04       		.byte	0x4
+ 2286 0915 8B       		.byte	0x8b
+ 2287 0916 18       		.uleb128 0x18
+ 2288 0917 18020000 		.4byte	.LASF51
+ 2289 091b 18020000 		.4byte	.LASF51
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 52
+
+
+ 2290 091f 05       		.byte	0x5
+ 2291 0920 67       		.byte	0x67
+ 2292 0921 18       		.uleb128 0x18
+ 2293 0922 DB010000 		.4byte	.LASF52
+ 2294 0926 DB010000 		.4byte	.LASF52
+ 2295 092a 06       		.byte	0x6
+ 2296 092b FD       		.byte	0xfd
+ 2297 092c 18       		.uleb128 0x18
+ 2298 092d B0000000 		.4byte	.LASF53
+ 2299 0931 B0000000 		.4byte	.LASF53
+ 2300 0935 05       		.byte	0x5
+ 2301 0936 68       		.byte	0x68
+ 2302 0937 18       		.uleb128 0x18
+ 2303 0938 35020000 		.4byte	.LASF54
+ 2304 093c 35020000 		.4byte	.LASF54
+ 2305 0940 05       		.byte	0x5
+ 2306 0941 5A       		.byte	0x5a
+ 2307 0942 18       		.uleb128 0x18
+ 2308 0943 D7020000 		.4byte	.LASF55
+ 2309 0947 D7020000 		.4byte	.LASF55
+ 2310 094b 05       		.byte	0x5
+ 2311 094c 8E       		.byte	0x8e
+ 2312 094d 18       		.uleb128 0x18
+ 2313 094e E5020000 		.4byte	.LASF56
+ 2314 0952 E5020000 		.4byte	.LASF56
+ 2315 0956 04       		.byte	0x4
+ 2316 0957 6F       		.byte	0x6f
+ 2317 0958 18       		.uleb128 0x18
+ 2318 0959 33030000 		.4byte	.LASF57
+ 2319 095d 33030000 		.4byte	.LASF57
+ 2320 0961 04       		.byte	0x4
+ 2321 0962 73       		.byte	0x73
+ 2322 0963 18       		.uleb128 0x18
+ 2323 0964 28010000 		.4byte	.LASF58
+ 2324 0968 28010000 		.4byte	.LASF58
+ 2325 096c 07       		.byte	0x7
+ 2326 096d 26       		.byte	0x26
+ 2327 096e 18       		.uleb128 0x18
+ 2328 096f 87020000 		.4byte	.LASF59
+ 2329 0973 87020000 		.4byte	.LASF59
+ 2330 0977 08       		.byte	0x8
+ 2331 0978 26       		.byte	0x26
+ 2332 0979 18       		.uleb128 0x18
+ 2333 097a 6B010000 		.4byte	.LASF60
+ 2334 097e 6B010000 		.4byte	.LASF60
+ 2335 0982 09       		.byte	0x9
+ 2336 0983 26       		.byte	0x26
+ 2337 0984 18       		.uleb128 0x18
+ 2338 0985 75030000 		.4byte	.LASF61
+ 2339 0989 75030000 		.4byte	.LASF61
+ 2340 098d 0A       		.byte	0xa
+ 2341 098e 26       		.byte	0x26
+ 2342 098f 18       		.uleb128 0x18
+ 2343 0990 D8000000 		.4byte	.LASF62
+ 2344 0994 D8000000 		.4byte	.LASF62
+ 2345 0998 0B       		.byte	0xb
+ 2346 0999 18       		.byte	0x18
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 53
+
+
+ 2347 099a 18       		.uleb128 0x18
+ 2348 099b 75020000 		.4byte	.LASF63
+ 2349 099f 75020000 		.4byte	.LASF63
+ 2350 09a3 0C       		.byte	0xc
+ 2351 09a4 18       		.byte	0x18
+ 2352 09a5 18       		.uleb128 0x18
+ 2353 09a6 CE010000 		.4byte	.LASF64
+ 2354 09aa CE010000 		.4byte	.LASF64
+ 2355 09ae 04       		.byte	0x4
+ 2356 09af 54       		.byte	0x54
+ 2357 09b0 00       		.byte	0
+ 2358              		.section	.debug_abbrev,"",%progbits
+ 2359              	.Ldebug_abbrev0:
+ 2360 0000 01       		.uleb128 0x1
+ 2361 0001 11       		.uleb128 0x11
+ 2362 0002 01       		.byte	0x1
+ 2363 0003 25       		.uleb128 0x25
+ 2364 0004 0E       		.uleb128 0xe
+ 2365 0005 13       		.uleb128 0x13
+ 2366 0006 0B       		.uleb128 0xb
+ 2367 0007 03       		.uleb128 0x3
+ 2368 0008 0E       		.uleb128 0xe
+ 2369 0009 1B       		.uleb128 0x1b
+ 2370 000a 0E       		.uleb128 0xe
+ 2371 000b 55       		.uleb128 0x55
+ 2372 000c 17       		.uleb128 0x17
+ 2373 000d 11       		.uleb128 0x11
+ 2374 000e 01       		.uleb128 0x1
+ 2375 000f 10       		.uleb128 0x10
+ 2376 0010 17       		.uleb128 0x17
+ 2377 0011 00       		.byte	0
+ 2378 0012 00       		.byte	0
+ 2379 0013 02       		.uleb128 0x2
+ 2380 0014 24       		.uleb128 0x24
+ 2381 0015 00       		.byte	0
+ 2382 0016 0B       		.uleb128 0xb
+ 2383 0017 0B       		.uleb128 0xb
+ 2384 0018 3E       		.uleb128 0x3e
+ 2385 0019 0B       		.uleb128 0xb
+ 2386 001a 03       		.uleb128 0x3
+ 2387 001b 0E       		.uleb128 0xe
+ 2388 001c 00       		.byte	0
+ 2389 001d 00       		.byte	0
+ 2390 001e 03       		.uleb128 0x3
+ 2391 001f 16       		.uleb128 0x16
+ 2392 0020 00       		.byte	0
+ 2393 0021 03       		.uleb128 0x3
+ 2394 0022 0E       		.uleb128 0xe
+ 2395 0023 3A       		.uleb128 0x3a
+ 2396 0024 0B       		.uleb128 0xb
+ 2397 0025 3B       		.uleb128 0x3b
+ 2398 0026 0B       		.uleb128 0xb
+ 2399 0027 49       		.uleb128 0x49
+ 2400 0028 13       		.uleb128 0x13
+ 2401 0029 00       		.byte	0
+ 2402 002a 00       		.byte	0
+ 2403 002b 04       		.uleb128 0x4
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 54
+
+
+ 2404 002c 24       		.uleb128 0x24
+ 2405 002d 00       		.byte	0
+ 2406 002e 0B       		.uleb128 0xb
+ 2407 002f 0B       		.uleb128 0xb
+ 2408 0030 3E       		.uleb128 0x3e
+ 2409 0031 0B       		.uleb128 0xb
+ 2410 0032 03       		.uleb128 0x3
+ 2411 0033 08       		.uleb128 0x8
+ 2412 0034 00       		.byte	0
+ 2413 0035 00       		.byte	0
+ 2414 0036 05       		.uleb128 0x5
+ 2415 0037 04       		.uleb128 0x4
+ 2416 0038 01       		.byte	0x1
+ 2417 0039 0B       		.uleb128 0xb
+ 2418 003a 0B       		.uleb128 0xb
+ 2419 003b 49       		.uleb128 0x49
+ 2420 003c 13       		.uleb128 0x13
+ 2421 003d 3A       		.uleb128 0x3a
+ 2422 003e 0B       		.uleb128 0xb
+ 2423 003f 3B       		.uleb128 0x3b
+ 2424 0040 0B       		.uleb128 0xb
+ 2425 0041 01       		.uleb128 0x1
+ 2426 0042 13       		.uleb128 0x13
+ 2427 0043 00       		.byte	0
+ 2428 0044 00       		.byte	0
+ 2429 0045 06       		.uleb128 0x6
+ 2430 0046 28       		.uleb128 0x28
+ 2431 0047 00       		.byte	0
+ 2432 0048 03       		.uleb128 0x3
+ 2433 0049 0E       		.uleb128 0xe
+ 2434 004a 1C       		.uleb128 0x1c
+ 2435 004b 0B       		.uleb128 0xb
+ 2436 004c 00       		.byte	0
+ 2437 004d 00       		.byte	0
+ 2438 004e 07       		.uleb128 0x7
+ 2439 004f 28       		.uleb128 0x28
+ 2440 0050 00       		.byte	0
+ 2441 0051 03       		.uleb128 0x3
+ 2442 0052 08       		.uleb128 0x8
+ 2443 0053 1C       		.uleb128 0x1c
+ 2444 0054 0B       		.uleb128 0xb
+ 2445 0055 00       		.byte	0
+ 2446 0056 00       		.byte	0
+ 2447 0057 08       		.uleb128 0x8
+ 2448 0058 2E       		.uleb128 0x2e
+ 2449 0059 00       		.byte	0
+ 2450 005a 3F       		.uleb128 0x3f
+ 2451 005b 19       		.uleb128 0x19
+ 2452 005c 03       		.uleb128 0x3
+ 2453 005d 0E       		.uleb128 0xe
+ 2454 005e 3A       		.uleb128 0x3a
+ 2455 005f 0B       		.uleb128 0xb
+ 2456 0060 3B       		.uleb128 0x3b
+ 2457 0061 05       		.uleb128 0x5
+ 2458 0062 27       		.uleb128 0x27
+ 2459 0063 19       		.uleb128 0x19
+ 2460 0064 11       		.uleb128 0x11
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 55
+
+
+ 2461 0065 01       		.uleb128 0x1
+ 2462 0066 12       		.uleb128 0x12
+ 2463 0067 06       		.uleb128 0x6
+ 2464 0068 40       		.uleb128 0x40
+ 2465 0069 18       		.uleb128 0x18
+ 2466 006a 9742     		.uleb128 0x2117
+ 2467 006c 19       		.uleb128 0x19
+ 2468 006d 00       		.byte	0
+ 2469 006e 00       		.byte	0
+ 2470 006f 09       		.uleb128 0x9
+ 2471 0070 2E       		.uleb128 0x2e
+ 2472 0071 01       		.byte	0x1
+ 2473 0072 3F       		.uleb128 0x3f
+ 2474 0073 19       		.uleb128 0x19
+ 2475 0074 03       		.uleb128 0x3
+ 2476 0075 0E       		.uleb128 0xe
+ 2477 0076 3A       		.uleb128 0x3a
+ 2478 0077 0B       		.uleb128 0xb
+ 2479 0078 3B       		.uleb128 0x3b
+ 2480 0079 0B       		.uleb128 0xb
+ 2481 007a 27       		.uleb128 0x27
+ 2482 007b 19       		.uleb128 0x19
+ 2483 007c 11       		.uleb128 0x11
+ 2484 007d 01       		.uleb128 0x1
+ 2485 007e 12       		.uleb128 0x12
+ 2486 007f 06       		.uleb128 0x6
+ 2487 0080 40       		.uleb128 0x40
+ 2488 0081 18       		.uleb128 0x18
+ 2489 0082 9642     		.uleb128 0x2116
+ 2490 0084 19       		.uleb128 0x19
+ 2491 0085 01       		.uleb128 0x1
+ 2492 0086 13       		.uleb128 0x13
+ 2493 0087 00       		.byte	0
+ 2494 0088 00       		.byte	0
+ 2495 0089 0A       		.uleb128 0xa
+ 2496 008a 34       		.uleb128 0x34
+ 2497 008b 00       		.byte	0
+ 2498 008c 03       		.uleb128 0x3
+ 2499 008d 0E       		.uleb128 0xe
+ 2500 008e 3A       		.uleb128 0x3a
+ 2501 008f 0B       		.uleb128 0xb
+ 2502 0090 3B       		.uleb128 0x3b
+ 2503 0091 0B       		.uleb128 0xb
+ 2504 0092 49       		.uleb128 0x49
+ 2505 0093 13       		.uleb128 0x13
+ 2506 0094 02       		.uleb128 0x2
+ 2507 0095 17       		.uleb128 0x17
+ 2508 0096 00       		.byte	0
+ 2509 0097 00       		.byte	0
+ 2510 0098 0B       		.uleb128 0xb
+ 2511 0099 34       		.uleb128 0x34
+ 2512 009a 00       		.byte	0
+ 2513 009b 03       		.uleb128 0x3
+ 2514 009c 0E       		.uleb128 0xe
+ 2515 009d 3A       		.uleb128 0x3a
+ 2516 009e 0B       		.uleb128 0xb
+ 2517 009f 3B       		.uleb128 0x3b
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 56
+
+
+ 2518 00a0 0B       		.uleb128 0xb
+ 2519 00a1 49       		.uleb128 0x49
+ 2520 00a2 13       		.uleb128 0x13
+ 2521 00a3 02       		.uleb128 0x2
+ 2522 00a4 18       		.uleb128 0x18
+ 2523 00a5 00       		.byte	0
+ 2524 00a6 00       		.byte	0
+ 2525 00a7 0C       		.uleb128 0xc
+ 2526 00a8 898201   		.uleb128 0x4109
+ 2527 00ab 01       		.byte	0x1
+ 2528 00ac 11       		.uleb128 0x11
+ 2529 00ad 01       		.uleb128 0x1
+ 2530 00ae 31       		.uleb128 0x31
+ 2531 00af 13       		.uleb128 0x13
+ 2532 00b0 01       		.uleb128 0x1
+ 2533 00b1 13       		.uleb128 0x13
+ 2534 00b2 00       		.byte	0
+ 2535 00b3 00       		.byte	0
+ 2536 00b4 0D       		.uleb128 0xd
+ 2537 00b5 8A8201   		.uleb128 0x410a
+ 2538 00b8 00       		.byte	0
+ 2539 00b9 02       		.uleb128 0x2
+ 2540 00ba 18       		.uleb128 0x18
+ 2541 00bb 9142     		.uleb128 0x2111
+ 2542 00bd 18       		.uleb128 0x18
+ 2543 00be 00       		.byte	0
+ 2544 00bf 00       		.byte	0
+ 2545 00c0 0E       		.uleb128 0xe
+ 2546 00c1 898201   		.uleb128 0x4109
+ 2547 00c4 00       		.byte	0
+ 2548 00c5 11       		.uleb128 0x11
+ 2549 00c6 01       		.uleb128 0x1
+ 2550 00c7 31       		.uleb128 0x31
+ 2551 00c8 13       		.uleb128 0x13
+ 2552 00c9 00       		.byte	0
+ 2553 00ca 00       		.byte	0
+ 2554 00cb 0F       		.uleb128 0xf
+ 2555 00cc 898201   		.uleb128 0x4109
+ 2556 00cf 01       		.byte	0x1
+ 2557 00d0 11       		.uleb128 0x11
+ 2558 00d1 01       		.uleb128 0x1
+ 2559 00d2 31       		.uleb128 0x31
+ 2560 00d3 13       		.uleb128 0x13
+ 2561 00d4 00       		.byte	0
+ 2562 00d5 00       		.byte	0
+ 2563 00d6 10       		.uleb128 0x10
+ 2564 00d7 01       		.uleb128 0x1
+ 2565 00d8 01       		.byte	0x1
+ 2566 00d9 49       		.uleb128 0x49
+ 2567 00da 13       		.uleb128 0x13
+ 2568 00db 01       		.uleb128 0x1
+ 2569 00dc 13       		.uleb128 0x13
+ 2570 00dd 00       		.byte	0
+ 2571 00de 00       		.byte	0
+ 2572 00df 11       		.uleb128 0x11
+ 2573 00e0 21       		.uleb128 0x21
+ 2574 00e1 00       		.byte	0
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 57
+
+
+ 2575 00e2 49       		.uleb128 0x49
+ 2576 00e3 13       		.uleb128 0x13
+ 2577 00e4 2F       		.uleb128 0x2f
+ 2578 00e5 0B       		.uleb128 0xb
+ 2579 00e6 00       		.byte	0
+ 2580 00e7 00       		.byte	0
+ 2581 00e8 12       		.uleb128 0x12
+ 2582 00e9 2E       		.uleb128 0x2e
+ 2583 00ea 01       		.byte	0x1
+ 2584 00eb 3F       		.uleb128 0x3f
+ 2585 00ec 19       		.uleb128 0x19
+ 2586 00ed 03       		.uleb128 0x3
+ 2587 00ee 0E       		.uleb128 0xe
+ 2588 00ef 3A       		.uleb128 0x3a
+ 2589 00f0 0B       		.uleb128 0xb
+ 2590 00f1 3B       		.uleb128 0x3b
+ 2591 00f2 0B       		.uleb128 0xb
+ 2592 00f3 27       		.uleb128 0x27
+ 2593 00f4 19       		.uleb128 0x19
+ 2594 00f5 11       		.uleb128 0x11
+ 2595 00f6 01       		.uleb128 0x1
+ 2596 00f7 12       		.uleb128 0x12
+ 2597 00f8 06       		.uleb128 0x6
+ 2598 00f9 40       		.uleb128 0x40
+ 2599 00fa 18       		.uleb128 0x18
+ 2600 00fb 9742     		.uleb128 0x2117
+ 2601 00fd 19       		.uleb128 0x19
+ 2602 00fe 01       		.uleb128 0x1
+ 2603 00ff 13       		.uleb128 0x13
+ 2604 0100 00       		.byte	0
+ 2605 0101 00       		.byte	0
+ 2606 0102 13       		.uleb128 0x13
+ 2607 0103 05       		.uleb128 0x5
+ 2608 0104 00       		.byte	0
+ 2609 0105 03       		.uleb128 0x3
+ 2610 0106 0E       		.uleb128 0xe
+ 2611 0107 3A       		.uleb128 0x3a
+ 2612 0108 0B       		.uleb128 0xb
+ 2613 0109 3B       		.uleb128 0x3b
+ 2614 010a 0B       		.uleb128 0xb
+ 2615 010b 49       		.uleb128 0x49
+ 2616 010c 13       		.uleb128 0x13
+ 2617 010d 02       		.uleb128 0x2
+ 2618 010e 17       		.uleb128 0x17
+ 2619 010f 00       		.byte	0
+ 2620 0110 00       		.byte	0
+ 2621 0111 14       		.uleb128 0x14
+ 2622 0112 0B       		.uleb128 0xb
+ 2623 0113 01       		.byte	0x1
+ 2624 0114 11       		.uleb128 0x11
+ 2625 0115 01       		.uleb128 0x1
+ 2626 0116 12       		.uleb128 0x12
+ 2627 0117 06       		.uleb128 0x6
+ 2628 0118 01       		.uleb128 0x1
+ 2629 0119 13       		.uleb128 0x13
+ 2630 011a 00       		.byte	0
+ 2631 011b 00       		.byte	0
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 58
+
+
+ 2632 011c 15       		.uleb128 0x15
+ 2633 011d 2E       		.uleb128 0x2e
+ 2634 011e 01       		.byte	0x1
+ 2635 011f 3F       		.uleb128 0x3f
+ 2636 0120 19       		.uleb128 0x19
+ 2637 0121 03       		.uleb128 0x3
+ 2638 0122 0E       		.uleb128 0xe
+ 2639 0123 3A       		.uleb128 0x3a
+ 2640 0124 0B       		.uleb128 0xb
+ 2641 0125 3B       		.uleb128 0x3b
+ 2642 0126 0B       		.uleb128 0xb
+ 2643 0127 27       		.uleb128 0x27
+ 2644 0128 19       		.uleb128 0x19
+ 2645 0129 49       		.uleb128 0x49
+ 2646 012a 13       		.uleb128 0x13
+ 2647 012b 8701     		.uleb128 0x87
+ 2648 012d 19       		.uleb128 0x19
+ 2649 012e 11       		.uleb128 0x11
+ 2650 012f 01       		.uleb128 0x1
+ 2651 0130 12       		.uleb128 0x12
+ 2652 0131 06       		.uleb128 0x6
+ 2653 0132 40       		.uleb128 0x40
+ 2654 0133 18       		.uleb128 0x18
+ 2655 0134 9742     		.uleb128 0x2117
+ 2656 0136 19       		.uleb128 0x19
+ 2657 0137 01       		.uleb128 0x1
+ 2658 0138 13       		.uleb128 0x13
+ 2659 0139 00       		.byte	0
+ 2660 013a 00       		.byte	0
+ 2661 013b 16       		.uleb128 0x16
+ 2662 013c 34       		.uleb128 0x34
+ 2663 013d 00       		.byte	0
+ 2664 013e 03       		.uleb128 0x3
+ 2665 013f 0E       		.uleb128 0xe
+ 2666 0140 3A       		.uleb128 0x3a
+ 2667 0141 0B       		.uleb128 0xb
+ 2668 0142 3B       		.uleb128 0x3b
+ 2669 0143 05       		.uleb128 0x5
+ 2670 0144 49       		.uleb128 0x49
+ 2671 0145 13       		.uleb128 0x13
+ 2672 0146 3F       		.uleb128 0x3f
+ 2673 0147 19       		.uleb128 0x19
+ 2674 0148 3C       		.uleb128 0x3c
+ 2675 0149 19       		.uleb128 0x19
+ 2676 014a 00       		.byte	0
+ 2677 014b 00       		.byte	0
+ 2678 014c 17       		.uleb128 0x17
+ 2679 014d 35       		.uleb128 0x35
+ 2680 014e 00       		.byte	0
+ 2681 014f 49       		.uleb128 0x49
+ 2682 0150 13       		.uleb128 0x13
+ 2683 0151 00       		.byte	0
+ 2684 0152 00       		.byte	0
+ 2685 0153 18       		.uleb128 0x18
+ 2686 0154 2E       		.uleb128 0x2e
+ 2687 0155 00       		.byte	0
+ 2688 0156 3F       		.uleb128 0x3f
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 59
+
+
+ 2689 0157 19       		.uleb128 0x19
+ 2690 0158 3C       		.uleb128 0x3c
+ 2691 0159 19       		.uleb128 0x19
+ 2692 015a 6E       		.uleb128 0x6e
+ 2693 015b 0E       		.uleb128 0xe
+ 2694 015c 03       		.uleb128 0x3
+ 2695 015d 0E       		.uleb128 0xe
+ 2696 015e 3A       		.uleb128 0x3a
+ 2697 015f 0B       		.uleb128 0xb
+ 2698 0160 3B       		.uleb128 0x3b
+ 2699 0161 0B       		.uleb128 0xb
+ 2700 0162 00       		.byte	0
+ 2701 0163 00       		.byte	0
+ 2702 0164 00       		.byte	0
+ 2703              		.section	.debug_loc,"",%progbits
+ 2704              	.Ldebug_loc0:
+ 2705              	.LLST0:
+ 2706 0000 20000000 		.4byte	.LVL5
+ 2707 0004 26000000 		.4byte	.LVL6
+ 2708 0008 0100     		.2byte	0x1
+ 2709 000a 50       		.byte	0x50
+ 2710 000b 28000000 		.4byte	.LVL7
+ 2711 000f 32000000 		.4byte	.LVL8
+ 2712 0013 0100     		.2byte	0x1
+ 2713 0015 50       		.byte	0x50
+ 2714 0016 32000000 		.4byte	.LVL8
+ 2715 001a 35000000 		.4byte	.LVL9-1
+ 2716 001e 0100     		.2byte	0x1
+ 2717 0020 53       		.byte	0x53
+ 2718 0021 35000000 		.4byte	.LVL9-1
+ 2719 0025 46000000 		.4byte	.LVL12
+ 2720 0029 0100     		.2byte	0x1
+ 2721 002b 54       		.byte	0x54
+ 2722 002c 00000000 		.4byte	0
+ 2723 0030 00000000 		.4byte	0
+ 2724              	.LLST1:
+ 2725 0034 20000000 		.4byte	.LVL18
+ 2726 0038 26000000 		.4byte	.LVL19
+ 2727 003c 0100     		.2byte	0x1
+ 2728 003e 50       		.byte	0x50
+ 2729 003f 28000000 		.4byte	.LVL20
+ 2730 0043 32000000 		.4byte	.LVL21
+ 2731 0047 0100     		.2byte	0x1
+ 2732 0049 50       		.byte	0x50
+ 2733 004a 32000000 		.4byte	.LVL21
+ 2734 004e 35000000 		.4byte	.LVL22-1
+ 2735 0052 0100     		.2byte	0x1
+ 2736 0054 53       		.byte	0x53
+ 2737 0055 35000000 		.4byte	.LVL22-1
+ 2738 0059 46000000 		.4byte	.LVL25
+ 2739 005d 0100     		.2byte	0x1
+ 2740 005f 54       		.byte	0x54
+ 2741 0060 00000000 		.4byte	0
+ 2742 0064 00000000 		.4byte	0
+ 2743              	.LLST2:
+ 2744 0068 00000000 		.4byte	.LVL34
+ 2745 006c 23000000 		.4byte	.LVL35-1
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 60
+
+
+ 2746 0070 0100     		.2byte	0x1
+ 2747 0072 50       		.byte	0x50
+ 2748 0073 23000000 		.4byte	.LVL35-1
+ 2749 0077 26000000 		.4byte	.LVL36
+ 2750 007b 0400     		.2byte	0x4
+ 2751 007d F3       		.byte	0xf3
+ 2752 007e 01       		.uleb128 0x1
+ 2753 007f 50       		.byte	0x50
+ 2754 0080 9F       		.byte	0x9f
+ 2755 0081 26000000 		.4byte	.LVL36
+ 2756 0085 29000000 		.4byte	.LVL37-1
+ 2757 0089 0100     		.2byte	0x1
+ 2758 008b 50       		.byte	0x50
+ 2759 008c 29000000 		.4byte	.LVL37-1
+ 2760 0090 2C000000 		.4byte	.LVL38
+ 2761 0094 0400     		.2byte	0x4
+ 2762 0096 F3       		.byte	0xf3
+ 2763 0097 01       		.uleb128 0x1
+ 2764 0098 50       		.byte	0x50
+ 2765 0099 9F       		.byte	0x9f
+ 2766 009a 2C000000 		.4byte	.LVL38
+ 2767 009e 2F000000 		.4byte	.LVL39-1
+ 2768 00a2 0100     		.2byte	0x1
+ 2769 00a4 50       		.byte	0x50
+ 2770 00a5 2F000000 		.4byte	.LVL39-1
+ 2771 00a9 32000000 		.4byte	.LVL40
+ 2772 00ad 0400     		.2byte	0x4
+ 2773 00af F3       		.byte	0xf3
+ 2774 00b0 01       		.uleb128 0x1
+ 2775 00b1 50       		.byte	0x50
+ 2776 00b2 9F       		.byte	0x9f
+ 2777 00b3 32000000 		.4byte	.LVL40
+ 2778 00b7 35000000 		.4byte	.LVL41-1
+ 2779 00bb 0100     		.2byte	0x1
+ 2780 00bd 50       		.byte	0x50
+ 2781 00be 35000000 		.4byte	.LVL41-1
+ 2782 00c2 38000000 		.4byte	.LVL42
+ 2783 00c6 0400     		.2byte	0x4
+ 2784 00c8 F3       		.byte	0xf3
+ 2785 00c9 01       		.uleb128 0x1
+ 2786 00ca 50       		.byte	0x50
+ 2787 00cb 9F       		.byte	0x9f
+ 2788 00cc 38000000 		.4byte	.LVL42
+ 2789 00d0 3B000000 		.4byte	.LVL43-1
+ 2790 00d4 0100     		.2byte	0x1
+ 2791 00d6 50       		.byte	0x50
+ 2792 00d7 3B000000 		.4byte	.LVL43-1
+ 2793 00db 3E000000 		.4byte	.LVL44
+ 2794 00df 0400     		.2byte	0x4
+ 2795 00e1 F3       		.byte	0xf3
+ 2796 00e2 01       		.uleb128 0x1
+ 2797 00e3 50       		.byte	0x50
+ 2798 00e4 9F       		.byte	0x9f
+ 2799 00e5 3E000000 		.4byte	.LVL44
+ 2800 00e9 41000000 		.4byte	.LVL45-1
+ 2801 00ed 0100     		.2byte	0x1
+ 2802 00ef 50       		.byte	0x50
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 61
+
+
+ 2803 00f0 41000000 		.4byte	.LVL45-1
+ 2804 00f4 44000000 		.4byte	.LFE66
+ 2805 00f8 0400     		.2byte	0x4
+ 2806 00fa F3       		.byte	0xf3
+ 2807 00fb 01       		.uleb128 0x1
+ 2808 00fc 50       		.byte	0x50
+ 2809 00fd 9F       		.byte	0x9f
+ 2810 00fe 00000000 		.4byte	0
+ 2811 0102 00000000 		.4byte	0
+ 2812              	.LLST3:
+ 2813 0106 08000000 		.4byte	.LVL47
+ 2814 010a 14000000 		.4byte	.LVL50
+ 2815 010e 0100     		.2byte	0x1
+ 2816 0110 54       		.byte	0x54
+ 2817 0111 16000000 		.4byte	.LVL51
+ 2818 0115 1C000000 		.4byte	.LFE65
+ 2819 0119 0100     		.2byte	0x1
+ 2820 011b 54       		.byte	0x54
+ 2821 011c 00000000 		.4byte	0
+ 2822 0120 00000000 		.4byte	0
+ 2823              	.LLST4:
+ 2824 0124 0E000000 		.4byte	.LVL48
+ 2825 0128 11000000 		.4byte	.LVL49-1
+ 2826 012c 0100     		.2byte	0x1
+ 2827 012e 50       		.byte	0x50
+ 2828 012f 00000000 		.4byte	0
+ 2829 0133 00000000 		.4byte	0
+ 2830              		.section	.debug_aranges,"",%progbits
+ 2831 0000 6C000000 		.4byte	0x6c
+ 2832 0004 0200     		.2byte	0x2
+ 2833 0006 00000000 		.4byte	.Ldebug_info0
+ 2834 000a 04       		.byte	0x4
+ 2835 000b 00       		.byte	0
+ 2836 000c 0000     		.2byte	0
+ 2837 000e 0000     		.2byte	0
+ 2838 0010 00000000 		.4byte	.LFB74
+ 2839 0014 0C000000 		.4byte	.LFE74-.LFB74
+ 2840 0018 00000000 		.4byte	.LFB67
+ 2841 001c 50000000 		.4byte	.LFE67-.LFB67
+ 2842 0020 00000000 		.4byte	.LFB68
+ 2843 0024 50000000 		.4byte	.LFE68-.LFB68
+ 2844 0028 00000000 		.4byte	.LFB69
+ 2845 002c 1C000000 		.4byte	.LFE69-.LFB69
+ 2846 0030 00000000 		.4byte	.LFB70
+ 2847 0034 1C000000 		.4byte	.LFE70-.LFB70
+ 2848 0038 00000000 		.4byte	.LFB71
+ 2849 003c 1C000000 		.4byte	.LFE71-.LFB71
+ 2850 0040 00000000 		.4byte	.LFB72
+ 2851 0044 30000000 		.4byte	.LFE72-.LFB72
+ 2852 0048 00000000 		.4byte	.LFB66
+ 2853 004c 44000000 		.4byte	.LFE66-.LFB66
+ 2854 0050 00000000 		.4byte	.LFB65
+ 2855 0054 1C000000 		.4byte	.LFE65-.LFB65
+ 2856 0058 00000000 		.4byte	.LFB73
+ 2857 005c 58020000 		.4byte	.LFE73-.LFB73
+ 2858 0060 00000000 		.4byte	.LFB64
+ 2859 0064 A8000000 		.4byte	.LFE64-.LFB64
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 62
+
+
+ 2860 0068 00000000 		.4byte	0
+ 2861 006c 00000000 		.4byte	0
+ 2862              		.section	.debug_ranges,"",%progbits
+ 2863              	.Ldebug_ranges0:
+ 2864 0000 00000000 		.4byte	.LFB74
+ 2865 0004 0C000000 		.4byte	.LFE74
+ 2866 0008 00000000 		.4byte	.LFB67
+ 2867 000c 50000000 		.4byte	.LFE67
+ 2868 0010 00000000 		.4byte	.LFB68
+ 2869 0014 50000000 		.4byte	.LFE68
+ 2870 0018 00000000 		.4byte	.LFB69
+ 2871 001c 1C000000 		.4byte	.LFE69
+ 2872 0020 00000000 		.4byte	.LFB70
+ 2873 0024 1C000000 		.4byte	.LFE70
+ 2874 0028 00000000 		.4byte	.LFB71
+ 2875 002c 1C000000 		.4byte	.LFE71
+ 2876 0030 00000000 		.4byte	.LFB72
+ 2877 0034 30000000 		.4byte	.LFE72
+ 2878 0038 00000000 		.4byte	.LFB66
+ 2879 003c 44000000 		.4byte	.LFE66
+ 2880 0040 00000000 		.4byte	.LFB65
+ 2881 0044 1C000000 		.4byte	.LFE65
+ 2882 0048 00000000 		.4byte	.LFB73
+ 2883 004c 58020000 		.4byte	.LFE73
+ 2884 0050 00000000 		.4byte	.LFB64
+ 2885 0054 A8000000 		.4byte	.LFE64
+ 2886 0058 00000000 		.4byte	0
+ 2887 005c 00000000 		.4byte	0
+ 2888              		.section	.debug_line,"",%progbits
+ 2889              	.Ldebug_line0:
+ 2890 0000 8A030000 		.section	.debug_str,"MS",%progbits,1
+ 2890      02001B02 
+ 2890      00000201 
+ 2890      FB0E0D00 
+ 2890      01010101 
+ 2891              	.LASF22:
+ 2892 0000 44524956 		.ascii	"DRIVE_STATE\000"
+ 2892      455F5354 
+ 2892      41544500 
+ 2893              	.LASF67:
+ 2894 000c 433A5C55 		.ascii	"C:\\Users\\esben\\OneDrive - Aarhus universitet\\GF"
+ 2894      73657273 
+ 2894      5C657362 
+ 2894      656E5C4F 
+ 2894      6E654472 
+ 2895 003b 56204166 		.ascii	"V Afleveringer\\Aflevering 1 - DC-motor\\DC_Motor_g"
+ 2895      6C657665 
+ 2895      72696E67 
+ 2895      65725C41 
+ 2895      666C6576 
+ 2896 006c 72703432 		.ascii	"rp42\\DC-Motor-PWM_Opg3.cydsn\000"
+ 2896      5C44432D 
+ 2896      4D6F746F 
+ 2896      722D5057 
+ 2896      4D5F4F70 
+ 2897              	.LASF31:
+ 2898 0089 70657269 		.ascii	"period\000"
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 63
+
+
+ 2898      6F6400
+ 2899              	.LASF0:
+ 2900 0090 7369676E 		.ascii	"signed char\000"
+ 2900      65642063 
+ 2900      68617200 
+ 2901              	.LASF40:
+ 2902 009c 4953525F 		.ascii	"ISR_UART_rx_handler\000"
+ 2902      55415254 
+ 2902      5F72785F 
+ 2902      68616E64 
+ 2902      6C657200 
+ 2903              	.LASF53:
+ 2904 00b0 54696D65 		.ascii	"Timer_1_WritePeriod\000"
+ 2904      725F315F 
+ 2904      57726974 
+ 2904      65506572 
+ 2904      696F6400 
+ 2905              	.LASF27:
+ 2906 00c4 53544550 		.ascii	"STEP_STATE\000"
+ 2906      5F535441 
+ 2906      544500
+ 2907              	.LASF19:
+ 2908 00cf 73697A65 		.ascii	"sizetype\000"
+ 2908      74797065 
+ 2908      00
+ 2909              	.LASF62:
+ 2910 00d8 6973725F 		.ascii	"isr_uart_rx_StartEx\000"
+ 2910      75617274 
+ 2910      5F72785F 
+ 2910      53746172 
+ 2910      74457800 
+ 2911              	.LASF69:
+ 2912 00ec 6D61696E 		.ascii	"main\000"
+ 2912      00
+ 2913              	.LASF4:
+ 2914 00f1 5F5F7569 		.ascii	"__uint16_t\000"
+ 2914      6E743136 
+ 2914      5F7400
+ 2915              	.LASF2:
+ 2916 00fc 73686F72 		.ascii	"short int\000"
+ 2916      7420696E 
+ 2916      7400
+ 2917              	.LASF36:
+ 2918 0106 64726976 		.ascii	"driveBackwards\000"
+ 2918      65426163 
+ 2918      6B776172 
+ 2918      647300
+ 2919              	.LASF12:
+ 2920 0115 75696E74 		.ascii	"uint8_t\000"
+ 2920      385F7400 
+ 2921              	.LASF20:
+ 2922 011d 57415645 		.ascii	"WAVE_DRIVE\000"
+ 2922      5F445249 
+ 2922      564500
+ 2923              	.LASF58:
+ 2924 0128 50696E5F 		.ascii	"Pin_A1_Write\000"
+ 2924      41315F57 
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 64
+
+
+ 2924      72697465 
+ 2924      00
+ 2925              	.LASF44:
+ 2926 0135 64656275 		.ascii	"debugBuffer\000"
+ 2926      67427566 
+ 2926      66657200 
+ 2927              	.LASF42:
+ 2928 0141 62797465 		.ascii	"byteReceived\000"
+ 2928      52656365 
+ 2928      69766564 
+ 2928      00
+ 2929              	.LASF15:
+ 2930 014e 666C6F61 		.ascii	"float\000"
+ 2930      7400
+ 2931              	.LASF9:
+ 2932 0154 6C6F6E67 		.ascii	"long long int\000"
+ 2932      206C6F6E 
+ 2932      6720696E 
+ 2932      7400
+ 2933              	.LASF7:
+ 2934 0162 6C6F6E67 		.ascii	"long int\000"
+ 2934      20696E74 
+ 2934      00
+ 2935              	.LASF60:
+ 2936 016b 50696E5F 		.ascii	"Pin_B1_Write\000"
+ 2936      42315F57 
+ 2936      72697465 
+ 2936      00
+ 2937              	.LASF28:
+ 2938 0178 464F5257 		.ascii	"FORWARDS\000"
+ 2938      41524453 
+ 2938      00
+ 2939              	.LASF21:
+ 2940 0181 48414C46 		.ascii	"HALF_STEP_DRIVE\000"
+ 2940      5F535445 
+ 2940      505F4452 
+ 2940      49564500 
+ 2941              	.LASF23:
+ 2942 0191 41314132 		.ascii	"A1A2\000"
+ 2942      00
+ 2943              	.LASF43:
+ 2944 0196 64726976 		.ascii	"drive\000"
+ 2944      6500
+ 2945              	.LASF39:
+ 2946 019c 68616E64 		.ascii	"handleByteReceived\000"
+ 2946      6C654279 
+ 2946      74655265 
+ 2946      63656976 
+ 2946      656400
+ 2947              	.LASF35:
+ 2948 01af 64726976 		.ascii	"driveForwards\000"
+ 2948      65466F72 
+ 2948      77617264 
+ 2948      7300
+ 2949              	.LASF38:
+ 2950 01bd 73776974 		.ascii	"switchDriveState\000"
+ 2950      63684472 
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 65
+
+
+ 2950      69766553 
+ 2950      74617465 
+ 2950      00
+ 2951              	.LASF64:
+ 2952 01ce 55415254 		.ascii	"UART_1_Start\000"
+ 2952      5F315F53 
+ 2952      74617274 
+ 2952      00
+ 2953              	.LASF52:
+ 2954 01db 736E7072 		.ascii	"snprintf\000"
+ 2954      696E7466 
+ 2954      00
+ 2955              	.LASF46:
+ 2956 01e4 73746570 		.ascii	"stepState\000"
+ 2956      53746174 
+ 2956      6500
+ 2957              	.LASF18:
+ 2958 01ee 6C6F6E67 		.ascii	"long double\000"
+ 2958      20646F75 
+ 2958      626C6500 
+ 2959              	.LASF1:
+ 2960 01fa 756E7369 		.ascii	"unsigned char\000"
+ 2960      676E6564 
+ 2960      20636861 
+ 2960      7200
+ 2961              	.LASF30:
+ 2962 0208 44495245 		.ascii	"DIRECTION_STATE\000"
+ 2962      4354494F 
+ 2962      4E5F5354 
+ 2962      41544500 
+ 2963              	.LASF51:
+ 2964 0218 54696D65 		.ascii	"Timer_1_ReadPeriod\000"
+ 2964      725F315F 
+ 2964      52656164 
+ 2964      50657269 
+ 2964      6F6400
+ 2965              	.LASF29:
+ 2966 022b 4241434B 		.ascii	"BACKWARDS\000"
+ 2966      57415244 
+ 2966      5300
+ 2967              	.LASF54:
+ 2968 0235 54696D65 		.ascii	"Timer_1_Start\000"
+ 2968      725F315F 
+ 2968      53746172 
+ 2968      7400
+ 2969              	.LASF10:
+ 2970 0243 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 2970      206C6F6E 
+ 2970      6720756E 
+ 2970      7369676E 
+ 2970      65642069 
+ 2971              	.LASF24:
+ 2972 025a 41324231 		.ascii	"A2B1\000"
+ 2972      00
+ 2973              	.LASF48:
+ 2974 025f 73746570 		.ascii	"stepBool\000"
+ 2974      426F6F6C 
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 66
+
+
+ 2974      00
+ 2975              	.LASF11:
+ 2976 0268 756E7369 		.ascii	"unsigned int\000"
+ 2976      676E6564 
+ 2976      20696E74 
+ 2976      00
+ 2977              	.LASF63:
+ 2978 0275 6973725F 		.ascii	"isr_timer_StartEx\000"
+ 2978      74696D65 
+ 2978      725F5374 
+ 2978      61727445 
+ 2978      7800
+ 2979              	.LASF59:
+ 2980 0287 50696E5F 		.ascii	"Pin_A2_Write\000"
+ 2980      41325F57 
+ 2980      72697465 
+ 2980      00
+ 2981              	.LASF68:
+ 2982 0294 4953525F 		.ascii	"ISR_Timer\000"
+ 2982      54696D65 
+ 2982      7200
+ 2983              	.LASF34:
+ 2984 029e 696E6372 		.ascii	"increaseSpeed\000"
+ 2984      65617365 
+ 2984      53706565 
+ 2984      6400
+ 2985              	.LASF5:
+ 2986 02ac 73686F72 		.ascii	"short unsigned int\000"
+ 2986      7420756E 
+ 2986      7369676E 
+ 2986      65642069 
+ 2986      6E7400
+ 2987              	.LASF37:
+ 2988 02bf 73746F70 		.ascii	"stop\000"
+ 2988      00
+ 2989              	.LASF17:
+ 2990 02c4 63686172 		.ascii	"char\000"
+ 2990      00
+ 2991              	.LASF49:
+ 2992 02c9 5F426F6F 		.ascii	"_Bool\000"
+ 2992      6C00
+ 2993              	.LASF14:
+ 2994 02cf 696E7433 		.ascii	"int32_t\000"
+ 2994      325F7400 
+ 2995              	.LASF55:
+ 2996 02d7 54696D65 		.ascii	"Timer_1_Sleep\000"
+ 2996      725F315F 
+ 2996      536C6565 
+ 2996      7000
+ 2997              	.LASF56:
+ 2998 02e5 55415254 		.ascii	"UART_1_ReadRxData\000"
+ 2998      5F315F52 
+ 2998      65616452 
+ 2998      78446174 
+ 2998      6100
+ 2999              	.LASF26:
+ 3000 02f7 42324131 		.ascii	"B2A1\000"
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 67
+
+
+ 3000      00
+ 3001              	.LASF45:
+ 3002 02fc 64726976 		.ascii	"driveState\000"
+ 3002      65537461 
+ 3002      746500
+ 3003              	.LASF32:
+ 3004 0307 62756666 		.ascii	"buffer\000"
+ 3004      657200
+ 3005              	.LASF66:
+ 3006 030e 6D61696E 		.ascii	"main.c\000"
+ 3006      2E6300
+ 3007              	.LASF8:
+ 3008 0315 6C6F6E67 		.ascii	"long unsigned int\000"
+ 3008      20756E73 
+ 3008      69676E65 
+ 3008      6420696E 
+ 3008      7400
+ 3009              	.LASF41:
+ 3010 0327 62797465 		.ascii	"bytesToRead\000"
+ 3010      73546F52 
+ 3010      65616400 
+ 3011              	.LASF57:
+ 3012 0333 55415254 		.ascii	"UART_1_GetRxBufferSize\000"
+ 3012      5F315F47 
+ 3012      65745278 
+ 3012      42756666 
+ 3012      65725369 
+ 3013              	.LASF16:
+ 3014 034a 646F7562 		.ascii	"double\000"
+ 3014      6C6500
+ 3015              	.LASF50:
+ 3016 0351 55415254 		.ascii	"UART_1_PutString\000"
+ 3016      5F315F50 
+ 3016      75745374 
+ 3016      72696E67 
+ 3016      00
+ 3017              	.LASF13:
+ 3018 0362 75696E74 		.ascii	"uint16_t\000"
+ 3018      31365F74 
+ 3018      00
+ 3019              	.LASF6:
+ 3020 036b 5F5F696E 		.ascii	"__int32_t\000"
+ 3020      7433325F 
+ 3020      7400
+ 3021              	.LASF61:
+ 3022 0375 50696E5F 		.ascii	"Pin_B2_Write\000"
+ 3022      42325F57 
+ 3022      72697465 
+ 3022      00
+ 3023              	.LASF25:
+ 3024 0382 42314232 		.ascii	"B1B2\000"
+ 3024      00
+ 3025              	.LASF70:
+ 3026 0387 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 3026      52784275 
+ 3026      66666572 
+ 3026      00
+ARM GAS  C:\Users\esben\AppData\Local\Temp\ccjXY94l.s 			page 68
+
+
+ 3027              	.LASF65:
+ 3028 0394 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 3028      43313120 
+ 3028      352E342E 
+ 3028      31203230 
+ 3028      31363036 
+ 3029 03c7 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 3029      20726576 
+ 3029      6973696F 
+ 3029      6E203233 
+ 3029      37373135 
+ 3030 03fa 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 3030      66756E63 
+ 3030      74696F6E 
+ 3030      2D736563 
+ 3030      74696F6E 
+ 3031              	.LASF33:
+ 3032 0422 64656372 		.ascii	"decreaseSpeed\000"
+ 3032      65617365 
+ 3032      53706565 
+ 3032      6400
+ 3033              	.LASF47:
+ 3034 0430 64697265 		.ascii	"directionState\000"
+ 3034      6374696F 
+ 3034      6E537461 
+ 3034      746500
+ 3035              	.LASF3:
+ 3036 043f 5F5F7569 		.ascii	"__uint8_t\000"
+ 3036      6E74385F 
+ 3036      7400
+ 3037              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

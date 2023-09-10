@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 1
+ARM GAS  C:\Users\lasse\AppData\Local\Temp\ccl8KCoF.s 			page 1
 
 
    1              		.syntax unified
@@ -58,7 +58,7 @@ ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 1
   55 001a 01       		.byte	1
   56 001b 40       		.byte	64
   57 001c 69       		.byte	105
-ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 2
+ARM GAS  C:\Users\lasse\AppData\Local\Temp\ccl8KCoF.s 			page 2
 
 
   58 001d 1A       		.byte	26
@@ -118,7 +118,7 @@ ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 1
  112 0053 02       		.byte	2
  113 0054 B8       		.byte	-72
  114 0055 80       		.byte	-128
-ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 3
+ARM GAS  C:\Users\lasse\AppData\Local\Temp\ccl8KCoF.s 			page 3
 
 
  115 0056 BE       		.byte	-66
@@ -178,7 +178,7 @@ ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 1
  169 008c 10       		.byte	16
  170 008d 2A       		.byte	42
  171 008e 14       		.byte	20
-ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 4
+ARM GAS  C:\Users\lasse\AppData\Local\Temp\ccl8KCoF.s 			page 4
 
 
  172 008f 80       		.byte	-128
@@ -238,7 +238,7 @@ ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 1
  226 00c5 14       		.byte	20
  227 00c6 76       		.byte	118
  228 00c7 2A       		.byte	42
-ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 5
+ARM GAS  C:\Users\lasse\AppData\Local\Temp\ccl8KCoF.s 			page 5
 
 
  229 00c8 77       		.byte	119
@@ -298,7 +298,7 @@ ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 1
  283 00fe 16       		.byte	22
  284 00ff 10       		.byte	16
  285 0100 19       		.byte	25
-ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 6
+ARM GAS  C:\Users\lasse\AppData\Local\Temp\ccl8KCoF.s 			page 6
 
 
  286 0101 03       		.byte	3
@@ -358,7 +358,7 @@ ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 1
  340 0137 F0       		.byte	-16
  341 0138 4F       		.byte	79
  342 0139 44       		.byte	68
-ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 7
+ARM GAS  C:\Users\lasse\AppData\Local\Temp\ccl8KCoF.s 			page 7
 
 
  343 013a 50       		.byte	80
@@ -418,7 +418,7 @@ ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 1
  397 0170 AB       		.byte	-85
  398 0171 20       		.byte	32
  399 0172 B0       		.byte	-80
-ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 8
+ARM GAS  C:\Users\lasse\AppData\Local\Temp\ccl8KCoF.s 			page 8
 
 
  400 0173 0F       		.byte	15
@@ -478,7 +478,7 @@ ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 1
  454 01a9 01       		.byte	1
  455 01aa E0       		.byte	-32
  456 01ab 40       		.byte	64
-ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 9
+ARM GAS  C:\Users\lasse\AppData\Local\Temp\ccl8KCoF.s 			page 9
 
 
  457 01ac E1       		.byte	-31
@@ -538,7 +538,7 @@ ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 1
  511 01e2 2B       		.byte	43
  512 01e3 02       		.byte	2
  513 01e4 2F       		.byte	47
-ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 10
+ARM GAS  C:\Users\lasse\AppData\Local\Temp\ccl8KCoF.s 			page 10
 
 
  514 01e5 08       		.byte	8
@@ -598,7 +598,7 @@ ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 1
  568 021b 01       		.byte	1
  569 021c 99       		.byte	-103
  570 021d 04       		.byte	4
-ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 11
+ARM GAS  C:\Users\lasse\AppData\Local\Temp\ccl8KCoF.s 			page 11
 
 
  571 021e 9C       		.byte	-100
@@ -658,7 +658,7 @@ ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 1
  625 0254 A6       		.byte	-90
  626 0255 20       		.byte	32
  627 0256 67       		.byte	103
-ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 12
+ARM GAS  C:\Users\lasse\AppData\Local\Temp\ccl8KCoF.s 			page 12
 
 
  628 0257 20       		.byte	32
@@ -718,7 +718,7 @@ ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 1
  682 028d 18       		.byte	24
  683 028e 0C       		.byte	12
  684 028f 00       		.byte	0
-ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 13
+ARM GAS  C:\Users\lasse\AppData\Local\Temp\ccl8KCoF.s 			page 13
 
 
  685 0290 08       		.byte	8
@@ -778,7 +778,7 @@ ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 1
  739 02c6 05       		.byte	5
  740 02c7 00       		.byte	0
  741 02c8 01       		.byte	1
-ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 14
+ARM GAS  C:\Users\lasse\AppData\Local\Temp\ccl8KCoF.s 			page 14
 
 
  742 02c9 00       		.byte	0
@@ -838,7 +838,7 @@ ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 1
  796 02ff 00       		.byte	0
  797 0300 00       		.byte	0
  798 0301 00       		.byte	0
-ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 15
+ARM GAS  C:\Users\lasse\AppData\Local\Temp\ccl8KCoF.s 			page 15
 
 
  799 0302 00       		.byte	0
@@ -898,7 +898,7 @@ ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 1
  853 0001 01       		.byte	1
  854 0002 2E       		.byte	46
  855 0003 16       		.byte	22
-ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 16
+ARM GAS  C:\Users\lasse\AppData\Local\Temp\ccl8KCoF.s 			page 16
 
 
  856 0004 10       		.byte	16
@@ -931,51 +931,51 @@ ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 1
  879 0006 00000000 		.4byte	.Ldebug_abbrev0
  880 000a 04       		.byte	0x4
  881 000b 01       		.uleb128 0x1
- 882 000c 32000000 		.4byte	.LASF17
+ 882 000c B1000000 		.4byte	.LASF17
  883 0010 0C       		.byte	0xc
- 884 0011 FB010000 		.4byte	.LASF18
- 885 0015 5F010000 		.4byte	.LASF19
+ 884 0011 0B020000 		.4byte	.LASF18
+ 885 0015 0A000000 		.4byte	.LASF19
  886 0019 00000000 		.4byte	.Ldebug_line0
  887 001d 02       		.uleb128 0x2
  888 001e 01       		.byte	0x1
  889 001f 06       		.byte	0x6
- 890 0020 EF010000 		.4byte	.LASF0
+ 890 0020 FF010000 		.4byte	.LASF0
  891 0024 03       		.uleb128 0x3
- 892 0025 0E000000 		.4byte	.LASF9
+ 892 0025 00000000 		.4byte	.LASF9
  893 0029 01       		.byte	0x1
  894 002a 1D       		.byte	0x1d
  895 002b 2F000000 		.4byte	0x2f
  896 002f 02       		.uleb128 0x2
  897 0030 01       		.byte	0x1
  898 0031 08       		.byte	0x8
- 899 0032 24000000 		.4byte	.LASF1
+ 899 0032 A3000000 		.4byte	.LASF1
  900 0036 02       		.uleb128 0x2
  901 0037 02       		.byte	0x2
  902 0038 05       		.byte	0x5
- 903 0039 DC010000 		.4byte	.LASF2
+ 903 0039 EC010000 		.4byte	.LASF2
  904 003d 02       		.uleb128 0x2
  905 003e 02       		.byte	0x2
  906 003f 07       		.byte	0x7
- 907 0040 D2000000 		.4byte	.LASF3
+ 907 0040 51010000 		.4byte	.LASF3
  908 0044 02       		.uleb128 0x2
-ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 17
+ARM GAS  C:\Users\lasse\AppData\Local\Temp\ccl8KCoF.s 			page 17
 
 
  909 0045 04       		.byte	0x4
  910 0046 05       		.byte	0x5
- 911 0047 E6010000 		.4byte	.LASF4
+ 911 0047 F6010000 		.4byte	.LASF4
  912 004b 02       		.uleb128 0x2
  913 004c 04       		.byte	0x4
  914 004d 07       		.byte	0x7
- 915 004e C0000000 		.4byte	.LASF5
+ 915 004e 3F010000 		.4byte	.LASF5
  916 0052 02       		.uleb128 0x2
  917 0053 08       		.byte	0x8
  918 0054 05       		.byte	0x5
- 919 0055 00000000 		.4byte	.LASF6
+ 919 0055 DE010000 		.4byte	.LASF6
  920 0059 02       		.uleb128 0x2
  921 005a 08       		.byte	0x8
  922 005b 07       		.byte	0x7
- 923 005c 14010000 		.4byte	.LASF7
+ 923 005c 93010000 		.4byte	.LASF7
  924 0060 04       		.uleb128 0x4
  925 0061 04       		.byte	0x4
  926 0062 05       		.byte	0x5
@@ -983,9 +983,9 @@ ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 1
  928 0067 02       		.uleb128 0x2
  929 0068 04       		.byte	0x4
  930 0069 07       		.byte	0x7
- 931 006a 07010000 		.4byte	.LASF8
+ 931 006a 86010000 		.4byte	.LASF8
  932 006e 03       		.uleb128 0x3
- 933 006f 2B010000 		.4byte	.LASF10
+ 933 006f AA010000 		.4byte	.LASF10
  934 0073 02       		.byte	0x2
  935 0074 18       		.byte	0x18
  936 0075 24000000 		.4byte	0x24
@@ -999,11 +999,11 @@ ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 1
  944 008a 02       		.uleb128 0x2
  945 008b 04       		.byte	0x4
  946 008c 07       		.byte	0x7
- 947 008d 56010000 		.4byte	.LASF11
+ 947 008d D5010000 		.4byte	.LASF11
  948 0091 07       		.uleb128 0x7
  949 0092 6E000000 		.4byte	0x6e
  950 0096 08       		.uleb128 0x8
- 951 0097 F5000000 		.4byte	.LASF12
+ 951 0097 74010000 		.4byte	.LASF12
  952 009b 03       		.byte	0x3
  953 009c 1F       		.byte	0x1f
  954 009d A7000000 		.4byte	0xa7
@@ -1018,12 +1018,12 @@ ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 1
  963 00b5 09       		.uleb128 0x9
  964 00b6 8A000000 		.4byte	0x8a
  965 00ba 03       		.byte	0x3
-ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 18
+ARM GAS  C:\Users\lasse\AppData\Local\Temp\ccl8KCoF.s 			page 18
 
 
  966 00bb 00       		.byte	0
  967 00bc 08       		.uleb128 0x8
- 968 00bd E5000000 		.4byte	.LASF13
+ 968 00bd 64010000 		.4byte	.LASF13
  969 00c1 03       		.byte	0x3
  970 00c2 90       		.byte	0x90
  971 00c3 CD000000 		.4byte	0xcd
@@ -1033,7 +1033,7 @@ ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 1
  975 00cd 07       		.uleb128 0x7
  976 00ce AC000000 		.4byte	0xac
  977 00d2 08       		.uleb128 0x8
- 978 00d3 48010000 		.4byte	.LASF14
+ 978 00d3 C7010000 		.4byte	.LASF14
  979 00d7 03       		.byte	0x3
  980 00d8 9E       		.byte	0x9e
  981 00d9 E3000000 		.4byte	0xe3
@@ -1050,7 +1050,7 @@ ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 1
  992 00f6 FF       		.byte	0xff
  993 00f7 00       		.byte	0
  994 00f8 08       		.uleb128 0x8
- 995 00f9 33010000 		.4byte	.LASF15
+ 995 00f9 B2010000 		.4byte	.LASF15
  996 00fd 03       		.byte	0x3
  997 00fe AC       		.byte	0xac
  998 00ff 09010000 		.4byte	0x109
@@ -1067,7 +1067,7 @@ ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 1
  1009 011c 0B       		.byte	0xb
  1010 011d 00       		.byte	0
  1011 011e 08       		.uleb128 0x8
- 1012 011f 18000000 		.4byte	.LASF16
+ 1012 011f 97000000 		.4byte	.LASF16
  1013 0123 03       		.byte	0x3
  1014 0124 D9       		.byte	0xd9
  1015 0125 2F010000 		.4byte	0x12f
@@ -1078,7 +1078,7 @@ ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 1
  1020 0130 0E010000 		.4byte	0x10e
  1021 0134 00       		.byte	0
  1022              		.section	.debug_abbrev,"",%progbits
-ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 19
+ARM GAS  C:\Users\lasse\AppData\Local\Temp\ccl8KCoF.s 			page 19
 
 
  1023              	.Ldebug_abbrev0:
@@ -1138,7 +1138,7 @@ ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 1
  1077 0035 49       		.uleb128 0x49
  1078 0036 13       		.uleb128 0x13
  1079 0037 01       		.uleb128 0x1
-ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 20
+ARM GAS  C:\Users\lasse\AppData\Local\Temp\ccl8KCoF.s 			page 20
 
 
  1080 0038 13       		.uleb128 0x13
@@ -1198,7 +1198,7 @@ ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 1
  1134 0010 00000000 		.4byte	0
  1135 0014 00000000 		.4byte	0
  1136              		.section	.debug_line,"",%progbits
-ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 21
+ARM GAS  C:\Users\lasse\AppData\Local\Temp\ccl8KCoF.s 			page 21
 
 
  1137              	.Ldebug_line0:
@@ -1207,128 +1207,128 @@ ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 1
  1138      00000201 
  1138      FB0E0D00 
  1138      01010101 
- 1139              	.LASF6:
- 1140 0000 6C6F6E67 		.ascii	"long long int\000"
- 1140      206C6F6E 
- 1140      6720696E 
+ 1139              	.LASF9:
+ 1140 0000 5F5F7569 		.ascii	"__uint8_t\000"
+ 1140      6E74385F 
  1140      7400
- 1141              	.LASF9:
- 1142 000e 5F5F7569 		.ascii	"__uint8_t\000"
- 1142      6E74385F 
- 1142      7400
- 1143              	.LASF16:
- 1144 0018 63795F6D 		.ascii	"cy_metadata\000"
- 1144      65746164 
- 1144      61746100 
- 1145              	.LASF1:
- 1146 0024 756E7369 		.ascii	"unsigned char\000"
- 1146      676E6564 
- 1146      20636861 
- 1146      7200
- 1147              	.LASF17:
- 1148 0032 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
- 1148      43313120 
- 1148      352E342E 
- 1148      31203230 
- 1148      31363036 
- 1149 0065 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
- 1149      20726576 
- 1149      6973696F 
- 1149      6E203233 
- 1149      37373135 
- 1150 0098 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
- 1150      66756E63 
- 1150      74696F6E 
- 1150      2D736563 
- 1150      74696F6E 
- 1151              	.LASF5:
- 1152 00c0 6C6F6E67 		.ascii	"long unsigned int\000"
- 1152      20756E73 
- 1152      69676E65 
- 1152      6420696E 
- 1152      7400
- 1153              	.LASF3:
- 1154 00d2 73686F72 		.ascii	"short unsigned int\000"
- 1154      7420756E 
- 1154      7369676E 
- 1154      65642069 
- 1154      6E7400
- 1155              	.LASF13:
- 1156 00e5 63795F6D 		.ascii	"cy_meta_custnvl\000"
- 1156      6574615F 
- 1156      63757374 
- 1156      6E766C00 
-ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 22
+ 1141              	.LASF19:
+ 1142 000a 433A5C55 		.ascii	"C:\\Users\\lasse\\OneDrive - Aarhus universitet\\2."
+ 1142      73657273 
+ 1142      5C6C6173 
+ 1142      73655C4F 
+ 1142      6E654472 
+ 1143 0039 2053656D 		.ascii	" Semester\\GFV\\GFV Afleveringer\\Aflevering 1 - DC"
+ 1143      65737465 
+ 1143      725C4746 
+ 1143      565C4746 
+ 1143      56204166 
+ 1144 0069 2D6D6F74 		.ascii	"-motor\\DC_Motor_grp42\\DC-Motor-PWM_Opg3.cydsn\000"
+ 1144      6F725C44 
+ 1144      435F4D6F 
+ 1144      746F725F 
+ 1144      67727034 
+ 1145              	.LASF16:
+ 1146 0097 63795F6D 		.ascii	"cy_metadata\000"
+ 1146      65746164 
+ 1146      61746100 
+ 1147              	.LASF1:
+ 1148 00a3 756E7369 		.ascii	"unsigned char\000"
+ 1148      676E6564 
+ 1148      20636861 
+ 1148      7200
+ 1149              	.LASF17:
+ 1150 00b1 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 1150      43313120 
+ 1150      352E342E 
+ 1150      31203230 
+ 1150      31363036 
+ 1151 00e4 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 1151      20726576 
+ 1151      6973696F 
+ 1151      6E203233 
+ 1151      37373135 
+ 1152 0117 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 1152      66756E63 
+ 1152      74696F6E 
+ 1152      2D736563 
+ 1152      74696F6E 
+ 1153              	.LASF5:
+ 1154 013f 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1154      20756E73 
+ 1154      69676E65 
+ 1154      6420696E 
+ 1154      7400
+ARM GAS  C:\Users\lasse\AppData\Local\Temp\ccl8KCoF.s 			page 22
 
 
- 1157              	.LASF12:
- 1158 00f5 63795F6D 		.ascii	"cy_meta_configecc\000"
+ 1155              	.LASF3:
+ 1156 0151 73686F72 		.ascii	"short unsigned int\000"
+ 1156      7420756E 
+ 1156      7369676E 
+ 1156      65642069 
+ 1156      6E7400
+ 1157              	.LASF13:
+ 1158 0164 63795F6D 		.ascii	"cy_meta_custnvl\000"
  1158      6574615F 
- 1158      636F6E66 
- 1158      69676563 
- 1158      6300
- 1159              	.LASF8:
- 1160 0107 756E7369 		.ascii	"unsigned int\000"
- 1160      676E6564 
- 1160      20696E74 
- 1160      00
- 1161              	.LASF7:
- 1162 0114 6C6F6E67 		.ascii	"long long unsigned int\000"
- 1162      206C6F6E 
- 1162      6720756E 
- 1162      7369676E 
- 1162      65642069 
- 1163              	.LASF10:
- 1164 012b 75696E74 		.ascii	"uint8_t\000"
- 1164      385F7400 
- 1165              	.LASF15:
- 1166 0133 63795F6D 		.ascii	"cy_meta_flashprotect\000"
- 1166      6574615F 
- 1166      666C6173 
- 1166      6870726F 
- 1166      74656374 
- 1167              	.LASF14:
- 1168 0148 63795F6D 		.ascii	"cy_meta_wonvl\000"
+ 1158      63757374 
+ 1158      6E766C00 
+ 1159              	.LASF12:
+ 1160 0174 63795F6D 		.ascii	"cy_meta_configecc\000"
+ 1160      6574615F 
+ 1160      636F6E66 
+ 1160      69676563 
+ 1160      6300
+ 1161              	.LASF8:
+ 1162 0186 756E7369 		.ascii	"unsigned int\000"
+ 1162      676E6564 
+ 1162      20696E74 
+ 1162      00
+ 1163              	.LASF7:
+ 1164 0193 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1164      206C6F6E 
+ 1164      6720756E 
+ 1164      7369676E 
+ 1164      65642069 
+ 1165              	.LASF10:
+ 1166 01aa 75696E74 		.ascii	"uint8_t\000"
+ 1166      385F7400 
+ 1167              	.LASF15:
+ 1168 01b2 63795F6D 		.ascii	"cy_meta_flashprotect\000"
  1168      6574615F 
- 1168      776F6E76 
- 1168      6C00
- 1169              	.LASF11:
- 1170 0156 73697A65 		.ascii	"sizetype\000"
- 1170      74797065 
- 1170      00
- 1171              	.LASF19:
- 1172 015f 433A5C55 		.ascii	"C:\\Users\\esben\\OneDrive - Aarhus universitet\\GF"
- 1172      73657273 
- 1172      5C657362 
- 1172      656E5C4F 
- 1172      6E654472 
- 1173 018e 56204166 		.ascii	"V Afleveringer\\Aflevering 1 - DC-motor\\DC_Motor_g"
- 1173      6C657665 
- 1173      72696E67 
- 1173      65725C41 
- 1173      666C6576 
- 1174 01bf 72703432 		.ascii	"rp42\\DC-Motor-PWM_Opg3.cydsn\000"
- 1174      5C44432D 
- 1174      4D6F746F 
- 1174      722D5057 
- 1174      4D5F4F70 
+ 1168      666C6173 
+ 1168      6870726F 
+ 1168      74656374 
+ 1169              	.LASF14:
+ 1170 01c7 63795F6D 		.ascii	"cy_meta_wonvl\000"
+ 1170      6574615F 
+ 1170      776F6E76 
+ 1170      6C00
+ 1171              	.LASF11:
+ 1172 01d5 73697A65 		.ascii	"sizetype\000"
+ 1172      74797065 
+ 1172      00
+ 1173              	.LASF6:
+ 1174 01de 6C6F6E67 		.ascii	"long long int\000"
+ 1174      206C6F6E 
+ 1174      6720696E 
+ 1174      7400
  1175              	.LASF2:
- 1176 01dc 73686F72 		.ascii	"short int\000"
+ 1176 01ec 73686F72 		.ascii	"short int\000"
  1176      7420696E 
  1176      7400
  1177              	.LASF4:
- 1178 01e6 6C6F6E67 		.ascii	"long int\000"
-ARM GAS  C:\Users\esben\AppData\Local\Temp\ccxCOLLF.s 			page 23
+ 1178 01f6 6C6F6E67 		.ascii	"long int\000"
+ARM GAS  C:\Users\lasse\AppData\Local\Temp\ccl8KCoF.s 			page 23
 
 
  1178      20696E74 
  1178      00
  1179              	.LASF0:
- 1180 01ef 7369676E 		.ascii	"signed char\000"
+ 1180 01ff 7369676E 		.ascii	"signed char\000"
  1180      65642063 
  1180      68617200 
  1181              	.LASF18:
- 1182 01fb 47656E65 		.ascii	"Generated_Source\\PSoC5\\cymetadata.c\000"
+ 1182 020b 47656E65 		.ascii	"Generated_Source\\PSoC5\\cymetadata.c\000"
  1182      72617465 
  1182      645F536F 
  1182      75726365 

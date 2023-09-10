@@ -1,6 +1,6 @@
 // ======================================================================
 // DC-Motor-PWM_Opg3.v generated from TopDesign.cysch
-// 09/06/2023 at 17:15
+// 09/10/2023 at 13:29
 // This file is auto generated. ANY EDITS YOU MAKE MAY BE LOST WHEN THIS FILE IS REGENERATED!!!
 // ======================================================================
 
@@ -596,7 +596,7 @@ module top ;
 		#(.id("c0fb34bd-1044-4931-9788-16b01ce89812"),
 		  .source_clock_id(""),
 		  .divisor(0),
-		  .period("1000000000000"),
+		  .period("2000000000000"),
 		  .is_direct(0),
 		  .is_digital(1))
 		timer_clock
